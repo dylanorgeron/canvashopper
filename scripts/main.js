@@ -1,4 +1,4 @@
-//define keycodes for my own sanity 
+//define keycodes for my own sanity
 var LeftArrow = 37;
 var UpArrow = 38;
 var RightArrow = 39;
@@ -15,7 +15,7 @@ var entities = [];
 class Player {
 	constructor(x, y){
 		entities.push(this)
-		
+
 		this.height = 40;
 		this.width = 15;
 
@@ -32,14 +32,20 @@ class Player {
 	}
 
 	update(){
+
+		var currentY = this.y;
+
+		//it is inescapable
+		this.applyGravity();
+
+		this.canJump = currentY === this.y;
+
 		//move player based on input
 		if (keystate[RightArrow]) this.x += 7;
 		if (keystate[LeftArrow]) this.x -= 7;
 		if(keystate[Space] && this.canJump) this.jump();
 
-		//it is inescapable
-		this.applyGravity();
-		
+
 		//all done, draw on canvas
 		this.draw();
 	}
@@ -65,7 +71,7 @@ class Player {
 
 	jump(){
 		if(this.jumpSpeed === 0){
-			this.jumpSpeed = 20;
+			this.jumpSpeed = 25;
 		}
 	}
 
