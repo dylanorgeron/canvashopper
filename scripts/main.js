@@ -23,6 +23,7 @@ class Player {
 		this.y = y;
 		this.fallSpeed = 0;
 		this.jumpSpeed = 0;
+		this.canJump = true;
 	}
 
 	draw(){
@@ -34,7 +35,7 @@ class Player {
 		//move player based on input
 		if (keystate[RightArrow]) this.x += 7;
 		if (keystate[LeftArrow]) this.x -= 7;
-		if(keystate[Space]) this.jump();
+		if(keystate[Space] && this.canJump) this.jump();
 
 		//it is inescapable
 		this.applyGravity();
@@ -45,9 +46,13 @@ class Player {
 
 	applyGravity(){
 		//check if we need to fall
-		if((this.y < canvas.height - this.height) > 0 && this.jumpSpeed === 0){
+		if(this.jumpSpeed !== 0){
+			this.y -= this.jumpSpeed;
+			//slow jump by 3 with min of 0
+			this.jumpSpeed = (this.jumpSpeed - 3) > 0 ? this.jumpSpeed - 1 : 0;
+		}else if((this.y < canvas.height - this.height) > 0){
 			//increase fall by 10 each frame up to 30 max
-			this.fallSpeed = this.fallSpeed > 20 ? 20 : this.fallSpeed + 5;
+			this.fallSpeed = this.fallSpeed > 20 ? 20 : this.fallSpeed + 2;
 			//fall with fallSpeed
 			this.y += this.fallSpeed;
 			if(this.y > canvas.height - this.height){
@@ -59,7 +64,9 @@ class Player {
 	}
 
 	jump(){
-
+		if(this.jumpSpeed === 0){
+			this.jumpSpeed = 20;
+		}
 	}
 
 }
