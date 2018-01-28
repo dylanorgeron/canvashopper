@@ -7,20 +7,6 @@ var level = [
 		height: 300,
 		color: '#ddbbbb',
 	},
-	{
-		x: 100,
-		y: 200,
-		width: 100,
-		height: 300,
-		color: '#ddbbbb',
-	},
-	{
-		x: 300,
-		y: 200,
-		width: 100,
-		height: 300,
-		color: '#ddbbbb',
-	},
 ];
 
 //define keycodes for my own sanity
@@ -98,38 +84,59 @@ class Player {
 		var collided = false;
 		level.forEach(function(rect){
 			if(!collided){
-			//check if this rectangle aligns with player on y axis
-			var isYAligned =
-					(player.y > rect.y &&
+				//check if this rectangle aligns with player on y axis
+				if((player.y > rect.y &&
 					player.y < (rect.y + rect.height))
 					||
 					((player.y + player.height) > rect.y &&
-					(player.y + player.height) < (rect.y + rect.height));
+					(player.y + player.height) < (rect.y + rect.height))){
 
-					player.x = newXPos;
-
-					//collsion from left
-					if(
-						deltaX > 0 &&
-						isYAligned &&
-						(player.x + player.width) > rect.x &&
-						(player.x + player.width) < (rect.x + rect.width)
-					){
-						player.x -= deltaX;
-						collided = true;
+					if(deltaX > 0){
+						for(var deltaToTest = 1; deltaToTest <= deltaX; deltaToTest++){
+							if(!collided){
+								collided = player.validatePosition(deltaToTest, rect);
+							}
+						}
+					}else{
+						for(var deltaToTest = -1; deltaToTest >= deltaX; deltaToTest--){
+							if(!collided){
+								collided = player.validatePosition(deltaToTest, rect);
+							}
+						}
 					}
-					//collsion from right
-					else if(
-						deltaX < 0 &&
-						isYAligned &&
-						player.x < (rect.x + rect.width) &&
-						player.x > rect.x
- 					){
-						player.x -= deltaX;
-						collided = true;
-					}
+				}else{
+					player.x += deltaX;
 				}
+			}
 		});
+	}
+
+	validatePosition(delta, rect){
+		var collided;
+		if(delta > 0){
+			this.x++;
+		}else{
+			this.x--;
+		}
+		//collsion from left
+		if(
+			delta > 0 &&
+			(this.x + this.width) >= rect.x &&
+			(this.x + this.width) <= (rect.x + rect.width)
+		){
+			this.x -= delta;
+			collided = true;
+		}
+		//collsion from right
+		else if(
+			delta < 0 &&
+			this.x <= (rect.x + rect.width) &&
+			this.x >= rect.x
+		){
+			this.x -= delta;
+			collided = true;
+		}
+		return collided;
 	}
 
 	applyGravity(){
