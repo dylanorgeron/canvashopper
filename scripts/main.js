@@ -1,9 +1,23 @@
 //level data
 var level = [
 	{
-		x: 200,
+		x: 300,
 		y: 200,
-		width: 200,
+		width: 100,
+		height: 300,
+		color: '#ddbbbb',
+	},
+	{
+		x: 100,
+		y: 200,
+		width: 100,
+		height: 300,
+		color: '#ddbbbb',
+	},
+	{
+		x: 300,
+		y: 200,
+		width: 100,
 		height: 300,
 		color: '#ddbbbb',
 	},
@@ -81,8 +95,9 @@ class Player {
 	moveHorizontal(deltaX){
 		var newXPos = this.x + deltaX;
 		var player = this;
-		var moveIsValid = true;
+		var collided = false;
 		level.forEach(function(rect){
+			if(!collided){
 			//check if this rectangle aligns with player on y axis
 			var isYAligned =
 					(player.y > rect.y &&
@@ -94,8 +109,14 @@ class Player {
 					player.x = newXPos;
 
 					//collsion from left
-					if(deltaX > 0 && isYAligned && (player.x + player.width) > rect.x){
+					if(
+						deltaX > 0 &&
+						isYAligned &&
+						(player.x + player.width) > rect.x &&
+						(player.x + player.width) < (rect.x + rect.width)
+					){
 						player.x -= deltaX;
+						collided = true;
 					}
 					//collsion from right
 					else if(
@@ -105,7 +126,9 @@ class Player {
 						player.x > rect.x
  					){
 						player.x -= deltaX;
+						collided = true;
 					}
+				}
 		});
 	}
 
