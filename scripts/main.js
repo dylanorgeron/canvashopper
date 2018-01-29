@@ -4,7 +4,14 @@ var level = [
 		x: 300,
 		y: 200,
 		width: 100,
-		height: 300,
+		height: 100,
+		color: '#ddbbbb',
+	},
+	{
+		x: 300,
+		y: 300,
+		width: 100,
+		height: 100,
 		color: '#ddbbbb',
 	},
 ];
@@ -143,11 +150,17 @@ class Player {
 		//this will change as we fall
 		//we need to know what it is at the start of the fall
 		var floor = this.getFloor();
+		var ceiling = this.getCeiling();
 		//check if we need to fall
 		if(this.jumpSpeed !== 0){
-			this.y -= this.jumpSpeed;
-			//slow jump by 3 with min of 0
-			this.jumpSpeed = (this.jumpSpeed - 3) > 0 ? this.jumpSpeed - 1 : 0;
+			if((this.y - this.jumpSpeed) <= ceiling){
+				this.jumpSpeed = 0;
+				this.y = ceiling;
+			}else{
+				this.y -= this.jumpSpeed;
+				//slow jump by 3 with min of 0
+				this.jumpSpeed = (this.jumpSpeed - 3) > 0 ? this.jumpSpeed - 1 : 0;
+			}
 		}else if(this.y < floor){
 			//increase fall by 10 each frame up to 30 max
 			this.fallSpeed = this.fallSpeed > 20 ? 20 : this.fallSpeed + 2;
@@ -179,6 +192,20 @@ class Player {
 		})
 		//if all else fails, put them at the bottom of the canvas
 		return floor === 0 ? canvas.height - this.height : floor;
+	}
+
+	getCeiling(){
+		var ceiling = 0;
+		var player = this;
+		level.forEach(function(rect){
+			if(rect.x < (player.x + player.width) && player.x < (rect.x + rect.width) && player.y >= rect.y){
+				if(ceiling === 0){
+					ceiling = rect.y + rect.height;
+				}
+			}
+		})
+		//if all else fails, put them at the bottom of the canvas
+		return ceiling;
 	}
 
 }
