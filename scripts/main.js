@@ -171,7 +171,7 @@ class Player {
 		var floor = 0;
 		var player = this;
 		level.forEach(function(rect){
-			if(rect.x < player.x && player.x < (rect.x + rect.width) && player.y <= rect.y){
+			if(rect.x < (player.x + player.width) && player.x < (rect.x + rect.width) && player.y <= rect.y){
 				if(floor === 0){
 					floor = rect.y - player.height;
 				}
