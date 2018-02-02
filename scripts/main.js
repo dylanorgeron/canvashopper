@@ -1,20 +1,40 @@
 //level data
-var level = [
-	{
-		x: 300,
-		y: 200,
-		width: 100,
-		height: 100,
-		color: '#ddbbbb',
-	},
-	{
-		x: 300,
-		y: 300,
-		width: 100,
-		height: 100,
-		color: '#ddbbbb',
-	},
-];
+class Tile {
+	constructor(col, row){
+		this.w = 50;
+		this.h = 50;
+		this.col = col;
+		this.row = row;
+		this.x = this.col * this.w;
+		this.y = this.row * this.h;
+		this.isSolid = this.row == 9
+	}
+
+	update(){
+		this.draw();
+	}
+
+	draw(){
+		var thickness = 1;
+		canvasCTX.fillStyle = '#DDD';
+	  	canvasCTX.fillRect(this.x - (thickness), this.y - (thickness), this.w + (thickness * 2), this.h + (thickness * 2));
+	  	canvasCTX.fillStyle = this.isSolid ? '#F1F1F1' : '#FFF';
+		canvasCTX.fillRect(this.x, this.y, this.w, this.h);
+	}
+}
+
+var level = {
+	width: 15,
+	height: 10,
+	tiles: [],
+}
+
+for(var col = 0; col < level.width; col++){
+	for (var row = 0; row < level.height; row++) {
+		var tile = new Tile(col, row);
+		level.tiles.push(tile)	
+	}
+}
 
 //define keycodes for my own sanity
 var LeftArrow = 37;
@@ -29,26 +49,6 @@ var keystate = {};
 //this tracks all entites that we may or may not need to draw
 //logic for drawing only what is onscreen will be done in the object's update method
 var entities = [];
-
-//classes
-class Rectangle {
-	constructor(x, y, width, height, color){
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-		this.color = color;
-	}
-
-	update(){
-		this.draw();
-	}
-
-	draw(){
-		canvasCTX.fillStyle = this.color;
-		canvasCTX.fillRect(this.x, this.y, this.width, this.height);
-	}
-}
 
 class Player {
 	constructor(x, y){
@@ -87,35 +87,7 @@ class Player {
 
 	moveHorizontal(deltaX){
 		var newXPos = this.x + deltaX;
-		var player = this;
-		var collided = false;
-		level.forEach(function(rect){
-			if(!collided){
-				//check if this rectangle aligns with player on y axis
-				if((player.y > rect.y &&
-					player.y < (rect.y + rect.height))
-					||
-					((player.y + player.height) > rect.y &&
-					(player.y + player.height) < (rect.y + rect.height))){
-
-					if(deltaX > 0){
-						for(var deltaToTest = 1; deltaToTest <= deltaX; deltaToTest++){
-							if(!collided){
-								collided = player.validatePosition(deltaToTest, rect);
-							}
-						}
-					}else{
-						for(var deltaToTest = -1; deltaToTest >= deltaX; deltaToTest--){
-							if(!collided){
-								collided = player.validatePosition(deltaToTest, rect);
-							}
-						}
-					}
-				}else{
-					player.x += deltaX;
-				}
-			}
-		});
+		this.x = newXPos;
 	}
 
 	validatePosition(delta, rect){
@@ -181,23 +153,32 @@ class Player {
 	}
 
 	getFloor(){
-		var floor = 0;
+		var floorRow = level.height;
 		var player = this;
-		level.forEach(function(rect){
-			if(rect.x < (player.x + player.width) && player.x < (rect.x + rect.width) && player.y <= rect.y){
-				if(floor === 0){
-					floor = rect.y - player.height;
-				}
+
+		//determine x alignment
+		var playerLeftTileLocation = Math.floor(player.x / 50);
+		var playerRightTileLocation = Math.floor((player.x + player.width) / 50);
+		var playerYAlignment = Math.ceil((player1.y + player.height) / 50);
+
+		//
+		var alignedTiles = level.tiles.filter(t => t.col === playerRightTileLocation || t.col === playerLeftTileLocation);
+
+		alignedTiles.forEach(function(t){
+			if(t.row < playerYAlignment && t.row < floorRow && t.isSolid){
+				floorRow = t.row
 			}
-		})
-		//if all else fails, put them at the bottom of the canvas
-		return floor === 0 ? canvas.height - this.height : floor;
+		});
+
+		//convert floor row to px
+		return (floorRow + 1) * 50;
+
 	}
 
 	getCeiling(){
 		var ceiling = 0;
 		var player = this;
-		level.forEach(function(rect){
+		level.tiles.forEach(function(rect){
 			if(rect.x < (player.x + player.width) && player.x < (rect.x + rect.width) && player.y >= rect.y){
 				if(ceiling === 0){
 					ceiling = rect.y + rect.height;
@@ -222,9 +203,9 @@ var updateEntities = function(){
 	});
 }
 
-var loadLevel = function(data){
-	data.forEach(function(obj){
-		entities.push(new Rectangle(obj.x, obj.y, obj.width, obj.height, obj.color));
+var loadTiles = function(){
+	level.tiles.forEach(function(tile){
+		entities.push(tile);
 	})
 }
 
@@ -240,8 +221,8 @@ function main(){
 	//create canvas
 	initCavas();
 
-	//load level
-	loadLevel(level);
+	//load tiles
+	loadTiles(level.tiles);
 
 	//create player
 	player1 = new Player(10,10);
