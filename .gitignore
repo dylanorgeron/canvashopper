@@ -47,4 +47,4 @@ Temporary Items
 .apdisk
 
 #the black hole
-./node_modules
+node_modules
