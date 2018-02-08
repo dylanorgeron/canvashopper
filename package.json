@@ -1,0 +1,22 @@
+{
+  "name": "canvashopper",
+  "version": "1.0.0",
+  "description": "html5 platformer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dylanorgeron/canvashopper.git"
+  },
+  "author": "dylan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dylanorgeron/canvashopper/issues"
+  },
+  "homepage": "https://github.com/dylanorgeron/canvashopper#readme",
+  "dependencies": {
+    "typescript": "^2.7.1"
+  }
+}
