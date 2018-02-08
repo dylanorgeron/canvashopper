@@ -46,5 +46,6 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-#the black hole
 node_modules
+.cache
+dist
