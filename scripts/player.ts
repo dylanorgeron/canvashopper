@@ -1,16 +1,19 @@
 import {canvas, canvasCTX} from './canvas'
+import {emitter} from './index'
 
 class Player {
-	constructor(x:number, y:number){
-		entities.push(this)
-		this.height = 40;
-		this.width = 15;
-		this.x = x;
-		this.y = y;
-		this.fallSpeed = 0;
-		this.jumpSpeed = 0;
-		this.canJump = true;
+	public height = 40;
+	public width = 15;
+	public fallSpeed = 0;
+	public jumpSpeed = 0;
+	public canJump = true;	
+	
+	constructor(public x: number, public y: number){
+		//draw on event 
+		emitter.on('update', this.update.bind(this))
 	}
+
+
 
 	draw(){
 		canvasCTX.fillStyle = '#000000';

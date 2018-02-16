@@ -1,23 +1,14 @@
 import {canvas, canvasCTX} from './canvas'
 
 class Tile {
-
-	w: number
-	h: number
-	col: number
-	row: number
-	x: number
-	y: number
-	isSolid: boolean
-
-	constructor(col:number, row:number){
-		this.w = 50;
-		this.h = 50;
-		this.col = col;
-		this.row = row;
-		this.x = this.col * this.w;
-		this.y = this.row * this.h;
-		this.isSolid = this.row == 9
+	public readonly w = 50
+	public readonly h = 50
+	public readonly isSolid = this.row === 9
+  
+	public x = this.col * this.w
+	public y = this.row * this.h
+  
+	constructor(public col: number, public row: number) {  
 	}
 
 	update(){

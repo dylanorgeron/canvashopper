@@ -1,72 +1,33 @@
 import {canvas, canvasCTX} from './canvas'
-import './tile'
-import './player'
+import Player from './player'
+import Tile from './tile';
+import Level from './level'
+import Keystates from './keystates';
+import EventEmitter from 'eventemitter3'
 
-//init level data
-var level = {
-	width: 15,
-	height: 10,
-	tiles: [],
-}
-
-for(var col = 0; col < level.width; col++){
-	for (var row = 0; row < level.height; row++) {
-		var tile = new Tile(col, row);
-		level.tiles.push(tile)	
-	}
-}
-
-var updateEntities = function(){
-	canvasCTX.clearRect(0, 0, canvas.width, canvas.height);
-	entities.forEach(function(entity){
-		entity.update();
-	});
-}
-
-var loadTiles = function(){
-	level.tiles.forEach(function(tile){
-		entities.push(tile);
-	})
-}
-
-//define keycodes for my own sanity
-const LeftArrow = 37;
-const UpArrow = 38;
-const RightArrow = 39;
-const DownArrow = 40;
-const Space = 32;
-
-//tracks keystates
-var keystate = {};
-
-//this tracks all entites that we may or may not need to draw
-//logic for drawing only what is onscreen will be done in the object's update method
-var entities = [];
+export const emitter = new EventEmitter();
 
 function main(){
+	const keystates = new Keystates();
+	const level = new Level(15, 10);
+	const player1 = new Player(10,10);
+	
 	//register key listeners
 	document.addEventListener("keydown", function(evt) {
-		keystate[evt.keyCode] = true;
+		keystates.setKey(evt.keyCode, true);
 	});
 	document.addEventListener("keyup", function(evt) {
-		delete keystate[evt.keyCode];
+		keystates.setKey(evt.keyCode, false);
 	});
 
-	//create canvas
-	initCavas();
-
-	//load tiles
-	loadTiles(level.tiles);
-
-	//create player
-	const player1 = new Player(10,10);
+	emitter.emit('update');
 
 	//draw each frame
 	var loop = function(){
-		updateEntities();
-		window.requestAnimationFrame(loop, canvas);
+		emitter.emit('update');
+		window.requestAnimationFrame(loop);
 	}
-	window.requestAnimationFrame(loop, canvas);
+	window.requestAnimationFrame(loop);
 }
 
 window.onload = function(){
