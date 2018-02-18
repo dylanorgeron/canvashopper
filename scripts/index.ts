@@ -3,15 +3,14 @@ import Player from './player'
 import Tile from './tile';
 import Level from './level'
 import Keystates from './keystates';
-import EventEmitter from 'eventemitter3'
+import {EventEmitter} from 'eventemitter3'
 
 export const emitter = new EventEmitter();
+export const keystates = new Keystates();
+export const level = new Level(15,10);
+export const player1 = new Player(50,300);
 
 function main(){
-	const keystates = new Keystates();
-	const level = new Level(15, 10);
-	const player1 = new Player(10,10);
-	
 	//register key listeners
 	document.addEventListener("keydown", function(evt) {
 		keystates.setKey(evt.keyCode, true);

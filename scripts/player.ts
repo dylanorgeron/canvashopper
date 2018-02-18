@@ -1,5 +1,5 @@
 import {canvas, canvasCTX} from './canvas'
-import {emitter} from './index'
+import {emitter, keystates, level} from './index'
 
 class Player {
 	public height = 40;
@@ -12,8 +12,6 @@ class Player {
 		//draw on event 
 		emitter.on('update', this.update.bind(this))
 	}
-
-
 
 	draw(){
 		canvasCTX.fillStyle = '#000000';
@@ -30,20 +28,20 @@ class Player {
 		this.canJump = currentY === this.y;
 
 		//move player based on input
-		if (keystate[RightArrow]) this.moveHorizontal(7);
-		if (keystate[LeftArrow]) this.moveHorizontal(-7);
-		if(keystate[Space] && this.canJump) this.jump();
+		if (keystates.RightArrowIsActive) this.moveHorizontal(7);
+		if (keystates.LeftArrowIsActive) this.moveHorizontal(-7);
+		if(keystates.SpaceIsActive && this.canJump) this.jump();
 
 		//all done, draw on canvas
 		this.draw();
 	}
 
-	moveHorizontal(deltaX){
+	moveHorizontal(deltaX: number){
 		var newXPos = this.x + deltaX;
 		this.x = newXPos;
 	}
 
-	validatePosition(delta, rect){
+	validatePosition(delta: number, rect){
 		var collided;
 		if(delta > 0){
 			this.x++;
@@ -86,13 +84,15 @@ class Player {
 				//slow jump by 3 with min of 0
 				this.jumpSpeed = (this.jumpSpeed - 3) > 0 ? this.jumpSpeed - 1 : 0;
 			}
-		}else if(this.y < floor){
+		}else if(this.y + this.height < floor){
 			//increase fall by 10 each frame up to 30 max
 			this.fallSpeed = this.fallSpeed > 20 ? 20 : this.fallSpeed + 2;
 			//fall with fallSpeed
 			this.y += this.fallSpeed;
-			if(this.y > floor){
+			//see if we will land on the floor next frame
+			if(this.y + this.height + this.fallSpeed + 2 > floor){
 				this.y = floor;
+				this.fallSpeed = 0;
 			}
 		}else{
 			this.fallSpeed = 0;
@@ -106,25 +106,29 @@ class Player {
 	}
 
 	getFloor(){
-		var floorRow = level.height;
-		var player = this;
+		const player = this;
+		let floorRow = level.height;
 
-		//determine x alignment
-		var playerLeftTileLocation = Math.floor(player.x / 50);
-		var playerRightTileLocation = Math.floor((player.x + player.width) / 50);
-		var playerYAlignment = Math.ceil((player1.y + player.height) / 50);
+		//tile the player's left side is in
+		const playerLeftTileLocation = Math.floor(player.x / 50);
+		//tile the player's right side is in
+		const playerRightTileLocation = Math.floor((player.x + player.width) / 50);
+		//tile the bottom of the player is in
+		const playerYAlignment = Math.ceil((player.y + player.height) / 50);
 
-		//
-		var alignedTiles = level.tiles.filter(t => t.col === playerRightTileLocation || t.col === playerLeftTileLocation);
-
-		alignedTiles.forEach(function(t){
-			if(t.row < playerYAlignment && t.row < floorRow && t.isSolid){
+		const underTiles = level.tiles.filter(t => 
+			(t.col === playerRightTileLocation || t.col === playerLeftTileLocation)
+			&& t.row === playerYAlignment + 1
+		)
+		
+		underTiles.forEach(t => {
+			if(t.isSolid){
 				floorRow = t.row
 			}
-		});
+		})
 
 		//convert floor row to px
-		return (floorRow + 1) * 50;
+		return ((floorRow - 2) * 50);
 
 	}
 
