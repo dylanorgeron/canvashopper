@@ -1,5 +1,6 @@
 import {canvas, canvasCTX} from './canvas'
 import {emitter, keystates, level} from './index'
+import Tile from './tile';
 
 class Player {
 	public height = 40;
@@ -41,7 +42,7 @@ class Player {
 		this.x = newXPos;
 	}
 
-	validatePosition(delta: number, rect){
+	validatePosition(delta: number, rect: Tile){
 		var collided;
 		if(delta > 0){
 			this.x++;
@@ -52,7 +53,7 @@ class Player {
 		if(
 			delta > 0 &&
 			(this.x + this.width) >= rect.x &&
-			(this.x + this.width) <= (rect.x + rect.width)
+			(this.x + this.width) <= (rect.x + rect.w)
 		){
 			this.x -= delta;
 			collided = true;
@@ -60,7 +61,7 @@ class Player {
 		//collsion from right
 		else if(
 			delta < 0 &&
-			this.x <= (rect.x + rect.width) &&
+			this.x <= (rect.x + rect.w) &&
 			this.x >= rect.x
 		){
 			this.x -= delta;
@@ -91,7 +92,7 @@ class Player {
 			this.y += this.fallSpeed;
 			//see if we will land on the floor next frame
 			if(this.y + this.height + this.fallSpeed + 2 > floor){
-				this.y = floor;
+				this.y = floor - this.height;
 				this.fallSpeed = 0;
 			}
 		}else{
@@ -101,7 +102,7 @@ class Player {
 
 	jump(){
 		if(this.jumpSpeed === 0){
-			this.jumpSpeed = 25;
+			this.jumpSpeed = 20;
 		}
 	}
 
@@ -118,7 +119,7 @@ class Player {
 
 		const underTiles = level.tiles.filter(t => 
 			(t.col === playerRightTileLocation || t.col === playerLeftTileLocation)
-			&& t.row === playerYAlignment + 1
+			&& t.row === playerYAlignment
 		)
 		
 		underTiles.forEach(t => {
@@ -126,9 +127,8 @@ class Player {
 				floorRow = t.row
 			}
 		})
-
 		//convert floor row to px
-		return ((floorRow - 2) * 50);
+		return ((floorRow) * 50);
 
 	}
 
@@ -136,9 +136,9 @@ class Player {
 		var ceiling = 0;
 		var player = this;
 		level.tiles.forEach(function(rect){
-			if(rect.x < (player.x + player.width) && player.x < (rect.x + rect.width) && player.y >= rect.y){
+			if(rect.x < (player.x + player.width) && player.x < (rect.x + rect.w) && player.y >= rect.y){
 				if(ceiling === 0){
-					ceiling = rect.y + rect.height;
+					ceiling = rect.y + rect.h;
 				}
 			}
 		})

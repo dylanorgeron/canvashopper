@@ -4,13 +4,11 @@ import {emitter} from './index'
 class Tile {
 	public readonly w = 50
 	public readonly h = 50
-	public readonly isSolid = this.row >= 8
   
 	public x = this.col * this.w
 	public y = this.row * this.h
-	public isAligned = false
   
-	constructor(public col: number, public row: number) {  
+	constructor(public col: number, public row: number, public isSolid: boolean) {  
 		emitter.on('update', this.update.bind(this))
 	}
 
