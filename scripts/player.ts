@@ -145,13 +145,13 @@ class Player {
 		const playerYAlignment = Math.ceil((player.y) / 50);
 
 		//get tiles above player
-		const underTiles = level.tiles.filter(t => 
+		const overTiles = level.tiles.filter(t => 
 			(t.col === playerRightTileLocation || t.col === playerLeftTileLocation)
-			&& t.row === playerYAlignment - 1
+			&& t.row < playerYAlignment - 1
 		)
 		
 		//find floor in tiles
-		underTiles.forEach(t => {
+		overTiles.forEach(t => {
 			if(t.isSolid){
 				ceilingRow = t.row
 			}
