@@ -117,11 +117,13 @@ class Player {
 		//tile the bottom of the player is in
 		const playerYAlignment = Math.ceil((player.y + player.height) / 50);
 
+		//get tiles under player
 		const underTiles = level.tiles.filter(t => 
 			(t.col === playerRightTileLocation || t.col === playerLeftTileLocation)
 			&& t.row === playerYAlignment
 		)
 		
+		//find floor in tiles
 		underTiles.forEach(t => {
 			if(t.isSolid){
 				floorRow = t.row
@@ -129,21 +131,33 @@ class Player {
 		})
 		//convert floor row to px
 		return ((floorRow) * 50);
-
 	}
 
 	getCeiling(){
-		var ceiling = 0;
-		var player = this;
-		level.tiles.forEach(function(rect){
-			if(rect.x < (player.x + player.width) && player.x < (rect.x + rect.w) && player.y >= rect.y){
-				if(ceiling === 0){
-					ceiling = rect.y + rect.h;
-				}
+		const player = this;
+		let ceilingRow = 0;
+
+		//tile the player's left side is in
+		const playerLeftTileLocation = Math.floor(player.x / 50);
+		//tile the player's right side is in
+		const playerRightTileLocation = Math.floor((player.x + player.width) / 50);
+		//tile the top of the player is in
+		const playerYAlignment = Math.ceil((player.y) / 50);
+
+		//get tiles above player
+		const underTiles = level.tiles.filter(t => 
+			(t.col === playerRightTileLocation || t.col === playerLeftTileLocation)
+			&& t.row === playerYAlignment - 1
+		)
+		
+		//find floor in tiles
+		underTiles.forEach(t => {
+			if(t.isSolid){
+				ceilingRow = t.row
 			}
 		})
-		//if all else fails, put them at the bottom of the canvas
-		return ceiling;
+		//convert floor row to px
+		return ((ceilingRow + 1) * 50);
 	}
 
 }
