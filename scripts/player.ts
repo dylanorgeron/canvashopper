@@ -37,23 +37,48 @@ class Player {
 		this.draw();
 	}
 
-	moveHorizontal(deltaX: number){
-		var newXPos = this.x + deltaX;
-		this.x = newXPos;
+	moveHorizontal(delta: number){
+		//move right
+		if(delta > 0){
+			for (let i = 1; i <= delta; i++) {
+				this.x++
+				if(!this.validatePosition(i)){
+					this.x--
+					break
+				}
+			}
+		}else{
+			for (let i = -1; i >= delta; i--) {
+				this.x--
+				if(!this.validatePosition(i)){
+					this.x++
+					break
+				}
+			}
+		}
 	}
 
-	validatePosition(delta: number, rect: Tile){
-		var collided;
+	jump(){
+		if(this.jumpSpeed === 0){
+			this.jumpSpeed = 20;
+		}
+	}
+
+	validatePosition(delta: number){
+		const player = this
+		let collided = false
+		let nearestWall
 		if(delta > 0){
-			this.x++;
+			this.x++
+			nearestWall = Math.floor((player.x + player.width) / 50)
 		}else{
-			this.x--;
+			this.x--
+			nearestWall = Math.floor((player.x) / 50)
 		}
 		//collsion from left
 		if(
 			delta > 0 &&
-			(this.x + this.width) >= rect.x &&
-			(this.x + this.width) <= (rect.x + rect.w)
+			(player.x + player.width) < nearestWall
 		){
 			this.x -= delta;
 			collided = true;
@@ -61,11 +86,12 @@ class Player {
 		//collsion from right
 		else if(
 			delta < 0 &&
-			this.x <= (rect.x + rect.w) &&
-			this.x >= rect.x
+			(player.x + player.width) > nearestWall
 		){
 			this.x -= delta;
 			collided = true;
+			console.log('collided')
+			
 		}
 		return collided;
 	}
@@ -97,12 +123,6 @@ class Player {
 			}
 		}else{
 			this.fallSpeed = 0;
-		}
-	}
-
-	jump(){
-		if(this.jumpSpeed === 0){
-			this.jumpSpeed = 20;
 		}
 	}
 

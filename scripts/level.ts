@@ -14,6 +14,9 @@ class Level {
                 if(row === 5 && col > 4 && col < 8){
                     tile.isSolid = true;
                 }
+                if(col == 5 && row > 5 && col < 8){
+                    tile.isSolid = true;
+                }
                 this.tiles.push(tile)	
             }
         }
