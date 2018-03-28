@@ -66,34 +66,27 @@ class Player {
 
 	validatePosition(delta: number){
 		const player = this
-		let collided = false
-		let nearestWall
-		if(delta > 0){
-			this.x++
-			nearestWall = Math.floor((player.x + player.width) / 50)
-		}else{
-			this.x--
-			nearestWall = Math.floor((player.x) / 50)
-		}
-		//collsion from left
-		if(
-			delta > 0 &&
-			(player.x + player.width) < nearestWall
-		){
-			this.x -= delta;
-			collided = true;
-		}
-		//collsion from right
-		else if(
-			delta < 0 &&
-			(player.x + player.width) > nearestWall
-		){
-			this.x -= delta;
-			collided = true;
-			console.log('collided')
-			
-		}
-		return collided;
+		let positionIsValid = true
+		//get all tiles player is occupying, check for collisions
+		//col the player's left side is in
+		const playerLeftAlignment = Math.floor(player.x / 50);
+		//col the player's right side is in
+		const playerRightAlignment = Math.floor((player.x + player.width) / 50);
+		//row the player's top is in
+		const playerTopAlignment = Math.floor(player.y / 50);
+		//row the player's bottom is in
+		//-1 prevents floor from stopping movement
+		const playerBottomAlignment = Math.floor((player.y + player.height - 1) / 50);
+
+		//iterate level data and see if any of the intersected tiles are solid
+		positionIsValid = level.tiles.filter(t => 
+			(t.col === playerRightAlignment || t.col === playerLeftAlignment) &&
+			(t.row === playerTopAlignment || t.row === playerBottomAlignment)
+			&& t.isSolid
+		).length === 0
+
+		//return validity of position
+		return positionIsValid;
 	}
 
 	applyGravity(){
