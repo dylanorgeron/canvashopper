@@ -1,5 +1,4 @@
-import {canvas, canvasCTX} from './canvas'
-import {emitter} from './index' 
+import {emitter, canvas} from './index' 
 
 class Tile {
 	public readonly w = 50
@@ -18,10 +17,10 @@ class Tile {
 
 	draw(){
 		var thickness = 1
-		canvasCTX.fillStyle = '#DDD'
-	  	canvasCTX.fillRect(this.x - (thickness), this.y - (thickness), this.w + (thickness * 2), this.h + (thickness * 2))
-	  	canvasCTX.fillStyle = this.isSolid ? '#aaa' : '#FFF'
-		canvasCTX.fillRect(this.x, this.y, this.w, this.h)
+		canvas.canvasCTX.fillStyle = '#DDD'
+	  	canvas.canvasCTX.fillRect(this.x - (thickness), this.y - (thickness), this.w + (thickness * 2), this.h + (thickness * 2))
+	  	canvas.canvasCTX.fillStyle = this.isSolid ? '#aaa' : '#FFF'
+		canvas.canvasCTX.fillRect(this.x, this.y, this.w, this.h)
 	}
 }
 

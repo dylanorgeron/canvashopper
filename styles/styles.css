@@ -1,9 +1,17 @@
 body{
     background: #291c1c;  
+    font-family: sans-serif;
 }
 #main-canvas{
     background: white;
     border: 1px solid #eee;
-    margin: auto;
     display: block;
+    margin: auto;
+}
+
+#debugger{
+    color: white;
+    position: absolute;
+    top: 10px;
+    left: 10px;
 }

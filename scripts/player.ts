@@ -1,5 +1,4 @@
-import {canvas, canvasCTX} from './canvas'
-import {emitter, keystates, level} from './index'
+import {emitter, keystates, level, canvas, debug} from './index'
 import Tile from './tile';
 
 class Player {
@@ -15,8 +14,8 @@ class Player {
 	}
 
 	draw(){
-		canvasCTX.fillStyle = '#000000';
-		canvasCTX.fillRect(this.x, this.y, this.width, this.height);
+		canvas.canvasCTX.fillStyle = '#000000';
+		canvas.canvasCTX.fillRect(this.x, this.y, this.width, this.height);
 	}
 
 	update(){
@@ -33,6 +32,10 @@ class Player {
 		if (keystates.LeftArrowIsActive) this.moveHorizontal(-7);
 		if(keystates.SpaceIsActive && this.canJump) this.jump();
 
+		//log player stats to debugger
+		debug.playerXPostition = this.x;
+		debug.playerYPosition = this.y;
+
 		//all done, draw on canvas
 		this.draw();
 	}
@@ -46,13 +49,22 @@ class Player {
 					this.x--
 					break
 				}
+				//set level offset to keep player centered on canvas
+				if(this.x + (this.width / 2) > canvas.width / 2){
+					level.offsetX++
+				}
 			}
+		//move left
 		}else{
 			for (let i = -1; i >= delta; i--) {
 				this.x--
 				if(!this.validatePosition(i)){
 					this.x++
 					break
+				}
+				//set level offset to keep player centered on canvas
+				if(level.offsetX > 0){
+					level.offsetX--
 				}
 			}
 		}
