@@ -7,15 +7,20 @@ class Player {
 	public fallSpeed = 0;
 	public jumpSpeed = 0;
 	public canJump = true;	
+	public xForCamera = 0;
+	public yForCamera = 0;
 	
-	constructor(public x: number, public y: number){
+	constructor(
+		public x: number, 
+		public y: number		
+	){
 		//draw on event 
 		emitter.on('update', this.update.bind(this))
 	}
 
 	draw(){
 		canvas.canvasCTX.fillStyle = '#000000';
-		canvas.canvasCTX.fillRect(this.x, this.y, this.width, this.height);
+		canvas.canvasCTX.fillRect(this.xForCamera, this.y, this.width, this.height);
 	}
 
 	update(){
@@ -32,12 +37,17 @@ class Player {
 		if (keystates.LeftArrowIsActive) this.moveHorizontal(-7);
 		if(keystates.SpaceIsActive && this.canJump) this.jump();
 
-		//log player stats to debugger
-		debug.playerXPostition = this.x;
-		debug.playerYPosition = this.y;
+		//prevent the player from moving past the halfway point of the screen
+		if(level.offsetX === 0){
+			this.xForCamera = this.x
+		}
 
 		//all done, draw on canvas
 		this.draw();
+
+		//log player stats to debugger
+		debug.playerXPostition = this.x;
+		debug.playerYPosition = this.y;
 	}
 
 	moveHorizontal(delta: number){
