@@ -10,7 +10,10 @@ class Level {
     public playerStartY = 300
 
     public tiles:Tile[] = []
-    constructor(public readonly width: number, public readonly height: number){
+    constructor(
+        public readonly width: number, 
+        public readonly height: number
+    ){
         //listen for updates
         emitter.on('update', this.update.bind(this))
         
@@ -21,7 +24,7 @@ class Level {
                 if(row >= 8){
                     tile.isSolid = true
                 }
-                if(row === 5 && col > 4 && col < 8){
+                if(row === 5 && (col % 3 === 0 || col % 4 === 0)){
                     tile.isSolid = true
                 }
                 this.tiles.push(tile)	
