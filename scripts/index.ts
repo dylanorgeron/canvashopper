@@ -9,7 +9,7 @@ import {EventEmitter} from 'eventemitter3'
 export const emitter = new EventEmitter()
 export const keystates = new Keystates()
 //init level, 15 x 10
-export const level = new Level(200,15)
+export const level = new Level(100,15)
 //init player
 export const player1 = new Player(level.playerStartX, level.playerStartY)
 export const canvas = new Canvas()

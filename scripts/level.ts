@@ -8,6 +8,7 @@ class Level {
     public offsetY = 0
     public playerStartX = 100
     public playerStartY = 300
+    public tileWidth = 50
 
     public tiles:Tile[] = []
     constructor(

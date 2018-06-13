@@ -103,9 +103,10 @@ class Player {
 		//iterate level data and see if any of the intersected tiles are solid
 		positionIsValid = level.tiles.filter(t => 
 			(t.col === playerRightAlignment || t.col === playerLeftAlignment) &&
-			(t.row === playerTopAlignment || t.row === playerBottomAlignment)
-			&& t.isSolid
-		).length === 0
+			(t.row === playerTopAlignment || t.row === playerBottomAlignment) &&
+			t.isSolid
+		).length === 0 &&
+		player.x >= 0 && player.x <= level.width * level.tiles[0].w - player.width - 1
 
 		//return validity of position
 		return positionIsValid;
