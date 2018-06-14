@@ -1,10 +1,11 @@
 import {emitter, debug} from './index'
 
 class Debug{
-    public playerXPostition = 0;
-    public playerYPosition = 0;
-    public levelXOffset = 0;
-    public levelYOffset = 0;
+    public playerXPostition = 0
+    public playerYPosition = 0
+    public levelXOffset = 0
+    public levelYOffset = 0
+    public temp = 0
 
 	constructor(){
 		//draw on event 
@@ -22,6 +23,8 @@ class Debug{
             Level X Offset: ${this.levelXOffset}
             <br>
             Level Y Offset: ${this.levelYOffset}
+            <br>
+            Distance: ${this.temp}
             `
             debuggerPanel.innerHTML = html
         }
