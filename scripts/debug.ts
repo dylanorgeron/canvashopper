@@ -24,7 +24,7 @@ class Debug{
             <br>
             Level Y Offset: ${this.levelYOffset}
             <br>
-            Distance: ${this.temp}
+            Temp var: ${this.temp}
             `
             debuggerPanel.innerHTML = html
         }

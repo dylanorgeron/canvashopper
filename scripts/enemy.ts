@@ -28,7 +28,6 @@ class Enemy{
 		this.applyGravity();
 
 		//try and get the player
-		debug.temp = Math.abs(player1.x - this.x)
 		if(Math.abs(player1.x - this.x) > 20){
 
 			if(player1.x > this.x){
