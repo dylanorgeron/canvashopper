@@ -5,7 +5,8 @@ class Debug{
     public playerYPosition = 0
     public levelXOffset = 0
     public levelYOffset = 0
-    public temp = 0
+    public weapon = ''
+    public direction = ''
 
 	constructor(){
 		//draw on event 
@@ -24,7 +25,9 @@ class Debug{
             <br>
             Level Y Offset: ${this.levelYOffset}
             <br>
-            Temp var: ${this.temp}
+            Facing: ${this.direction}
+            <br><br>
+            Weapon: ${this.weapon}
             `
             debuggerPanel.innerHTML = html
         }

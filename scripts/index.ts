@@ -1,11 +1,12 @@
 import Canvas from './canvas'
 import Debug from './debug'
-import Player from './player'
-import Tile from './tile'
-import Level from './level'
-import Keystates from './keystates'
 import EnemyLogicController from './enemy-logic-controller'
 import {EventEmitter} from 'eventemitter3'
+import Keystates from './keystates'
+import Level from './level'
+import Player from './player'
+import Tile from './tile'
+import Weapon from './weapon'
 
 export const emitter = new EventEmitter()
 export const keystates = new Keystates()
@@ -23,6 +24,12 @@ function main(){
 	document.addEventListener("keyup", function(evt) {
 		keystates.setKey(evt.keyCode, false)
 	})
+	document.addEventListener("mousedown", function(evt) {
+		player1.useItem()
+	})
+
+	//give the player a test sword
+	player1.addItem(new Weapon('Basic Sword', 'sword', 15, 5, 10, 30))
 
 	emitter.emit('update')
 

@@ -1,15 +1,22 @@
 import {emitter, keystates, level, canvas, debug} from './index'
-import Tile from './tile';
+import Tile from './tile'
+import Weapon from './weapon'
+import weapon from './weapon'
 
 class Player {
-	public height = 40;
-	public width = 15;
-	public fallSpeed = 0;
-	public jumpSpeed = 0;
-	public canJump = true;	
-	public xForCamera = 0;
-	public yForCamera = 0;
-	
+	public height = 40
+	public width = 15
+	public fallSpeed = 0
+	public jumpSpeed = 0
+	public canJump = true	
+	public xForCamera = 0
+	public yForCamera = 0
+	public weapons:Weapon[] = []
+	public direction = 'right'
+	public activeAttackHitboxWidth = 0
+	public activeAttackHitboxHeight = 0
+	public activeAttackDuration = 0
+
 	constructor(
 		public x: number, 
 		public y: number		
@@ -19,23 +26,40 @@ class Player {
 	}
 
 	draw(){
-		canvas.canvasCTX.fillStyle = '#000000';
-		canvas.canvasCTX.fillRect(this.xForCamera, this.y, this.width, this.height);
+		//draw player
+		canvas.canvasCTX.fillStyle = '#000000'
+		canvas.canvasCTX.fillRect(this.xForCamera, this.y, this.width, this.height)
+
+		//draw attack
+		if(this.activeAttackDuration > 0){
+			//decrement for this frame
+			this.activeAttackDuration--
+			//color blue
+			canvas.canvasCTX.fillStyle = '#0055ff'
+			//get the starting x pos based on left or right face
+			const hbStartX = this.direction === 'right' ? 
+				this.xForCamera + this.width : 
+				this.xForCamera - this.activeAttackHitboxWidth
+			//height
+			const hbStartY = this.y + this.height / 2
+			//draw it
+			canvas.canvasCTX.fillRect(hbStartX, hbStartY, this.activeAttackHitboxWidth, this.activeAttackHitboxHeight)
+		}
 	}
 
 	update(){
 		//pre movement y
-		var currentY = this.y;
+		var currentY = this.y
 		//it is inescapable
-		this.applyGravity();
+		this.applyGravity()
 		//if our y hasnt changed after applying gravity,
 		//we are standing on ground and can jump
 		this.canJump = currentY === this.y;
 
 		//move player based on input
-		if (keystates.RightArrowIsActive) this.moveHorizontal(7);
-		if (keystates.LeftArrowIsActive) this.moveHorizontal(-7);
-		if(keystates.SpaceIsActive && this.canJump) this.jump();
+		if (keystates.RightArrowIsActive) this.moveHorizontal(7)
+		if (keystates.LeftArrowIsActive) this.moveHorizontal(-7)
+		if(keystates.SpaceIsActive && this.canJump) this.jump()
 
 		//prevent the player from moving past the halfway point of the screen
 		if(level.offsetX === 0){
@@ -46,13 +70,16 @@ class Player {
 		this.draw();
 
 		//log player stats to debugger
-		debug.playerXPostition = this.x;
-		debug.playerYPosition = this.y;
+		debug.playerXPostition = this.x
+		debug.playerYPosition = this.y
+		debug.weapon = (this.weapons.length > 0) ? this.weapons[0].name : 'none'
+		debug.direction = this.direction
 	}
 
 	moveHorizontal(delta: number){
 		//move right
 		if(delta > 0){
+			this.direction = 'right'
 			for (let i = 1; i <= delta; i++) {
 				this.x++
 				if(!this.validatePosition(i)){
@@ -66,6 +93,7 @@ class Player {
 			}
 		//move left
 		}else{
+			this.direction = 'left'
 			for (let i = -1; i >= delta; i--) {
 				this.x--
 				if(!this.validatePosition(i)){
@@ -194,6 +222,22 @@ class Player {
 		})
 		//convert floor row to px
 		return ((ceilingRow + 1) * 50);
+	}
+
+	addItem(weaponToAdd: Weapon){
+		if(this.weapons.length === 0){
+			weaponToAdd.isActive = true
+		}
+		this.weapons.push(weaponToAdd)
+	}
+
+	useItem(){
+		//find the weapon we are using
+		const weaponToUse = this.weapons.filter(w => w.isActive)[0]
+		//set the player properties for hitbox dimensions and duration
+		this.activeAttackHitboxWidth = weaponToUse.hitboxWidth 
+		this.activeAttackHitboxHeight = weaponToUse.hitboxHeight
+		this.activeAttackDuration = weaponToUse.hitDuration
 	}
 
 }
