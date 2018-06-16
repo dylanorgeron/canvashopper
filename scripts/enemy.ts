@@ -1,6 +1,8 @@
 import {emitter, keystates, level, canvas, debug, player1} from './index'
 import player from './player';
 
+const tileSize = 25
+
 class Enemy{
 	public height = 40;
 	public width = 15;
@@ -76,14 +78,14 @@ class Enemy{
 		let positionIsValid = true
 		//get all tiles player is occupying, check for collisions
 		//col the player's left side is in
-		const playerLeftAlignment = Math.floor(player.x / 50);
+		const playerLeftAlignment = Math.floor(player.x / tileSize);
 		//col the player's right side is in
-		const playerRightAlignment = Math.floor((player.x + player.width) / 50);
+		const playerRightAlignment = Math.floor((player.x + player.width) / tileSize);
 		//row the player's top is in
-		const playerTopAlignment = Math.floor(player.y / 50);
+		const playerTopAlignment = Math.floor(player.y / tileSize);
 		//row the player's bottom is in
 		//-1 prevents floor from stopping movement
-		const playerBottomAlignment = Math.floor((player.y + player.height - 1) / 50);
+		const playerBottomAlignment = Math.floor((player.y + player.height - 1) / tileSize);
 
 		//iterate level data and see if any of the intersected tiles are solid
 		positionIsValid = level.tiles.filter(t => 
@@ -132,11 +134,11 @@ class Enemy{
 		let floorRow = level.height;
 
 		//tile the player's left side is in
-		const playerLeftTileLocation = Math.floor(player.x / 50);
+		const playerLeftTileLocation = Math.floor(player.x / tileSize);
 		//tile the player's right side is in
-		const playerRightTileLocation = Math.floor((player.x + player.width) / 50);
+		const playerRightTileLocation = Math.floor((player.x + player.width) / tileSize);
 		//tile the bottom of the player is in
-		const playerYAlignment = Math.ceil((player.y + player.height) / 50);
+		const playerYAlignment = Math.ceil((player.y + player.height) / tileSize);
 
 		//get tiles under player
 		const underTiles = level.tiles.filter(t => 
@@ -151,7 +153,7 @@ class Enemy{
 			}
 		})
 		//convert floor row to px
-		return ((floorRow) * 50);
+		return ((floorRow) * tileSize);
 	}
 
 	getCeiling(){
@@ -159,11 +161,11 @@ class Enemy{
 		let ceilingRow = 0;
 
 		//tile the player's left side is in
-		const playerLeftTileLocation = Math.floor(player.x / 50);
+		const playerLeftTileLocation = Math.floor(player.x / tileSize);
 		//tile the player's right side is in
-		const playerRightTileLocation = Math.floor((player.x + player.width) / 50);
+		const playerRightTileLocation = Math.floor((player.x + player.width) / tileSize);
 		//tile the top of the player is in
-		const playerYAlignment = Math.ceil((player.y) / 50);
+		const playerYAlignment = Math.ceil((player.y) / tileSize);
 
 		//get tiles above player
 		const overTiles = level.tiles.filter(t => 
@@ -178,7 +180,7 @@ class Enemy{
 			}
 		})
 		//convert floor row to px
-		return ((ceilingRow + 1) * 50);
+		return ((ceilingRow + 1) * tileSize);
 	}
 
 }

@@ -10,7 +10,7 @@ import Weapon from './weapon'
 
 export const emitter = new EventEmitter()
 export const keystates = new Keystates()
-export const level = new Level(100,15)
+export const level = new Level(100,25)
 export const player1 = new Player(level.playerStartX, level.playerStartY)
 export const enemyLogicController = new EnemyLogicController()
 export const canvas = new Canvas()

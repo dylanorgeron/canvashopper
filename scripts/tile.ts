@@ -1,8 +1,8 @@
 import {emitter, canvas, level} from './index' 
 
 class Tile {
-	public readonly w = 50
-	public readonly h = 50
+	public readonly w = 25
+	public readonly h = 25
   
 	public x = this.col * this.w
 	public y = this.row * this.h

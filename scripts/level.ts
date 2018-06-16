@@ -8,7 +8,6 @@ class Level {
     public offsetY = 0
     public playerStartX = 100
     public playerStartY = 300
-    public tileWidth = 50
 
     public tiles:Tile[] = []
     constructor(
@@ -22,13 +21,13 @@ class Level {
         for(let col = 0; col < this.width; col++){
             for (let row = 0; row < this.height; row++) {
                 const tile = new Tile(col, row, false)
-                if(row >= 8){
+                if(row >= 14){
                     tile.isSolid = true
                 }
-                if(row === 5 && (col % 3 === 0 || col % 4 === 0)){
+                if(row === 9 && (col % 3 === 0 || col % 4 === 0)){
                     tile.isSolid = true
                 }
-                if(col === 5 && row === 7) tile.isSolid = true
+                if(col === 9 && row === 13) tile.isSolid = true
                 this.tiles.push(tile)	
             }
         }
