@@ -32,10 +32,10 @@ class Enemy{
 
 			if(player1.x > this.x){
 				//move right
-				this.moveHorizontal(3)
+				this.moveHorizontal(1)
 			}else{
 				//move right
-				this.moveHorizontal(-3)
+				this.moveHorizontal(-1)
 			}
 		}
 
