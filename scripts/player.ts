@@ -1,7 +1,6 @@
-import {emitter, keystates, level, canvas, debug} from './index'
+import {emitter, keystates, level, canvas, debug, enemyLogicController} from './index'
 import Tile from './tile'
 import Weapon from './weapon'
-import weapon from './weapon'
 
 const tileSize = 25
 
@@ -73,6 +72,11 @@ class Player {
 			this.xForCamera = this.x
 		}
 
+		//check if we are attacking
+		if(this.activeAttackDuration > 0){
+			this.applyHitbox()
+		}
+
 		//all done, draw on canvas
 		this.draw();
 
@@ -86,7 +90,7 @@ class Player {
 	moveHorizontal(delta: number){
 		//move right
 		if(delta > 0){
-			this.direction = 'right'
+			if(this.activeAttackDuration === 0) this.direction = 'right'
 			for (let i = 1; i <= delta; i++) {
 				this.x++
 				if(!this.validatePosition(i)){
@@ -100,7 +104,7 @@ class Player {
 			}
 		//move left
 		}else{
-			this.direction = 'left'
+			if(this.activeAttackDuration === 0) this.direction = 'left'
 			for (let i = -1; i >= delta; i--) {
 				this.x--
 				if(!this.validatePosition(i)){
@@ -117,7 +121,7 @@ class Player {
 
 	jump(){
 		if(this.jumpSpeed === 0){
-			this.jumpSpeed = 20;
+			this.jumpSpeed = 16;
 		}
 	}
 
@@ -245,6 +249,46 @@ class Player {
 		this.activeAttackHitboxWidth = weaponToUse.hitboxWidth 
 		this.activeAttackHitboxHeight = weaponToUse.hitboxHeight
 		this.activeAttackDuration = weaponToUse.hitDuration
+	}
+
+	applyHitbox(){
+		const weaponToUse = this.weapons.filter(w => w.isActive)[0]
+		//hitbox ranges
+		const hitboxYRange: number[] = []
+		const hitboxYStart = this.y + this.height / 2
+		const hitboxYEnd = this.activeAttackHitboxHeight + this.y + this.height / 2
+		for(let i = hitboxYStart; i <= hitboxYEnd; i++){
+			hitboxYRange.push(i)
+		}
+		const hitboxX = this.direction === 'right' ? 
+			this.xForCamera + this.width : 
+			this.xForCamera - this.activeAttackHitboxWidth
+		const hitboxXRange: number[] = []
+		for(
+			let i = hitboxX + level.offsetX; 
+			i <= hitboxX + this.activeAttackHitboxWidth + level.offsetX; 
+			i++
+		){
+			hitboxXRange.push(i)
+		}
+		
+		//iterate the spawned enemeies, check if attack hitbox intersects any
+		const intersectedEnemies = enemyLogicController.enemies.forEach(e => {
+			//enemy ranges
+			const enemyYRange: number[] = []
+			for(let i = e.y; i <= e.y + e.height; i++){
+				enemyYRange.push(i)
+			}
+			const enemyXRange: number[] = []
+			for(let i = e.x; i <= e.x + e.width; i++){
+				enemyXRange.push(i)
+			}
+			const isYAligned = hitboxYRange.filter(y => -1 !== enemyYRange.indexOf(y)).length > 0;
+			const isXAligned = hitboxXRange.filter(x => -1 !== enemyXRange.indexOf(x)).length > 0;
+			if(isYAligned && isXAligned){
+				e.applyHit(weaponToUse)
+			}
+		})
 	}
 
 }

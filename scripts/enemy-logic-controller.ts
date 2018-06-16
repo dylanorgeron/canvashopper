@@ -1,6 +1,8 @@
 import {emitter, player1, level} from './index'
 import Enemy from './enemy'
 
+const tileSize = 25
+
 class EnemyLogicController{
     public enemies:Enemy[] = []
     constructor(){
@@ -18,7 +20,7 @@ class EnemyLogicController{
         if(spawnPosition < 0){
             spawnPosition = player1.x + 800
         }
-        if(spawnPosition > level.width * level.tileWidth){
+        if(spawnPosition > level.width * tileSize){
             spawnPosition = player1.x - 800
         }
         this.enemies.push(new Enemy(spawnPosition, player1.y))

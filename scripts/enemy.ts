@@ -1,5 +1,7 @@
 import {emitter, keystates, level, canvas, debug, player1} from './index'
 import player from './player';
+import Weapon from './weapon'
+import weapon from './weapon';
 
 const tileSize = 25
 
@@ -181,6 +183,10 @@ class Enemy{
 		})
 		//convert floor row to px
 		return ((ceilingRow + 1) * tileSize);
+	}
+
+	applyHit(weaponToUse: Weapon){
+		console.log(weaponToUse)
 	}
 
 }
