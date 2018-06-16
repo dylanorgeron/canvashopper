@@ -186,7 +186,9 @@ class Enemy{
 	}
 
 	applyHit(weaponToUse: Weapon){
-		console.log(weaponToUse)
+		canvas.canvasCTX.fillStyle = '#ff5500';
+		canvas.canvasCTX.font="20px Georgia";
+		canvas.canvasCTX.fillText(weaponToUse.damage.toString(), this.x - level.offsetX, this.y - 30);
 	}
 
 }
