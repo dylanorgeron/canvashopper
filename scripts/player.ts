@@ -5,6 +5,7 @@ import Weapon from './weapon'
 const tileSize = 25
 
 class Player {
+	public id = 1
 	public height = 40
 	public width = 15
 	public fallSpeed = 0
@@ -17,6 +18,7 @@ class Player {
 	public activeAttackHitboxWidth = 0
 	public activeAttackHitboxHeight = 0
 	public activeAttackDuration = 0
+	public enemiesHit:number[] = []
 
 	constructor(
 		public x: number, 
@@ -75,6 +77,11 @@ class Player {
 		//check if we are attacking
 		if(this.activeAttackDuration > 0){
 			this.applyHitbox()
+		}
+
+		//decrement cooldowns for hitting enemies
+		if(this.activeAttackDuration === 0){
+			this.enemiesHit = []
 		}
 
 		//all done, draw on canvas
@@ -285,7 +292,11 @@ class Player {
 			}
 			const isYAligned = hitboxYRange.filter(y => -1 !== enemyYRange.indexOf(y)).length > 0;
 			const isXAligned = hitboxXRange.filter(x => -1 !== enemyXRange.indexOf(x)).length > 0;
-			if(isYAligned && isXAligned){
+			
+			const enemyCanBeHit = this.enemiesHit.indexOf(e.id) === 0
+
+			if(isYAligned && isXAligned && enemyCanBeHit){
+				this.enemiesHit.push(e.id)
 				e.applyHit(weaponToUse)
 			}
 		})

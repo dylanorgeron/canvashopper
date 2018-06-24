@@ -1,21 +1,34 @@
-import {emitter, keystates, level, canvas, debug, player1} from './index'
-import player from './player';
+import {
+	emitter,
+	keystates,
+	level,
+	canvas,
+	debug,
+	player1,
+	popupLogicController,
+	enemyLogicController
+} from './index'
 import Weapon from './weapon'
-import weapon from './weapon';
 
 const tileSize = 25
 
 class Enemy{
+	public id = 0;
 	public height = 40;
 	public width = 15;
 	public fallSpeed = 0;
 	public jumpSpeed = 0;
-	public canJump = true;	
+	public canJump = true;
+	public hitPoints = 50;
 	
 	constructor(
 		public x: number, 
 		public y: number		
 	){
+		//set the id to the next number
+		this.id = enemyLogicController.enemies.length ? 
+			enemyLogicController.enemies[enemyLogicController.enemies.length].id + 1 : 
+			0
 		//draw on event 
 		emitter.on('update', this.update.bind(this))
     }
@@ -186,9 +199,15 @@ class Enemy{
 	}
 
 	applyHit(weaponToUse: Weapon){
-		canvas.canvasCTX.fillStyle = '#ff5500';
-		canvas.canvasCTX.font="20px Georgia";
-		canvas.canvasCTX.fillText(weaponToUse.damage.toString(), this.x - level.offsetX, this.y - 30);
+		//logic for decrementing hitpoints
+		const damageTaken = weaponToUse.damage
+		this.hitPoints -= damageTaken
+
+		popupLogicController.addPopup(
+			weaponToUse.damage.toString(),
+			this.x - level.offsetX, 
+			this.y - 30
+		)
 	}
 
 }
