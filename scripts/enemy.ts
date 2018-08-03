@@ -1,9 +1,7 @@
 import {
 	emitter,
-	keystates,
 	level,
 	canvas,
-	debug,
 	player1,
 	popupLogicController,
 	enemyLogicController
@@ -20,6 +18,7 @@ class Enemy{
 	public jumpSpeed = 0;
 	public canJump = true;
 	public hitPoints = 50;
+	public maxHitPoints = 50;
 	
 	constructor(
 		public x: number, 
@@ -35,10 +34,15 @@ class Enemy{
     
 	draw(){
 		canvas.canvasCTX.fillStyle = '#ff0000';
+        canvas.canvasCTX.font="14px Arial"
 		canvas.canvasCTX.fillRect(this.x - level.offsetX, this.y, this.width, this.height);
+        canvas.canvasCTX.fillText(`HP: ${this.hitPoints}/${this.maxHitPoints}`, this.x - level.offsetX - 25, this.y - 10)
 	}
 
     update(){
+		//TODO optimize this
+		if(this.hitPoints <= 0) return
+
 		//pre movement y
 		var currentY = this.y;
 		//it is inescapable
@@ -208,8 +212,11 @@ class Enemy{
 			this.x - level.offsetX, 
 			this.y - 30
 		)
+		if(this.hitPoints <= 0){
+			const index = enemyLogicController.enemies.findIndex(e => e.id == this.id)
+			enemyLogicController.enemies.splice(index, 1)
+		}
 	}
-
 }
 
 export default Enemy

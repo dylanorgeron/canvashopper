@@ -3,7 +3,8 @@ import { canvas } from ".";
 class Popup{
     public xVelocity = 1
     public yVelocity = -1
-    public color = '#000000'
+    public color = '255, 255, 255'
+    public alpha = 1
     public duration = 20
 
     constructor(
@@ -16,15 +17,16 @@ class Popup{
 
     update(){
         this.duration--
-        this.x += this.xVelocity
-        this.y += this.yVelocity
+        if(this.duration > 10){
+            this.x += this.xVelocity
+            this.y += this.yVelocity
+        }
         this.draw()
     }
 
     draw(){
-        canvas.canvasCTX.fillStyle = this.color;
-		canvas.canvasCTX.font="20px Georgia";
-		canvas.canvasCTX.fillText(this.text, this.x, this.y);
+        canvas.canvasCTX.fillStyle = this.color
+        canvas.canvasCTX.fillText(this.text, this.x, this.y)
     }
 }
 

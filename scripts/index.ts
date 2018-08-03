@@ -30,7 +30,7 @@ function main(){
 	})
 
 	//give the player a test sword
-	player1.addItem(new Weapon('Basic Sword', 'sword', 15, 5, 10, 30))
+	player1.addItem(new Weapon('Basic Sword', 'sword', 15, 25, 10, 30))
 
 	emitter.emit('update')
 
