@@ -293,7 +293,7 @@ class Player {
 			const isYAligned = hitboxYRange.filter(y => -1 !== enemyYRange.indexOf(y)).length > 0;
 			const isXAligned = hitboxXRange.filter(x => -1 !== enemyXRange.indexOf(x)).length > 0;
 			
-			const enemyCanBeHit = this.enemiesHit.indexOf(e.id) === 0
+			const enemyCanBeHit = this.enemiesHit.indexOf(e.id) === -1
 
 			if(isYAligned && isXAligned && enemyCanBeHit){
 				this.enemiesHit.push(e.id)
