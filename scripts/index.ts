@@ -5,8 +5,10 @@ import {EventEmitter} from 'eventemitter3'
 import Keystates from './keystates'
 import Level from './level'
 import Player from './player'
-import Weapon from './weapon'
 import PopupLogicController from './popup-logic-controller.';
+
+import Sword from './weapons/sword'
+import Bow from './weapons/bow'
 
 export const emitter = new EventEmitter()
 export const keystates = new Keystates()
@@ -30,7 +32,7 @@ function main(){
 	})
 
 	//give the player a test sword
-	player1.addItem(new Weapon('Basic Sword', 'sword', 15, 25, 10, 30))
+	player1.addItem(new Bow())
 
 	emitter.emit('update')
 

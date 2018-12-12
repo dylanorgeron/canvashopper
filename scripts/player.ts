@@ -1,6 +1,6 @@
 import {emitter, keystates, level, canvas, debug, enemyLogicController} from './index'
 import Tile from './tile'
-import Weapon from './weapon'
+import Weapon from './weapons/weapon'
 
 const tileSize = 25
 
@@ -252,6 +252,7 @@ class Player {
 	useItem(){
 		//find the weapon we are using
 		const weaponToUse = this.weapons.filter(w => w.isActive)[0]
+		weaponToUse.attack()
 		//set the player properties for hitbox dimensions and duration
 		this.activeAttackHitboxWidth = weaponToUse.hitboxWidth 
 		this.activeAttackHitboxHeight = weaponToUse.hitboxHeight

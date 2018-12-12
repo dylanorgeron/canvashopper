@@ -6,7 +6,7 @@ import {
 	popupLogicController,
 	enemyLogicController
 } from './index'
-import Weapon from './weapon'
+import Weapon from './weapons/weapon'
 
 const tileSize = 25
 
