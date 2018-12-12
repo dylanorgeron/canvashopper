@@ -208,7 +208,7 @@ class Enemy {
 
 		popupLogicController.addPopup(
 			damage.toString(),
-			this.x - level.offsetX,
+			this.x,
 			this.y - 30
 		)
 		if (this.hitPoints <= 0) {

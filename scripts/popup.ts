@@ -1,4 +1,4 @@
-import { canvas } from ".";
+import { canvas, level } from ".";
 
 class Popup{
     public xVelocity = 1
@@ -12,7 +12,6 @@ class Popup{
         public x: number,
         public y: number
     ){
-
     }
 
     update(){
@@ -26,7 +25,7 @@ class Popup{
 
     draw(){
         canvas.canvasCTX.fillStyle = this.color
-        canvas.canvasCTX.fillText(this.text, this.x, this.y)
+        canvas.canvasCTX.fillText(this.text, this.x - level.offsetX, this.y)
     }
 }
 
