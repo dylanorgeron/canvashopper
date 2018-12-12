@@ -91,7 +91,7 @@ class Sword extends Weapon {
 
                 if (isYAligned && isXAligned && enemyCanBeHit) {
                     this.enemiesHit.push(e.id)
-                    e.applyHit(this)
+                    e.applyHit(this.damage)
                 }
             })
             this.draw()

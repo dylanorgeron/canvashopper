@@ -5,17 +5,21 @@ const tileSize = 25
 
 class EnemyLogicController{
     public enemies:Enemy[] = []
+    public cooldown = 0
+    public spawnDelay = 60
     constructor(){
         emitter.on('update', this.update.bind(this))
     }
 
     update(){
-        if(this.enemies.length == 0){
+        if(this.cooldown > 0) this.cooldown--
+        if(this.enemies.length < 5 && this.cooldown == 0){
             this.spawnEnemy()
-        }        
+        } 
     }
 
     spawnEnemy(){
+        this.cooldown = this.spawnDelay
         let spawnPosition =  Math.floor(Math.random() * 11) > 5 ? player1.x + 800 : player1.x - 800
         if(spawnPosition < 0){
             spawnPosition = player1.x + 800

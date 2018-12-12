@@ -10,38 +10,38 @@ import Weapon from './weapons/weapon'
 
 const tileSize = 25
 
-class Enemy{
-	public id = 0;
-	public height = 40;
-	public width = 15;
-	public fallSpeed = 0;
-	public jumpSpeed = 0;
-	public canJump = true;
-	public hitPoints = 50;
-	public maxHitPoints = 50;
-	
+class Enemy {
+	public id = 0
+	public height = 40
+	public width = 15
+	public fallSpeed = 0
+	public jumpSpeed = 0
+	public canJump = true
+	public hitPoints = 50
+	public maxHitPoints = 50
+	public moveSpeed = Math.floor(Math.random() * 3) + 1
 	constructor(
-		public x: number, 
-		public y: number		
-	){
+		public x: number,
+		public y: number
+	) {
 		//set the id to the next number
-		this.id = enemyLogicController.enemies.length ? 
-			enemyLogicController.enemies[enemyLogicController.enemies.length].id + 1 : 
+		this.id = enemyLogicController.enemies.length ?
+			enemyLogicController.enemies[enemyLogicController.enemies.length-1].id + 1 :
 			0
 		//draw on event 
 		emitter.on('update', this.update.bind(this))
-    }
-    
-	draw(){
-		canvas.canvasCTX.fillStyle = '#ff0000';
-        canvas.canvasCTX.font="14px Arial"
-		canvas.canvasCTX.fillRect(this.x - level.offsetX, this.y, this.width, this.height);
-        canvas.canvasCTX.fillText(`HP: ${this.hitPoints}/${this.maxHitPoints}`, this.x - level.offsetX - 25, this.y - 10)
 	}
 
-    update(){
+	draw() {
+		canvas.canvasCTX.fillStyle = '#ff0000';
+		canvas.canvasCTX.font = "14px Arial"
+		canvas.canvasCTX.fillRect(this.x - level.offsetX, this.y, this.width, this.height);
+		canvas.canvasCTX.fillText(`HP: ${this.hitPoints}/${this.maxHitPoints}`, this.x - level.offsetX - 25, this.y - 10)
+	}
+
+	update() {
 		//TODO optimize this
-		if(this.hitPoints <= 0) return
+		if (this.hitPoints <= 0) return
 
 		//pre movement y
 		var currentY = this.y;
@@ -49,14 +49,14 @@ class Enemy{
 		this.applyGravity();
 
 		//try and get the player
-		if(Math.abs(player1.x - this.x) > 20){
+		if (Math.abs(player1.x - this.x) > 20) {
 
-			if(player1.x > this.x){
+			if (player1.x > this.x) {
 				//move right
-				this.moveHorizontal(1)
-			}else{
+				this.moveHorizontal(this.moveSpeed)
+			} else {
 				//move right
-				this.moveHorizontal(-1)
+				this.moveHorizontal(this.moveSpeed * -1)
 			}
 		}
 
@@ -64,21 +64,21 @@ class Enemy{
 		this.draw();
 	}
 
-	moveHorizontal(delta: number){
+	moveHorizontal(delta: number) {
 		//move right
-		if(delta > 0){
+		if (delta > 0) {
 			for (let i = 1; i <= delta; i++) {
 				this.x++
-				if(!this.validatePosition(i)){
+				if (!this.validatePosition(i)) {
 					this.x--
 					break
 				}
 			}
-		//move left
-		}else{
+			//move left
+		} else {
 			for (let i = -1; i >= delta; i--) {
 				this.x--
-				if(!this.validatePosition(i)){
+				if (!this.validatePosition(i)) {
 					this.x++
 					break
 				}
@@ -86,13 +86,13 @@ class Enemy{
 		}
 	}
 
-	jump(){
-		if(this.jumpSpeed === 0){
+	jump() {
+		if (this.jumpSpeed === 0) {
 			this.jumpSpeed = 20;
 		}
 	}
 
-	validatePosition(delta: number){
+	validatePosition(delta: number) {
 		const player = this
 		let positionIsValid = true
 		//get all tiles player is occupying, check for collisions
@@ -107,48 +107,48 @@ class Enemy{
 		const playerBottomAlignment = Math.floor((player.y + player.height - 1) / tileSize);
 
 		//iterate level data and see if any of the intersected tiles are solid
-		positionIsValid = level.tiles.filter(t => 
+		positionIsValid = level.tiles.filter(t =>
 			(t.col === playerRightAlignment || t.col === playerLeftAlignment) &&
 			(t.row === playerTopAlignment || t.row === playerBottomAlignment) &&
 			t.isSolid
 		).length === 0 &&
-		player.x >= 0 && player.x <= level.width * level.tiles[0].w - player.width - 1
+			player.x >= 0 && player.x <= level.width * level.tiles[0].w - player.width - 1
 
 		//return validity of position
 		return positionIsValid;
 	}
 
-	applyGravity(){
+	applyGravity() {
 		//this will change as we fall
 		//we need to know what it is at the start of the fall
 		var floor = this.getFloor();
 		var ceiling = this.getCeiling();
 		//check if we need to fall
-		if(this.jumpSpeed !== 0){
-			if((this.y - this.jumpSpeed) <= ceiling){
+		if (this.jumpSpeed !== 0) {
+			if ((this.y - this.jumpSpeed) <= ceiling) {
 				this.jumpSpeed = 0;
 				this.y = ceiling;
-			}else{
+			} else {
 				this.y -= this.jumpSpeed;
 				//slow jump by 3 with min of 0
 				this.jumpSpeed = (this.jumpSpeed - 3) > 0 ? this.jumpSpeed - 1 : 0;
 			}
-		}else if(this.y + this.height < floor){
+		} else if (this.y + this.height < floor) {
 			//increase fall by 10 each frame up to 30 max
 			this.fallSpeed = this.fallSpeed > 20 ? 20 : this.fallSpeed + 2;
 			//fall with fallSpeed
 			this.y += this.fallSpeed;
 			//see if we will land on the floor next frame
-			if(this.y + this.height + this.fallSpeed + 2 > floor){
+			if (this.y + this.height + this.fallSpeed + 2 > floor) {
 				this.y = floor - this.height;
 				this.fallSpeed = 0;
 			}
-		}else{
+		} else {
 			this.fallSpeed = 0;
 		}
 	}
 
-	getFloor(){
+	getFloor() {
 		const player = this;
 		let floorRow = level.height;
 
@@ -160,14 +160,14 @@ class Enemy{
 		const playerYAlignment = Math.ceil((player.y + player.height) / tileSize);
 
 		//get tiles under player
-		const underTiles = level.tiles.filter(t => 
+		const underTiles = level.tiles.filter(t =>
 			(t.col === playerRightTileLocation || t.col === playerLeftTileLocation)
 			&& t.row === playerYAlignment
 		)
-		
+
 		//find floor in tiles
 		underTiles.forEach(t => {
-			if(t.isSolid){
+			if (t.isSolid) {
 				floorRow = t.row
 			}
 		})
@@ -175,7 +175,7 @@ class Enemy{
 		return ((floorRow) * tileSize);
 	}
 
-	getCeiling(){
+	getCeiling() {
 		const player = this;
 		let ceilingRow = 0;
 
@@ -187,14 +187,14 @@ class Enemy{
 		const playerYAlignment = Math.ceil((player.y) / tileSize);
 
 		//get tiles above player
-		const overTiles = level.tiles.filter(t => 
+		const overTiles = level.tiles.filter(t =>
 			(t.col === playerRightTileLocation || t.col === playerLeftTileLocation)
 			&& t.row < playerYAlignment - 1
 		)
-		
+
 		//find floor in tiles
 		overTiles.forEach(t => {
-			if(t.isSolid){
+			if (t.isSolid) {
 				ceilingRow = t.row
 			}
 		})
@@ -202,16 +202,16 @@ class Enemy{
 		return ((ceilingRow + 1) * tileSize);
 	}
 
-	applyHit(damage: number){
+	applyHit(damage: number) {
 		//logic for decrementing hitpoints
 		this.hitPoints -= damage
 
 		popupLogicController.addPopup(
 			damage.toString(),
-			this.x - level.offsetX, 
+			this.x - level.offsetX,
 			this.y - 30
 		)
-		if(this.hitPoints <= 0){
+		if (this.hitPoints <= 0) {
 			const index = enemyLogicController.enemies.findIndex(e => e.id == this.id)
 			enemyLogicController.enemies.splice(index, 1)
 		}

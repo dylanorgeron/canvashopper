@@ -19,7 +19,7 @@ class Bow extends Weapon {
             //damage
             25,
             //attack duration
-            60,
+            10,
             //cooldown between use
             0,
             //hitbox width
