@@ -1,9 +1,14 @@
+import Player from "../player";
+
 class Weapon{
     constructor(
+    public player: Player,
     public isActive: boolean,
     public name: string,
     public type: string,
     public damage: number,
+    public attackDuration: number,
+    public cooldown: number,
     public hitboxWidth: number,
     public hitboxHeight: number,
     public hitDuration: number,
@@ -12,7 +17,7 @@ class Weapon{
     public relativeToPlayer: boolean
     ){}
 
-    attack(){
+    use(){
         
     }
 }

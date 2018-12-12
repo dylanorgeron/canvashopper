@@ -74,11 +74,6 @@ class Player {
 			this.xForCamera = this.x
 		}
 
-		//check if we are attacking
-		if(this.activeAttackDuration > 0){
-			this.applyHitbox()
-		}
-
 		//decrement cooldowns for hitting enemies
 		if(this.activeAttackDuration === 0){
 			this.enemiesHit = []
@@ -250,59 +245,8 @@ class Player {
 	}
 
 	useItem(){
-		//find the weapon we are using
-		const weaponToUse = this.weapons.filter(w => w.isActive)[0]
-		weaponToUse.attack()
-		//set the player properties for hitbox dimensions and duration
-		this.activeAttackHitboxWidth = weaponToUse.hitboxWidth 
-		this.activeAttackHitboxHeight = weaponToUse.hitboxHeight
-		this.activeAttackDuration = weaponToUse.hitDuration
+		this.weapons.filter(w => w.isActive)[0].use()
 	}
-
-	applyHitbox(){
-		const weaponToUse = this.weapons.filter(w => w.isActive)[0]
-		//hitbox ranges
-		const hitboxYRange: number[] = []
-		const hitboxYStart = this.y + this.height / 2
-		const hitboxYEnd = this.activeAttackHitboxHeight + this.y + this.height / 2
-		for(let i = hitboxYStart; i <= hitboxYEnd; i++){
-			hitboxYRange.push(i)
-		}
-		const hitboxX = this.direction === 'right' ? 
-			this.xForCamera + this.width : 
-			this.xForCamera - this.activeAttackHitboxWidth
-		const hitboxXRange: number[] = []
-		for(
-			let i = hitboxX + level.offsetX; 
-			i <= hitboxX + this.activeAttackHitboxWidth + level.offsetX; 
-			i++
-		){
-			hitboxXRange.push(i)
-		}
-		
-		//iterate the spawned enemeies, check if attack hitbox intersects any
-		const intersectedEnemies = enemyLogicController.enemies.forEach(e => {
-			//enemy ranges
-			const enemyYRange: number[] = []
-			for(let i = e.y; i <= e.y + e.height; i++){
-				enemyYRange.push(i)
-			}
-			const enemyXRange: number[] = []
-			for(let i = e.x; i <= e.x + e.width; i++){
-				enemyXRange.push(i)
-			}
-			const isYAligned = hitboxYRange.filter(y => -1 !== enemyYRange.indexOf(y)).length > 0;
-			const isXAligned = hitboxXRange.filter(x => -1 !== enemyXRange.indexOf(x)).length > 0;
-			
-			const enemyCanBeHit = this.enemiesHit.indexOf(e.id) === -1
-
-			if(isYAligned && isXAligned && enemyCanBeHit){
-				this.enemiesHit.push(e.id)
-				e.applyHit(weaponToUse)
-			}
-		})
-	}
-
 }
 
 export default Player

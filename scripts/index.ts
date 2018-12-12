@@ -32,7 +32,7 @@ function main(){
 	})
 
 	//give the player a test sword
-	player1.addItem(new Bow())
+	player1.addItem(new Sword(player1))
 
 	emitter.emit('update')
 
