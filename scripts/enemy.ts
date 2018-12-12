@@ -202,13 +202,12 @@ class Enemy{
 		return ((ceilingRow + 1) * tileSize);
 	}
 
-	applyHit(weaponToUse: Weapon){
+	applyHit(damage: number){
 		//logic for decrementing hitpoints
-		const damageTaken = weaponToUse.damage
-		this.hitPoints -= damageTaken
+		this.hitPoints -= damage
 
 		popupLogicController.addPopup(
-			weaponToUse.damage.toString(),
+			damage.toString(),
 			this.x - level.offsetX, 
 			this.y - 30
 		)
