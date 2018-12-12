@@ -32,27 +32,6 @@ class Player {
 		//draw player
 		canvas.canvasCTX.fillStyle = '#000000'
 		canvas.canvasCTX.fillRect(this.xForCamera, this.y, this.width, this.height)
-
-		//draw attack
-		if(this.activeAttackDuration > 0){
-			//decrement for this frame
-			this.activeAttackDuration--
-			//color blue
-			canvas.canvasCTX.fillStyle = '#0055ff'
-			//get the starting x pos based on left or right face
-			const hbStartX = this.direction === 'right' ? 
-				this.xForCamera + this.width : 
-				this.xForCamera - this.activeAttackHitboxWidth
-			//height
-			const hbStartY = this.y + this.height / 2
-			//draw it
-			canvas.canvasCTX.fillRect(
-				hbStartX, 
-				hbStartY, 
-				this.activeAttackHitboxWidth, 
-				this.activeAttackHitboxHeight
-			)
-		}
 	}
 
 	update(){
@@ -72,11 +51,6 @@ class Player {
 		//prevent the player from moving past the halfway point of the screen
 		if(level.offsetX === 0){
 			this.xForCamera = this.x
-		}
-
-		//decrement cooldowns for hitting enemies
-		if(this.activeAttackDuration === 0){
-			this.enemiesHit = []
 		}
 
 		//all done, draw on canvas

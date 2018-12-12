@@ -34,7 +34,6 @@ class Sword extends Weapon {
     }
 
     draw() {
-        console.log('drawing attack')
         //decrement for this frame
         this.cooldown--
         //color blue
@@ -102,8 +101,6 @@ class Sword extends Weapon {
     }
 
     use() {
-        console.log('attacking with sword')
-        console.log(this.player)
         this.cooldown = this.attackDuration
     }
 }
