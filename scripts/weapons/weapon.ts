@@ -17,7 +17,7 @@ class Weapon{
     public relativeToPlayer: boolean
     ){}
 
-    use(){
+    use(evt: MouseEvent){
         
     }
 }

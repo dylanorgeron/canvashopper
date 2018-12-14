@@ -60,11 +60,13 @@ class Bow extends Weapon {
         }
     }
 
-    use() {
+    use(evt: MouseEvent) {
         if(this.cooldown == 0){
-            console.log('firing bow')
+            //calc slope
+            const slope = (this.player.yForCamera - evt.clientY) / (this.player.xForCamera - evt.clientX)
+            console.log('firing bow, slope of ' + slope)
             this.cooldown = this.attackDuration
-            new Arrow(this.player, this.damage)
+            new Arrow(this.player, this.damage, slope)
         }
     }
 }

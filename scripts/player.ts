@@ -218,8 +218,8 @@ class Player {
 		this.weapons.push(weaponToAdd)
 	}
 
-	useItem(){
-		this.weapons.filter(w => w.isActive)[0].use()
+	useItem(evt: MouseEvent){
+		this.weapons.filter(w => w.isActive)[0].use(evt)
 	}
 }
 

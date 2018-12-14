@@ -28,7 +28,7 @@ function main(){
 		keystates.setKey(evt.keyCode, false)
 	})
 	document.addEventListener("mousedown", function(evt) {
-		player1.useItem()
+		player1.useItem(evt: MouseEvent)
 	})
 
 	//give the player a test sword
