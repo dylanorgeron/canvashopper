@@ -62,9 +62,11 @@ class Bow extends Weapon {
 
     use(evt: MouseEvent) {
         if(this.cooldown == 0){
+            //transform click coords into coords relative to the canvas
+            var clickY = evt.clientY - canvas.canvasElement.offsetTop
+            var clickX = evt.clientX - canvas.canvasElement.offsetLeft
             //calc slope
-            const slope = (this.player.yForCamera - evt.clientY) / (this.player.xForCamera - evt.clientX)
-            console.log('firing bow, slope of ' + slope)
+            const slope = (this.player.y - clickY) / (this.player.xForCamera - clickX)
             this.cooldown = this.attackDuration
             new Arrow(this.player, this.damage, slope)
         }
