@@ -78,9 +78,7 @@ class Bow extends Weapon {
             //calc velocities
             var yVelocity = Math.round(this.missileSpeed * Math.sin(angle))
             var xVelocity = Math.round(this.missileSpeed * Math.cos(angle))
-
-            console.log("y velocity: " + yVelocity)
-            console.log("x velocity: " + xVelocity)
+            //send it
             new Arrow(this.player, this.damage, xVelocity, yVelocity)
         }
     }

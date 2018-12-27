@@ -13,7 +13,7 @@ class EnemyLogicController{
 
     update(){
         if(this.cooldown > 0) this.cooldown--
-        if(this.enemies.length < 5 && this.cooldown == 0){
+        if(this.enemies.length < 0 && this.cooldown == 0){
             this.spawnEnemy()
         } 
     }
