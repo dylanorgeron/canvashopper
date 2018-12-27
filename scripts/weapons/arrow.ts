@@ -9,22 +9,18 @@ class Arrow {
     public direction = ''
     public ttl = 600
     public damage = 10
-    public ySpeed = 0
-    public xSpeed = 0
-    constructor(player: Player, damage: number, public slope: number) {
+    private fallspeed = 0
+    constructor(player: Player, damage: number, public xVelocity: number, public yVelocity: number) {
         emitter.on('update', this.update)
         this.x = player.x
         this.y = player.y + player.height / 2
         this.direction = player.direction
         this.damage += damage
-        //init based on slope
-        this.ySpeed = 0
-        this.xSpeed = 0
     }
 
     draw() {
         canvas.canvasCTX.fillStyle = '#ccaa00';
-        canvas.canvasCTX.fillRect(this.x - level.offsetX, this.y, 20, 20);
+        canvas.canvasCTX.fillRect(this.x - level.offsetX, this.y, 20, 3);
     }
     
     update = this._update.bind(this)
@@ -32,16 +28,10 @@ class Arrow {
     _update() {
         this.ttl--
         if (this.ttl > 0) {
-            //update position
-            //left or right
+            this.fallspeed += .1
             const direcitonModifier = this.direction === 'left' ? -1 : 1
-            //modified based on what the initial y angle is
-            this.x += this.xSpeed
-            this.y += this.ySpeed
-            //decay y for gravity
-            // this.ySpeed += 1
-            // if(this.ySpeed < 5) this.ySpeed == 5
-
+            this.x += this.xVelocity
+            this.y = this.y - this.yVelocity + this.fallspeed
             this.checkEnemyCollision()
             this.draw()
         } else {
