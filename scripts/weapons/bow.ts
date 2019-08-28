@@ -7,7 +7,7 @@ class Bow extends Weapon {
     public enemiesHit: number[] = []
     
     //pixels/frame
-    public missileSpeed = 15
+    public missileSpeed = 10
     
     constructor(player: Player) {
         super(
@@ -22,7 +22,7 @@ class Bow extends Weapon {
             //damage
             25,
             //attack duration
-            10,
+            50,
             //cooldown between use
             0,
             //hitbox width
@@ -72,6 +72,8 @@ class Bow extends Weapon {
             var clickX = evt.clientX - canvas.canvasElement.offsetLeft
             
             //calc triangle
+            //TODO figure out based on coords how to calculate opposite and adjacent
+            //in they aren't always going to be as described below
             var opposite = (clickY - this.player.y) * -1
             var adjacent = (clickX - this.player.xForCamera)
             const angle = Math.tan(opposite/adjacent)
