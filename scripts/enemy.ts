@@ -58,6 +58,9 @@ class Enemy {
 				//move right
 				this.moveHorizontal(this.moveSpeed * -1)
 			}
+		} else{
+			//were pretty close, lets give em the left
+			
 		}
 
 		//all done, draw on canvas
