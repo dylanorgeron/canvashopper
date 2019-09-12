@@ -20,7 +20,7 @@ class Arrow {
 
     draw() {
         canvas.canvasCTX.fillStyle = '#ccaa00';
-        canvas.canvasCTX.fillRect(this.x - level.offsetX, this.y, 20, 3);
+        canvas.canvasCTX.fillRect(this.x - level.offsetX, this.y, this.width, this.height);
     }
     
     update = this._update.bind(this)

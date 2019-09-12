@@ -24,10 +24,6 @@ class Level {
                 if(row >= 14){
                     tile.isSolid = true
                 }
-                if(row === 9 && (col % 3 === 0 || col % 4 === 0)){
-                    tile.isSolid = true
-                }
-                if(col === 9 && row === 13) tile.isSolid = true
                 this.tiles.push(tile)	
             }
         }

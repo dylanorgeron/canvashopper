@@ -22,7 +22,7 @@ class Bow extends Weapon {
             //damage
             25,
             //attack duration
-            50,
+            5,
             //cooldown between use
             0,
             //hitbox width
@@ -70,16 +70,26 @@ class Bow extends Weapon {
             //transform click coords into coords relative to the canvas
             var clickY = evt.clientY - canvas.canvasElement.offsetTop
             var clickX = evt.clientX - canvas.canvasElement.offsetLeft
+            let angle = 0
             
-            //calc triangle
-            //TODO figure out based on coords how to calculate opposite and adjacent
-            //in they aren't always going to be as described below
-            var opposite = (clickY - this.player.y) * -1
-            var adjacent = (clickX - this.player.xForCamera)
-            const angle = Math.tan(opposite/adjacent)
+            //calc triangle based on direction of click
+            if(clickX > this.player.xForCamera){
+                var opposite = (clickY - this.player.y) * -1
+                var adjacent = (clickX - this.player.xForCamera)
+                angle = Math.atan(opposite/adjacent)
+            }else{
+                var opposite = (clickY - this.player.y) * -1
+                var adjacent = (this.player.xForCamera - clickX)
+                angle = Math.atan(opposite/adjacent)
+            }
+            
             //calc velocities
             var yVelocity = Math.round(this.missileSpeed * Math.sin(angle))
             var xVelocity = Math.round(this.missileSpeed * Math.cos(angle))
+            
+            //flip x velocity if we are shooting left
+            if(clickX < this.player.xForCamera) xVelocity = xVelocity * -1
+            
             //send it
             new Arrow(this.player, this.damage, xVelocity, yVelocity)
         }
