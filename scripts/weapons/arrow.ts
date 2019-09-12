@@ -4,23 +4,33 @@ import Player from '../player';
 class Arrow {
     public x = 0
     public y = 0
+    public lastX = 0
+    public lastY = 0
     public width = 20
     public height = 3
     public direction = ''
-    public ttl = 600
+    public ttl = 300
     public damage = 10
-    private fallspeed = 0
-    constructor(player: Player, damage: number, public xVelocity: number, public yVelocity: number) {
+    private fallSpeed = 0
+    private angle = 0
+    constructor(player: Player, damage: number, public xVelocity: number, public yVelocity: number, angle: number) {
         emitter.on('update', this.update)
         this.x = player.x
+        this.lastX = player.x
         this.y = player.y + player.height / 2
+        this.lastY = player.y + player.height / 2
         this.direction = player.direction
         this.damage += damage
+        this.angle = angle
     }
 
     draw() {
-        canvas.canvasCTX.fillStyle = '#ccaa00';
-        canvas.canvasCTX.fillRect(this.x - level.offsetX, this.y, this.width, this.height);
+        canvas.canvasCTX.lineWidth = this.height
+        canvas.canvasCTX.moveTo(this.lastX, this.lastY)
+        canvas.canvasCTX.lineTo(this.x - level.offsetX, this.y)
+        canvas.canvasCTX.stroke()
+        
+        // canvas.canvasCTX.fillRect(this.x - level.offsetX, this.y, this.width, this.height)
     }
     
     update = this._update.bind(this)
@@ -28,18 +38,25 @@ class Arrow {
     _update() {
         this.ttl--
         if (this.ttl > 0) {
-            this.fallspeed += .1
-            const direcitonModifier = this.direction === 'left' ? -1 : 1
+            this.fallSpeed += .1
+            this.lastX = this.x
+            this.lastY = this.y
+            this.checkEnemyCollision(this.xVelocity, this.yVelocity + this.fallSpeed)
+            this.checkGeometryCollision(this.xVelocity, this.yVelocity + this.fallSpeed)
             this.x += this.xVelocity
-            this.y = this.y - this.yVelocity + this.fallspeed
-            this.checkEnemyCollision()
+            this.y = this.y - this.yVelocity + this.fallSpeed
             this.draw()
+            console.log(this.angle)
         } else {
             emitter.off('update', this.update)
         }
     }
 
-    checkEnemyCollision(){
+    checkGeometryCollision(deltaX: number, deltaY: number){
+
+    }
+
+    checkEnemyCollision(deltaX: number, deltaY: number){
         const hitboxYRange: number[] = []
         const hitboxYStart = this.y + this.height
         const hitboxYEnd = this.height + this.y

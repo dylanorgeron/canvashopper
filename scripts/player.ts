@@ -57,7 +57,7 @@ class Player {
 		this.draw();
 
 		//log player stats to debugger
-		debug.playerXPostition = this.x
+		debug.playerXPosition = this.x
 		debug.playerYPosition = this.y
 		debug.weapon = (this.weapons.length > 0) ? this.weapons[0].name : 'none'
 		debug.direction = this.direction

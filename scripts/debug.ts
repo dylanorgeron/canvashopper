@@ -1,7 +1,7 @@
 import {emitter, debug} from './index'
 
 class Debug{
-    public playerXPostition = 0
+    public playerXPosition = 0
     public playerYPosition = 0
     public levelXOffset = 0
     public levelYOffset = 0
@@ -17,7 +17,7 @@ class Debug{
         if(debuggerPanel){
             var html = 
             `
-            Player X Position: ${this.playerXPostition}
+            Player X Position: ${this.playerXPosition}
             <br>
             Player Y Position: ${this.playerYPosition}
             <br>

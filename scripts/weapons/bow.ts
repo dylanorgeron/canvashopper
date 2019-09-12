@@ -91,7 +91,7 @@ class Bow extends Weapon {
             if(clickX < this.player.xForCamera) xVelocity = xVelocity * -1
             
             //send it
-            new Arrow(this.player, this.damage, xVelocity, yVelocity)
+            new Arrow(this.player, this.damage, xVelocity, yVelocity, angle)
         }
     }
 }

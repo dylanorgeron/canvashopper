@@ -5,7 +5,7 @@ class Popup{
     public yVelocity = -1
     public color = '255, 255, 255'
     public alpha = 1
-    public duration = 20
+    public duration = 40
 
     constructor(
         public text: string,
