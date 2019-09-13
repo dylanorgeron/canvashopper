@@ -14,7 +14,8 @@ class Weapon{
     public hitDuration: number,
     //projectiles are not (always) relative to the player
     //melee weapons are (usually) relative to player
-    public relativeToPlayer: boolean
+    public relativeToPlayer: boolean,
+    public knockback: number
     ){}
 
     use(evt: MouseEvent){

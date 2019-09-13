@@ -20,7 +20,7 @@ class Bow extends Weapon {
             //group name
             'bow',
             //damage
-            25,
+            5,
             //attack duration
             5,
             //cooldown between use
@@ -32,7 +32,9 @@ class Bow extends Weapon {
             //hitbox duration in ms
             30,
             //relative to player
-            true
+            true,
+            //knockback
+            10
         )
         emitter.on('update', this.update.bind(this))
     }
@@ -91,7 +93,7 @@ class Bow extends Weapon {
             if(clickX < this.player.xForCamera) xVelocity = xVelocity * -1
             
             //send it
-            new Arrow(this.player, this.damage, xVelocity, yVelocity, angle)
+            new Arrow(this.player, this.damage, xVelocity, yVelocity, angle, this.knockback)
         }
     }
 }

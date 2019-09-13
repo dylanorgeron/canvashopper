@@ -20,6 +20,9 @@ class Enemy {
 	public hitPoints = 50
 	public maxHitPoints = 50
 	public moveSpeed = Math.floor(Math.random() * 3) + 1
+	public knockback = 0
+	public knockbackDirection = ""
+	public direction = ""
 	constructor(
 		public x: number,
 		public y: number
@@ -43,6 +46,18 @@ class Enemy {
 		//TODO optimize this
 		if (this.hitPoints <= 0) return
 
+		//modify delta by knockback, if applicable
+		let delta = this.moveSpeed
+		if(this.knockback){
+			if(this.knockbackDirection === this.direction){
+				delta += this.knockback
+			}else{
+				delta -= this.knockback
+			}
+			//knockback decay
+			this.knockback--
+		}
+
 		//pre movement y
 		var currentY = this.y;
 		//it is inescapable
@@ -50,13 +65,14 @@ class Enemy {
 
 		//try and get the player
 		if (Math.abs(player1.x - this.x) > 20) {
-
 			if (player1.x > this.x) {
 				//move right
-				this.moveHorizontal(this.moveSpeed)
+				this.direction = "right"
+				this.moveHorizontal(delta)
 			} else {
 				//move right
-				this.moveHorizontal(this.moveSpeed * -1)
+				this.direction = "left"
+				this.moveHorizontal(delta * -1)
 			}
 		} else{
 			//were pretty close, lets give em the left
@@ -205,15 +221,22 @@ class Enemy {
 		return ((ceilingRow + 1) * tileSize);
 	}
 
-	applyHit(damage: number) {
+	applyHit(damage: number, knockback: number, knockbackDirection: string) {
 		//logic for decrementing hitpoints
 		this.hitPoints -= damage
+		
+		//send him flying
+		this.knockback = knockback
+		this.knockbackDirection = knockbackDirection
 
+		//hitsplat
 		popupLogicController.addPopup(
 			damage.toString(),
 			this.x,
 			this.y - 30
 		)
+
+		//death
 		if (this.hitPoints <= 0) {
 			const index = enemyLogicController.enemies.findIndex(e => e.id == this.id)
 			enemyLogicController.enemies.splice(index, 1)

@@ -14,7 +14,14 @@ class Arrow {
     public damage = 10
     private fallSpeed = 0
     private angle = 0
-    constructor(player: Player, damage: number, public xVelocity: number, public yVelocity: number, angle: number) {
+    private knockback = 0
+    constructor(
+        player: Player,
+        damage: number,
+        public xVelocity: number,
+        public yVelocity: number,
+        angle: number,
+        knockback: number) {
         emitter.on('update', this.update)
         this.x = player.x
         this.lastX = player.x
@@ -23,13 +30,14 @@ class Arrow {
         this.direction = player.direction
         this.damage += damage
         this.angle = angle
+        this.knockback = knockback
     }
 
     draw() {
-		canvas.canvasCTX.fillStyle = '#552200';
+        canvas.canvasCTX.fillStyle = '#552200';
         canvas.canvasCTX.fillRect(this.x - level.offsetX, this.y, this.width, this.height)
     }
-    
+
     update = this._update.bind(this)
 
     _update() {
@@ -40,11 +48,11 @@ class Arrow {
             this.lastX = this.x
             this.lastY = this.y
             this.checkForCollision(this.xVelocity, this.yVelocity + this.fallSpeed)
-            if(this.ttl > 0){
+            if (this.ttl > 0) {
                 this.x += this.xVelocity
                 this.y = this.y - this.yVelocity + this.fallSpeed
                 this.draw()
-            }else{
+            } else {
                 emitter.off('update', this.update)
             }
         } else {
@@ -52,7 +60,7 @@ class Arrow {
         }
     }
 
-    checkForCollision(deltaX: number, deltaY: number){
+    checkForCollision(deltaX: number, deltaY: number) {
         const hitboxYRange: number[] = []
         const hitboxYStart = this.y + this.height
         const hitboxYEnd = this.height + this.y
@@ -70,6 +78,23 @@ class Arrow {
         ) {
             hitboxXRange.push(i)
         }
+        //iterate level data and see if any of the intersected tiles are solid
+        //find tile for upper left corner
+        const tileLeftAlignment = Math.floor(this.x / tileSize);
+        const tileRightAlignment = Math.floor((this.x + this.width) / tileSize);
+        const tileTopAlignment = Math.floor(this.y / tileSize);
+        const tileBottomAlignment = Math.floor((this.y + this.height) / tileSize);
+        const positionIsValid = level.tiles.filter(t =>
+            (t.col === tileRightAlignment || t.col === tileLeftAlignment) &&
+            (t.row === tileTopAlignment || t.row === tileBottomAlignment) &&
+            t.isSolid
+        ).length === 0 &&
+            this.x >= 0 && this.x <= level.width * level.tiles[0].w - this.width - 1
+
+        if (!positionIsValid) {
+            this.ttl = 0
+            return
+        }
 
         //check for enemies hit
         enemyLogicController.enemies.forEach(e => {
@@ -86,25 +111,10 @@ class Arrow {
             const isXAligned = hitboxXRange.filter(x => -1 !== enemyXRange.indexOf(x)).length > 0;
 
             if (isYAligned && isXAligned) {
-                e.applyHit(this.damage)
+                e.applyHit(this.damage, this.knockback, this.direction)
                 this.ttl = 0
             }
         })
-
-        //iterate level data and see if any of the intersected tiles are solid
-        //find tile for upper left corner
-        const tileLeftAlignment = Math.floor(this.x / tileSize);
-		const tileRightAlignment = Math.floor((this.x + this.width) / tileSize);
-		const tileTopAlignment = Math.floor(this.y / tileSize);
-        const tileBottomAlignment = Math.floor((this.y + this.height) / tileSize);
-        const positionIsValid = level.tiles.filter(t => 
-			(t.col === tileRightAlignment || t.col === tileLeftAlignment) &&
-			(t.row === tileTopAlignment || t.row === tileBottomAlignment) &&
-			t.isSolid
-		).length === 0 &&
-        this.x >= 0 && this.x <= level.width * level.tiles[0].w - this.width - 1
-
-        if(!positionIsValid) this.ttl = 0
     }
 
 }
