@@ -34,15 +34,19 @@ class Arrow {
 
     _update() {
         this.ttl--
+        // console.log(this.angle)
         if (this.ttl > 0) {
             this.fallSpeed += .1
             this.lastX = this.x
             this.lastY = this.y
             this.checkForCollision(this.xVelocity, this.yVelocity + this.fallSpeed)
-            this.x += this.xVelocity
-            this.y = this.y - this.yVelocity + this.fallSpeed
-            this.draw()
-            // console.log(this.angle)
+            if(this.ttl > 0){
+                this.x += this.xVelocity
+                this.y = this.y - this.yVelocity + this.fallSpeed
+                this.draw()
+            }else{
+                emitter.off('update', this.update)
+            }
         } else {
             emitter.off('update', this.update)
         }
@@ -89,11 +93,18 @@ class Arrow {
 
         //iterate level data and see if any of the intersected tiles are solid
         //find tile for upper left corner
-        //find tile for lower left corner
-        //find tile for lower right conner
-        //find tile for upper right corner
-        //check if any of these tiles are solid
-        // this.ttl = 0
+        const tileLeftAlignment = Math.floor(this.x / tileSize);
+		const tileRightAlignment = Math.floor((this.x + this.width) / tileSize);
+		const tileTopAlignment = Math.floor(this.y / tileSize);
+        const tileBottomAlignment = Math.floor((this.y + this.height) / tileSize);
+        const positionIsValid = level.tiles.filter(t => 
+			(t.col === tileRightAlignment || t.col === tileLeftAlignment) &&
+			(t.row === tileTopAlignment || t.row === tileBottomAlignment) &&
+			t.isSolid
+		).length === 0 &&
+        this.x >= 0 && this.x <= level.width * level.tiles[0].w - this.width - 1
+
+        if(!positionIsValid) this.ttl = 0
     }
 
 }
