@@ -57,7 +57,7 @@ class Arrow {
         const hitboxYStart = this.y + this.height
         const hitboxYEnd = this.height + this.y
         for (let i = hitboxYStart; i <= hitboxYEnd; i++) {
-            hitboxYRange.push(i)
+            hitboxYRange.push(Math.round(i))
         }
         const hitboxXEnd = this.direction === 'right' ?
             this.x + this.width :
