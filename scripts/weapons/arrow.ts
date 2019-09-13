@@ -1,5 +1,6 @@
 import { debug, canvas, emitter, level, enemyLogicController } from '../index'
 import Player from '../player';
+const tileSize = 25
 
 class Arrow {
     public x = 0
@@ -37,8 +38,7 @@ class Arrow {
             this.fallSpeed += .1
             this.lastX = this.x
             this.lastY = this.y
-            this.checkEnemyCollision(this.xVelocity, this.yVelocity + this.fallSpeed)
-            this.checkGeometryCollision(this.xVelocity, this.yVelocity + this.fallSpeed)
+            this.checkForCollision(this.xVelocity, this.yVelocity + this.fallSpeed)
             this.x += this.xVelocity
             this.y = this.y - this.yVelocity + this.fallSpeed
             this.draw()
@@ -48,11 +48,7 @@ class Arrow {
         }
     }
 
-    checkGeometryCollision(deltaX: number, deltaY: number){
-
-    }
-
-    checkEnemyCollision(deltaX: number, deltaY: number){
+    checkForCollision(deltaX: number, deltaY: number){
         const hitboxYRange: number[] = []
         const hitboxYStart = this.y + this.height
         const hitboxYEnd = this.height + this.y
@@ -70,6 +66,8 @@ class Arrow {
         ) {
             hitboxXRange.push(i)
         }
+
+        //check for enemies hit
         enemyLogicController.enemies.forEach(e => {
             //enemy ranges
             const enemyYRange: number[] = []
@@ -88,6 +86,14 @@ class Arrow {
                 this.ttl = 0
             }
         })
+
+        //iterate level data and see if any of the intersected tiles are solid
+        //find tile for upper left corner
+        //find tile for lower left corner
+        //find tile for lower right conner
+        //find tile for upper right corner
+        //check if any of these tiles are solid
+        // this.ttl = 0
     }
 
 }
