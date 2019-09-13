@@ -21,13 +21,14 @@ class Arrow {
         public xVelocity: number,
         public yVelocity: number,
         angle: number,
-        knockback: number) {
+        knockback: number,
+        direction: string) {
         emitter.on('update', this.update)
         this.x = player.x
         this.lastX = player.x
         this.y = player.y + player.height / 2
         this.lastY = player.y + player.height / 2
-        this.direction = player.direction
+        this.direction = direction
         this.damage += damage
         this.angle = angle
         this.knockback = knockback

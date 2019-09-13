@@ -73,16 +73,18 @@ class Bow extends Weapon {
             var clickY = evt.clientY - canvas.canvasElement.offsetTop
             var clickX = evt.clientX - canvas.canvasElement.offsetLeft
             let angle = 0
-            
+            let direction = ""
             //calc triangle based on direction of click
             if(clickX > this.player.xForCamera){
                 var opposite = (clickY - this.player.y) * -1
                 var adjacent = (clickX - this.player.xForCamera)
                 angle = Math.atan(opposite/adjacent)
+                direction = "right"
             }else{
                 var opposite = (clickY - this.player.y) * -1
                 var adjacent = (this.player.xForCamera - clickX)
                 angle = Math.atan(opposite/adjacent)
+                direction = "left"
             }
             
             //calc velocities
@@ -93,7 +95,7 @@ class Bow extends Weapon {
             if(clickX < this.player.xForCamera) xVelocity = xVelocity * -1
             
             //send it
-            new Arrow(this.player, this.damage, xVelocity, yVelocity, angle, this.knockback)
+            new Arrow(this.player, this.damage, xVelocity, yVelocity, angle, this.knockback, direction)
         }
     }
 }

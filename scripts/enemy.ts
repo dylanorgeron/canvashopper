@@ -227,6 +227,7 @@ class Enemy {
 		
 		//send him flying
 		this.knockback = knockback
+		this.jumpSpeed = 8
 		this.knockbackDirection = knockbackDirection
 
 		//hitsplat
