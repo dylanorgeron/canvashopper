@@ -25,12 +25,8 @@ class Arrow {
     }
 
     draw() {
-        canvas.canvasCTX.lineWidth = this.height
-        canvas.canvasCTX.moveTo(this.lastX, this.lastY)
-        canvas.canvasCTX.lineTo(this.x - level.offsetX, this.y)
-        canvas.canvasCTX.stroke()
-        
-        // canvas.canvasCTX.fillRect(this.x - level.offsetX, this.y, this.width, this.height)
+		canvas.canvasCTX.fillStyle = '#552200';
+        canvas.canvasCTX.fillRect(this.x - level.offsetX, this.y, this.width, this.height)
     }
     
     update = this._update.bind(this)
@@ -46,7 +42,7 @@ class Arrow {
             this.x += this.xVelocity
             this.y = this.y - this.yVelocity + this.fallSpeed
             this.draw()
-            console.log(this.angle)
+            // console.log(this.angle)
         } else {
             emitter.off('update', this.update)
         }
