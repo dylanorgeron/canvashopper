@@ -1,5 +1,4 @@
-import {emitter, keystates, level, canvas, debug, enemyLogicController} from './index'
-import Tile from './tile'
+import {emitter, keystates, level, canvas, debug, enemyLogicController, popupLogicController} from './index'
 import Weapon from './weapons/weapon'
 
 const tileSize = 25
@@ -19,10 +18,13 @@ class Player {
 	public activeAttackHitboxHeight = 0
 	public activeAttackDuration = 0
 	public enemiesHit:number[] = []
+	public hitPoints: number = 100
+	public knockback = 0
+	public knockbackDirection = ""
 
 	constructor(
 		public x: number, 
-		public y: number		
+		public y: number
 	){
 		//draw on event 
 		emitter.on('update', this.update.bind(this))
@@ -39,7 +41,7 @@ class Player {
 		var currentY = this.y
 		//it is inescapable
 		this.applyGravity()
-		//if our y hasnt changed after applying gravity,
+		//if our y hasn't changed after applying gravity,
 		//we are standing on ground and can jump
 		this.canJump = currentY === this.y;
 
@@ -209,6 +211,28 @@ class Player {
 		})
 		//convert floor row to px
 		return ((ceilingRow + 1) * tileSize);
+	}
+
+	applyHit(damage: number, knockback: number, knockbackDirection: string){
+		//logic for decrementing hitpoints
+		this.hitPoints -= damage
+
+		//send him flying
+		this.knockback = knockback
+		this.jumpSpeed = 8
+		this.knockbackDirection = knockbackDirection
+
+		//hit splat
+		popupLogicController.addPopup(
+			damage.toString(),
+			this.x,
+			this.y - 30
+		)
+
+		//death
+		if (this.hitPoints <= 0) {
+			console.log('Oh dear, you are dead!')
+		}
 	}
 
 	addItem(weaponToAdd: Weapon){

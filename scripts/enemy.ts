@@ -6,7 +6,6 @@ import {
 	popupLogicController,
 	enemyLogicController
 } from './index'
-import Weapon from './weapons/weapon'
 
 const tileSize = 25
 
@@ -23,6 +22,7 @@ class Enemy {
 	public knockback = 0
 	public knockbackDirection = ""
 	public direction = ""
+	public attackCooldown = 0
 	constructor(
 		public x: number,
 		public y: number
@@ -45,6 +45,7 @@ class Enemy {
 	update() {
 		//TODO optimize this
 		if (this.hitPoints <= 0) return
+		if(this.attackCooldown > 0) this.attackCooldown--
 
 		//modify delta by knockback, if applicable
 		let delta = this.moveSpeed
@@ -76,7 +77,10 @@ class Enemy {
 			}
 		} else{
 			//were pretty close, lets give em the left
-			
+			if(this.attackCooldown == 0){
+				this.attackCooldown = 60
+				player1.applyHit(20, 5, this.direction)
+			}
 		}
 
 		//all done, draw on canvas
@@ -230,7 +234,7 @@ class Enemy {
 		this.jumpSpeed = 8
 		this.knockbackDirection = knockbackDirection
 
-		//hitsplat
+		//hit splat
 		popupLogicController.addPopup(
 			damage.toString(),
 			this.x,
