@@ -12,11 +12,11 @@ class Tile {
 		public row: number,
 		public isSolid: boolean
 	) {  
-		emitter.on('update', this.update.bind(this))
+		emitter.on('updatePhysics', this.update.bind(this))
+		emitter.on('renderObjects', this.draw.bind(this))
 	}
 
 	update(){
-		this.draw()
 	}
 
 	draw(){

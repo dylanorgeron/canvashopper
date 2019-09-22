@@ -7,7 +7,6 @@ import Level from './level'
 import Player from './player'
 import PopupLogicController from './popup-logic-controller.';
 
-import Sword from './weapons/sword'
 import Bow from './weapons/bow'
 
 export const emitter = new EventEmitter()
@@ -31,17 +30,17 @@ function main(){
 		player1.useItem(evt)
 	})
 
-	//give the player a test sword
 	player1.addItem(new Bow(player1))
 
-	emitter.emit('update')
+	//calc physics at 60fps
+	var phyicsLoop = setInterval(function(){
+		emitter.emit('updatePhysics')
+	}, 16)
 
-	//draw each frame
-	var loop = function(){
-		emitter.emit('update')
-		window.requestAnimationFrame(loop)
-	}
-	window.requestAnimationFrame(loop)
+	//draw at 60 fps as well
+	var renderLoop = setInterval(function(){
+		emitter.emit('renderObjects')
+	}, 16)
 }
 
 window.onload = function(){

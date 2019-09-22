@@ -10,7 +10,7 @@ class Debug{
 
 	constructor(){
 		//draw on event 
-		emitter.on('update', this.update.bind(this))
+		emitter.on('renderObjects', this.update.bind(this))
     }
     update(){
         const debuggerPanel = document.getElementById('debugger')

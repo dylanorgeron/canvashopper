@@ -15,7 +15,7 @@ class Level {
         public readonly height: number
     ){
         //listen for updates
-        emitter.on('update', this.update.bind(this))
+        emitter.on('renderObjects', this.update.bind(this))
         
         //this is where we add tiles to the level, it will be redone at some point
         for(let col = 0; col < this.width; col++){

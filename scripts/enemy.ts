@@ -32,10 +32,13 @@ class Enemy {
 			enemyLogicController.enemies[enemyLogicController.enemies.length-1].id + 1 :
 			0
 		//draw on event 
-		emitter.on('update', this.update.bind(this))
+		emitter.on('updatePhysics', this.update.bind(this))
+		emitter.on('renderObjects', this.draw.bind(this))
+
 	}
 
 	draw() {
+		if (this.hitPoints <= 0) return
 		canvas.canvasCTX.fillStyle = '#ff0000';
 		canvas.canvasCTX.font = "14px Arial"
 		canvas.canvasCTX.fillRect(this.x - level.offsetX, this.y, this.width, this.height);
@@ -82,9 +85,6 @@ class Enemy {
 				player1.applyHit(20, 5, this.direction)
 			}
 		}
-
-		//all done, draw on canvas
-		this.draw();
 	}
 
 	moveHorizontal(delta: number) {

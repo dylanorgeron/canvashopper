@@ -8,7 +8,7 @@ class EnemyLogicController{
     public cooldown = 0
     public spawnDelay = 60
     constructor(){
-        emitter.on('update', this.update.bind(this))
+        emitter.on('updatePhysics', this.update.bind(this))
     }
 
     update(){

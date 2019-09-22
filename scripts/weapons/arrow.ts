@@ -23,7 +23,6 @@ class Arrow {
         angle: number,
         knockback: number,
         direction: string) {
-        emitter.on('update', this.update)
         this.x = player.x
         this.lastX = player.x
         this.y = player.y + player.height / 2
@@ -32,14 +31,18 @@ class Arrow {
         this.damage += damage
         this.angle = angle
         this.knockback = knockback
+
+        emitter.on('updatePhysics', this.update)
+        emitter.on('renderObjects', this.draw)
     }
 
-    draw() {
+    _draw() {
         canvas.canvasCTX.fillStyle = '#552200';
         canvas.canvasCTX.fillRect(this.x - level.offsetX, this.y, this.width, this.height)
     }
 
     update = this._update.bind(this)
+    draw = this._draw.bind(this)
 
     _update() {
         this.ttl--
@@ -52,12 +55,15 @@ class Arrow {
             if (this.ttl > 0) {
                 this.x += this.xVelocity
                 this.y = this.y - this.yVelocity + this.fallSpeed
-                this.draw()
             } else {
-                emitter.off('update', this.update)
+                emitter.off('updatePhysics', this.update)
+                //add timeout here to keep arrows on the ground
+                emitter.off('renderObjects', this.draw)
             }
         } else {
-            emitter.off('update', this.update)
+            emitter.off('updatePhysics', this.update)
+            //add timeout here to keep arrows on the ground
+            emitter.off('renderObjects', this.draw)
         }
     }
 

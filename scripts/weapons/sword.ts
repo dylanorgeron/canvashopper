@@ -28,9 +28,12 @@ class Sword extends Weapon {
             //hitbox duration in ms
             30,
             //relative to player
-            true
+            true,
+            //knockback
+            50
         )
-        emitter.on('update', this.update.bind(this))
+        emitter.on('updatePhysics', this.update.bind(this))
+        emitter.on('renderObjects', this.draw.bind(this))
     }
 
     draw() {
@@ -91,7 +94,7 @@ class Sword extends Weapon {
 
                 if (isYAligned && isXAligned && enemyCanBeHit) {
                     this.enemiesHit.push(e.id)
-                    e.applyHit(this.damage)
+                    e.applyHit(this.damage, this.knockback, this.player.direction)
                 }
             })
             this.draw()

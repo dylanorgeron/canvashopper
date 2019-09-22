@@ -1,4 +1,11 @@
-import {emitter, keystates, level, canvas, debug, enemyLogicController, popupLogicController} from './index'
+import {
+	emitter,
+	keystates,
+	level,
+	canvas,
+	debug,
+	popupLogicController
+} from './index'
 import Weapon from './weapons/weapon'
 
 const tileSize = 25
@@ -26,8 +33,8 @@ class Player {
 		public x: number, 
 		public y: number
 	){
-		//draw on event 
-		emitter.on('update', this.update.bind(this))
+		emitter.on('updatePhysics', this.update.bind(this))
+		emitter.on('renderObjects', this.draw.bind(this))
 	}
 
 	draw(){
@@ -54,9 +61,6 @@ class Player {
 		if(level.offsetX === 0){
 			this.xForCamera = this.x
 		}
-
-		//all done, draw on canvas
-		this.draw();
 
 		//log player stats to debugger
 		debug.playerXPosition = this.x
