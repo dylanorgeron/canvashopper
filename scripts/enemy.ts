@@ -81,7 +81,7 @@ class Enemy {
 		} else if (this.attackCooldown == 0 && (this.y === player1.y)){
 			//were pretty close, lets give em the left
 			this.attackCooldown = 60
-			player1.applyHit(20, 5, this.direction)
+			player1.applyHit(20, 10, this.direction)
 		}
 	}
 

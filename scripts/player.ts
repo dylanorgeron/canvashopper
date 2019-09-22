@@ -7,6 +7,7 @@ import {
 	popupLogicController
 } from './index'
 import Weapon from './weapons/weapon'
+import Popup from './popup'
 
 const tileSize = 25
 
@@ -26,8 +27,9 @@ class Player {
 	public activeAttackDuration = 0
 	public enemiesHit:number[] = []
 	public hitPoints: number = 100
-	public knockback = 0
-	public knockbackDirection = ""
+	public knockback: number = 0
+	public knockbackDirection: string = ""
+	public moveSpeed: number = 7
 
 	constructor(
 		public x: number, 
@@ -52,9 +54,32 @@ class Player {
 		//we are standing on ground and can jump
 		this.canJump = currentY === this.y;
 
+		//distance to move
+		let delta = 0
 		//move player based on input
-		if (keystates.RightArrowIsActive) this.moveHorizontal(7)
-		if (keystates.LeftArrowIsActive) this.moveHorizontal(-7)
+		if (keystates.RightArrowIsActive) {
+			this.direction = 'right'
+			delta = this.moveSpeed
+		} 
+		if (keystates.LeftArrowIsActive) {
+			this.direction = 'left'
+			delta = this.moveSpeed * -1
+		}
+		//move player based on knockback
+		if(this.knockback){
+			if(this.knockbackDirection == 'right'){
+				delta += this.knockback
+			}else{
+				delta -= this.knockback
+			}
+			//knockback decay
+			this.knockback--
+		}
+
+		//move player
+		if(delta) this.moveHorizontal(delta)
+
+		//jump
 		if(keystates.SpaceIsActive && this.canJump) this.jump()
 
 		//prevent the player from moving past the halfway point of the screen
@@ -72,7 +97,6 @@ class Player {
 	moveHorizontal(delta: number){
 		//move right
 		if(delta > 0){
-			if(this.activeAttackDuration === 0) this.direction = 'right'
 			for (let i = 1; i <= delta; i++) {
 				this.x++
 				if(!this.validatePosition(i)){
@@ -86,7 +110,6 @@ class Player {
 			}
 		//move left
 		}else{
-			if(this.activeAttackDuration === 0) this.direction = 'left'
 			for (let i = -1; i >= delta; i--) {
 				this.x--
 				if(!this.validatePosition(i)){
@@ -227,11 +250,7 @@ class Player {
 		this.knockbackDirection = knockbackDirection
 
 		//hit splat
-		popupLogicController.addPopup(
-			damage.toString(),
-			this.x,
-			this.y - 30
-		)
+		new Popup(damage.toString(), this.x, this.y,)
 
 		//death
 		if (this.hitPoints <= 0) {
