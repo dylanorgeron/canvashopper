@@ -3,9 +3,9 @@ import {
 	level,
 	canvas,
 	player1,
-	popupLogicController,
 	enemyLogicController
 } from './index'
+import Popup from './popup'
 
 const tileSize = 25
 
@@ -78,12 +78,10 @@ class Enemy {
 				this.direction = "left"
 				this.moveHorizontal(delta * -1)
 			}
-		} else{
+		} else if (this.attackCooldown == 0 && (this.y === player1.y)){
 			//were pretty close, lets give em the left
-			if(this.attackCooldown == 0){
-				this.attackCooldown = 60
-				player1.applyHit(20, 5, this.direction)
-			}
+			this.attackCooldown = 60
+			player1.applyHit(20, 5, this.direction)
 		}
 	}
 
@@ -235,11 +233,7 @@ class Enemy {
 		this.knockbackDirection = knockbackDirection
 
 		//hit splat
-		popupLogicController.addPopup(
-			damage.toString(),
-			this.x,
-			this.y - 30
-		)
+		new Popup(damage.toString(), this.x, this.y,)
 
 		//death
 		if (this.hitPoints <= 0) {

@@ -1,4 +1,4 @@
-import { canvas, level } from ".";
+import { canvas, level, emitter } from ".";
 
 class Popup{
     public xVelocity = 1
@@ -10,20 +10,28 @@ class Popup{
     constructor(
         public text: string,
         public x: number,
-        public y: number
+        public y: number,
     ){
+        emitter.on('updatePhysics', this.update)
+        emitter.on('renderObjects', this.draw)
     }
 
-    update(){
+    update = this._update.bind(this)
+    draw = this._draw.bind(this)
+
+    _update(){
         this.duration--
         if(this.duration > 10){
             this.x += this.xVelocity
             this.y += this.yVelocity
         }
-        this.draw()
+        if(this.duration === 0)        {
+            emitter.off('updatePhysics', this.update)
+            emitter.off('renderObjects', this.draw)
+        }
     }
 
-    draw(){
+    _draw(){
         canvas.canvasCTX.fillStyle = this.color
         canvas.canvasCTX.fillText(this.text, this.x - level.offsetX, this.y)
     }

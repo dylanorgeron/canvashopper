@@ -35,15 +35,14 @@ class Arrow {
         emitter.on('updatePhysics', this.update)
         emitter.on('renderObjects', this.draw)
     }
+    
+    update = this._update.bind(this)
+    draw = this._draw.bind(this)
 
     _draw() {
         canvas.canvasCTX.fillStyle = '#552200';
         canvas.canvasCTX.fillRect(this.x - level.offsetX, this.y, this.width, this.height)
     }
-
-    update = this._update.bind(this)
-    draw = this._draw.bind(this)
-
     _update() {
         this.ttl--
         // console.log(this.angle)
