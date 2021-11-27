@@ -4,12 +4,9 @@ import {
 	level,
 	canvas,
 	debug,
-	popupLogicController
+	settings
 } from './index'
-import Weapon from './weapons/weapon'
 import Popup from './popup'
-
-const tileSize = 25
 
 class Player {
 	public id = 1
@@ -20,7 +17,6 @@ class Player {
 	public canJump = true	
 	public xForCamera = 0
 	public yForCamera = 0
-	public weapons:Weapon[] = []
 	public direction = 'right'
 	public activeAttackHitboxWidth = 0
 	public activeAttackHitboxHeight = 0
@@ -90,7 +86,6 @@ class Player {
 		//log player stats to debugger
 		debug.playerXPosition = this.x
 		debug.playerYPosition = this.y
-		debug.weapon = (this.weapons.length > 0) ? this.weapons[0].name : 'none'
 		debug.direction = this.direction
 	}
 
@@ -135,14 +130,14 @@ class Player {
 		let positionIsValid = true
 		//get all tiles player is occupying, check for collisions
 		//col the player's left side is in
-		const playerLeftAlignment = Math.floor(player.x / tileSize);
+		const playerLeftAlignment = Math.floor(player.x / settings.tileSize);
 		//col the player's right side is in
-		const playerRightAlignment = Math.floor((player.x + player.width) / tileSize);
+		const playerRightAlignment = Math.floor((player.x + player.width) / settings.tileSize);
 		//row the player's top is in
-		const playerTopAlignment = Math.floor(player.y / tileSize);
+		const playerTopAlignment = Math.floor(player.y / settings.tileSize);
 		//row the player's bottom is in
 		//-1 prevents floor from stopping movement
-		const playerBottomAlignment = Math.floor((player.y + player.height - 1) / tileSize);
+		const playerBottomAlignment = Math.floor((player.y + player.height - 1) / settings.tileSize);
 
 		//iterate level data and see if any of the intersected tiles are solid
 		positionIsValid = level.tiles.filter(t => 
@@ -191,11 +186,11 @@ class Player {
 		let floorRow = level.height;
 
 		//tile the player's left side is in
-		const playerLeftTileLocation = Math.floor(player.x / tileSize);
+		const playerLeftTileLocation = Math.floor(player.x / settings.tileSize);
 		//tile the player's right side is in
-		const playerRightTileLocation = Math.floor((player.x + player.width) / tileSize);
+		const playerRightTileLocation = Math.floor((player.x + player.width) / settings.tileSize);
 		//tile the bottom of the player is in
-		const playerYAlignment = Math.ceil((player.y + player.height) / tileSize);
+		const playerYAlignment = Math.ceil((player.y + player.height) / settings.tileSize);
 
 		//get tiles under player
 		const underTiles = level.tiles.filter(t => 
@@ -210,7 +205,7 @@ class Player {
 			}
 		})
 		//convert floor row to px
-		return ((floorRow) * tileSize);
+		return ((floorRow) * settings.tileSize);
 	}
 
 	getCeiling(){
@@ -218,11 +213,11 @@ class Player {
 		let ceilingRow = 0;
 
 		//tile the player's left side is in
-		const playerLeftTileLocation = Math.floor(player.x / tileSize);
+		const playerLeftTileLocation = Math.floor(player.x / settings.tileSize);
 		//tile the player's right side is in
-		const playerRightTileLocation = Math.floor((player.x + player.width) / tileSize);
+		const playerRightTileLocation = Math.floor((player.x + player.width) / settings.tileSize);
 		//tile the top of the player is in
-		const playerYAlignment = Math.ceil((player.y) / tileSize);
+		const playerYAlignment = Math.ceil((player.y) / settings.tileSize);
 
 		//get tiles above player
 		const overTiles = level.tiles.filter(t => 
@@ -237,7 +232,7 @@ class Player {
 			}
 		})
 		//convert floor row to px
-		return ((ceilingRow + 1) * tileSize);
+		return ((ceilingRow + 1) * settings.tileSize);
 	}
 
 	applyHit(damage: number, knockback: number, knockbackDirection: string){
@@ -256,17 +251,6 @@ class Player {
 		if (this.hitPoints <= 0) {
 			console.log('Oh dear, you are dead!')
 		}
-	}
-
-	addItem(weaponToAdd: Weapon){
-		if(this.weapons.length === 0){
-			weaponToAdd.isActive = true
-		}
-		this.weapons.push(weaponToAdd)
-	}
-
-	useItem(evt: MouseEvent){
-		this.weapons.filter(w => w.isActive)[0].use(evt)
 	}
 }
 

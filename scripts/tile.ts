@@ -1,8 +1,8 @@
-import {emitter, canvas, level} from './index' 
+import {emitter, canvas, level, settings} from './index' 
 
 class Tile {
-	public readonly w = 25
-	public readonly h = 25
+	public readonly w = settings.tileSize
+	public readonly h = settings.tileSize
   
 	public x = this.col * this.w
 	public y = this.row * this.h
