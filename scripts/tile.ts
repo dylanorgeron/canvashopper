@@ -1,8 +1,8 @@
 import {emitter, canvas, level, settings} from './index' 
 
 class Tile {
-	public readonly w = settings.tileSize
-	public readonly h = settings.tileSize
+	public w = settings.tileSize
+	public h = settings.tileSize
   
 	public x = this.col * this.w
 	public y = this.row * this.h
@@ -20,6 +20,8 @@ class Tile {
 	}
 
 	draw(){
+		this.h = settings.tileSize
+		this.w = settings.tileSize
 		//determine where to draw the tile
 		const fallsShort = ((this.col + 1) * this.w) - level.offsetX < 0
 		if(!fallsShort){

@@ -10,7 +10,7 @@ import Settings from './settings'
 export const settings = new Settings()
 export const emitter = new EventEmitter()
 export const keystates = new Keystates()
-export const level = new Level(100,25)
+export const level = new Level(24,24)
 // export const player = new Player(level.playerStartX, level.playerStartY)
 export const canvas = new Canvas()
 export const debug = new Debug()
@@ -23,7 +23,7 @@ function main(){
 	document.addEventListener("keyup", function(evt) {
 		keystates.setKey(evt.keyCode, false)
 	})
-	document.addEventListener('wheel', function(evt) {
+	document.getElementById("main-canvas").addEventListener('wheel', function(evt) {
 		settings.zoom(evt)
 	})
 
