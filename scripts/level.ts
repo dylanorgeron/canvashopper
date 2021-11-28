@@ -11,7 +11,7 @@ class Level {
     private tileSize = 0
 
     //used for generating the map
-    private cursor: number[] = [0,0]
+    private cursor: Cursor = new Cursor()
     
     public tiles:Tile[][] = []
     constructor(
@@ -37,6 +37,9 @@ class Level {
 
     renderMap(){
         //tabula rasa
+        this.cursor.x = 0
+        this.cursor.y = 0
+        this.tiles = []
         for(let col = 0; col < this.width; col++){
             var rowTiles: Tile[] = []
             for (let row = 0; row < this.height; row++) {
@@ -44,80 +47,129 @@ class Level {
             }
             this.tiles.push(rowTiles)
         }
+        
         //carve a path
-        var canMove = true
-        var lastTile: number[] = []
+        var pathTiles: Cursor[] = []
         var moves = 0
-        while(canMove){
+        while(true){
+            //loop detection
             moves++
             if(moves > 100){
                 console.log("exceeded 100 moves")
                 break;
             } 
-            this.carveTile(this.cursor)
+
             var options = new DirectionOptions()
 
-            /*
-            we always start top right, so if there's no starting
-            tile, we can't go up or left
-            */
-            if(!lastTile.length){
+            //we always start top right, so if there's no starting tile, we can't go up or left
+            if(!pathTiles.length){
                 options.up = false
                 options.left = false
             }
 
             //check out of bounds
-            if(this.cursor[0] == 0){
+            if(this.cursor.x == 0){
                 //at left boundary
                 options.left = false
             }
-            if(this.cursor[1] == 0){
+            if(this.cursor.y == 0){
                 //at top boundary
                 options.up = false
             }
-            if(this.cursor[0] == this.width - 1){
+            if(this.cursor.x == this.width - 1){
                 //at right boundary
                 options.right = false
             }
-            if(this.cursor[1] == this.height - 1){
+            if(this.cursor.y == this.height - 1){
                 //at bottom boundary
                 options.down = false
+            }
+
+            //check whats already been carved
+            if(this.cursor.x == 0 || !this.tiles[this.cursor.x - 1][this.cursor.y].isSolid){
+                //left tile is already hollow
+                options.left = false
+            }
+            if(this.cursor.y == 0 || !this.tiles[this.cursor.x][this.cursor.y -1 ].isSolid){
+                //up tile is already hollow
+                options.up = false
+            }
+            if(this.cursor.y == this.height -1 || !this.tiles[this.cursor.x][this.cursor.y + 1].isSolid){
+                //down tile is already hollow
+                options.down = false
+            }
+            if(this.cursor.x == this.width -1  || !this.tiles[this.cursor.x + 1][this.cursor.y].isSolid){
+                //right tile is already hollow
+                options.right = false
             }
 
             //whats left
             var possibleMoves = options.getPossibleMoves()
             //out of moves
             if(!possibleMoves.length){
-                canMove = false
                 console.log("out of moves")
-            }else{
-                console.log("can move " + possibleMoves.join())
-                //set cursor
-                var direction = possibleMoves[Math.floor(Math.random() * possibleMoves.length)]
-                console.log("moving " + direction)
-                this.setCursorForDirection(direction)
-                console.log("cursor now at " + this.cursor)
+                break
             }
+            // console.log("can move " + possibleMoves.join())
+
+            //check if we changed directions
+            var changedDirection = false
+            if(pathTiles.length > 2){
+                var cornerCursor = pathTiles[pathTiles.length - 2]
+                console.log("Two ago: " + cornerCursor.x + ", " + cornerCursor.y)
+                console.log("Current: " + this.cursor.x + ", " + this.cursor.y)
+                console.log("-----")
+                changedDirection = 
+                this.cursor.x != cornerCursor.x && 
+                this.cursor.y != cornerCursor.y
+                var newDirection = ""
+                if(changedDirection){
+                    if(this.cursor.x != cornerCursor.x){
+                        if(this.cursor.x > cornerCursor.x){
+                            newDirection = "right"
+                        }else{
+                            newDirection = "left"
+                        }
+                    }
+                    if(this.cursor.y != cornerCursor.y){
+                        if(this.cursor.y > cornerCursor.y){
+                            newDirection = "down"
+                        }else{
+                            newDirection = "up"
+                        }
+                    }
+                    console.log(newDirection)
+                }
+            }
+            //pick a direction based on availability and past movement
+            var direction = possibleMoves[Math.floor(Math.random() * possibleMoves.length)]
+            
+            this.setCursorForDirection(direction)
+            // console.log("moving " + direction)
+            // console.log("cursor now carving at " + this.cursor.x + ", " + this.cursor.y)
+            this.carveTile(this.cursor)
+            pathTiles.push(new Cursor(this.cursor.x, this.cursor.y))
         }
+        console.log(pathTiles)
     }
     
-    carveTile(cursor: number[]){
-        this.tiles[cursor[0]][cursor[1]].isSolid = false
+    carveTile(cursor: Cursor){
+        this.tiles[cursor.x][cursor.y].isSolid = false
     }
     
     setCursorForDirection(direction: string){
         switch (direction) {
             case 'up':
-                this.cursor[1]--
+                this.cursor.y--
                 break;
             case 'down':
-                this.cursor[1]++
+                this.cursor.y++
                 break;
             case 'left':
-                this.cursor[0]--
+                this.cursor.x--
                 break;
             case 'right':
-                this.cursor[0]++
+                this.cursor.x++
                 break;
         }
     }
@@ -140,6 +192,15 @@ class DirectionOptions {
         if(this.right) options.push('right')
         if(this.left) options.push('left')
         return options
+    }
+}
+
+class Cursor{ 
+    public x: number = 0
+    public y: number = 0
+    constructor(x: number, y: number){
+        this.x = x
+        this.y = y
     }
 }
 

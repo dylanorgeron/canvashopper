@@ -12,6 +12,12 @@ body{
 #debugger{
     color: white;
     position: absolute;
+    top: 50px;
+    left: 10px;
+}
+
+#generate-button{
+    position: absolute;
     top: 10px;
     left: 10px;
 }
