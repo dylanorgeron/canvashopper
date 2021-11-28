@@ -27,7 +27,7 @@ class Keystates {
                 break;
             case this.RightArrow:
             case this.DKey:
-            this.RightArrowIsActive = state;
+                this.RightArrowIsActive = state;
                 if(state){
                     this.LeftArrowIsActive = false;
                 }

@@ -10,9 +10,9 @@ import Popup from './popup'
 
 class Player {
 	public id = 1
-	public height = 40
-	public width = 15
-	public fallSpeed = 0
+	public height = 5
+	public width = 5
+	public fallSpeed0 = 0
 	public jumpSpeed = 0
 	public canJump = true	
 	public xForCamera = 0
@@ -45,7 +45,7 @@ class Player {
 		//pre movement y
 		var currentY = this.y
 		//it is inescapable
-		this.applyGravity()
+		// this.applyGravity()
 		//if our y hasn't changed after applying gravity,
 		//we are standing on ground and can jump
 		this.canJump = currentY === this.y;
@@ -56,24 +56,23 @@ class Player {
 		if (keystates.RightArrowIsActive) {
 			this.direction = 'right'
 			delta = this.moveSpeed
+			this.moveHorizontal(delta)
 		} 
 		if (keystates.LeftArrowIsActive) {
 			this.direction = 'left'
 			delta = this.moveSpeed * -1
+			this.moveHorizontal(delta)
 		}
-		//move player based on knockback
-		if(this.knockback){
-			if(this.knockbackDirection == 'right'){
-				delta += this.knockback
-			}else{
-				delta -= this.knockback
-			}
-			//knockback decay
-			this.knockback--
+		if (keystates.UpArrowIsActive) {
+			this.direction = 'up'
+			delta = this.moveSpeed * -1
+			this.moveVertical(delta)
 		}
-
-		//move player
-		if(delta) this.moveHorizontal(delta)
+		if (keystates.DownArrowIsActive) {
+			this.direction = 'down'
+			delta = this.moveSpeed
+			this.moveVertical(delta)
+		}
 
 		//jump
 		if(keystates.SpaceIsActive && this.canJump) this.jump()
@@ -87,6 +86,36 @@ class Player {
 		debug.playerXPosition = this.x
 		debug.playerYPosition = this.y
 		debug.direction = this.direction
+	}
+
+	moveVertical(delta: number){
+		//move down
+		if(delta > 0){
+			for (let i = 1; i <= delta; i++) {
+				this.y++
+				if(!this.validatePosition(i)){
+					this.y--
+					break
+				}
+				//set level offset to keep player centered on canvas
+				if(this.y + (this.width / 2) > canvas.width / 2){
+					level.offsetY++
+				}
+			}
+		//move up
+		}else{
+			for (let i = -1; i >= delta; i--) {
+				this.y--
+				if(!this.validatePosition(i)){
+					this.y++
+					break
+				}
+				//set level offset to keep player centered on canvas
+				if(level.offsetY > 0){
+					level.offsetY--
+				}
+			}
+		}
 	}
 
 	moveHorizontal(delta: number){
@@ -140,15 +169,18 @@ class Player {
 		const playerBottomAlignment = Math.floor((player.y + player.height - 1) / settings.tileSize);
 
 		//iterate level data and see if any of the intersected tiles are solid
-		positionIsValid = level.tiles.filter(t => 
-			(t.col === playerRightAlignment || t.col === playerLeftAlignment) &&
-			(t.row === playerTopAlignment || t.row === playerBottomAlignment) &&
-			t.isSolid
-		).length === 0 &&
-		player.x >= 0 && player.x <= level.width * level.tiles[0].w - player.width - 1
+		positionIsValid = level.tiles.filter(r =>
+			r.filter(t =>
+				(t.col === playerRightAlignment || t.col === playerLeftAlignment) &&
+				(t.row === playerTopAlignment || t.row === playerBottomAlignment) &&
+				t.isSolid
+			).length === 0
+		).length === 0 
+		&& player.x >= 0 
+		&& player.x <= level.width * settings.tileSize - player.width - 1
 
 		//return validity of position
-		return positionIsValid;
+		return true;
 	}
 
 	applyGravity(){

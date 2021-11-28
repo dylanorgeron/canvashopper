@@ -6,12 +6,12 @@ class Level {
     //rather than starting the player at 0,0 offset
     public offsetX = 0
     public offsetY = 0
-    public playerStartX = 100
-    public playerStartY = 300
+    public playerStartX = 10
+    public playerStartY = 10
     private tileSize = 0
 
     //used for generating the map
-    private cursor: Cursor = new Cursor()
+    private cursor: Cursor = new Cursor(0,0)
     
     public tiles:Tile[][] = []
     constructor(
@@ -47,10 +47,11 @@ class Level {
             }
             this.tiles.push(rowTiles)
         }
-        
+        this.tiles[0][0].isSolid = false;
         //carve a path
         var pathTiles: Cursor[] = []
         var moves = 0
+        var extraMove = ""
         while(true){
             //loop detection
             moves++
@@ -113,13 +114,10 @@ class Level {
             // console.log("can move " + possibleMoves.join())
 
             //check if we changed directions
-            var changedDirection = false
+            var newDirection = ""
             if(pathTiles.length > 2){
-                var cornerCursor = pathTiles[pathTiles.length - 2]
-                console.log("Two ago: " + cornerCursor.x + ", " + cornerCursor.y)
-                console.log("Current: " + this.cursor.x + ", " + this.cursor.y)
-                console.log("-----")
-                changedDirection = 
+                var cornerCursor = pathTiles[pathTiles.length - 3]
+                var changedDirection = 
                 this.cursor.x != cornerCursor.x && 
                 this.cursor.y != cornerCursor.y
                 var newDirection = ""
@@ -138,19 +136,22 @@ class Level {
                             newDirection = "up"
                         }
                     }
-                    console.log(newDirection)
                 }
+                extraMove = newDirection
             }
             //pick a direction based on availability and past movement
-            var direction = possibleMoves[Math.floor(Math.random() * possibleMoves.length)]
+            var direction = possibleMoves.indexOf(newDirection) > 0 ? newDirection
+            : possibleMoves[Math.floor(Math.random() * possibleMoves.length)]
             
+            if(extraMove && possibleMoves.includes(extraMove)){
+                direction = extraMove
+                extraMove = ""
+            }
+
             this.setCursorForDirection(direction)
-            // console.log("moving " + direction)
-            // console.log("cursor now carving at " + this.cursor.x + ", " + this.cursor.y)
             this.carveTile(this.cursor)
             pathTiles.push(new Cursor(this.cursor.x, this.cursor.y))
         }
-        console.log(pathTiles)
     }
     
     carveTile(cursor: Cursor){
