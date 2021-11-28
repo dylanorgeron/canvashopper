@@ -27,9 +27,9 @@ class Tile {
 		if(!fallsShort){
 			var thickness = 1
 			canvas.canvasCTX.fillStyle = '#DDD'
-			canvas.canvasCTX.fillRect(this.x - level.offsetX - (thickness), this.y - (thickness), this.w + (thickness * 2), this.h + (thickness * 2))
+			canvas.canvasCTX.fillRect(this.x - level.offsetX - (thickness), this.y - level.offsetY - (thickness), this.w + (thickness * 2), this.h + (thickness * 2))
 			canvas.canvasCTX.fillStyle = this.isSolid ? '#aaa' : '#FFF'
-			canvas.canvasCTX.fillRect(this.x - level.offsetX, this.y, this.w, this.h)
+			canvas.canvasCTX.fillRect(this.x - level.offsetX, this.y - level.offsetY, this.w, this.h)
 		}
 	}
 }

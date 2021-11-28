@@ -38,7 +38,7 @@ class Player {
 	draw(){
 		//draw player
 		canvas.canvasCTX.fillStyle = '#000000'
-		canvas.canvasCTX.fillRect(this.xForCamera, this.y, this.width, this.height)
+		canvas.canvasCTX.fillRect(this.xForCamera, this.yForCamera, this.width, this.height)
 	}
 
 	update(){
@@ -66,12 +66,11 @@ class Player {
 			this.moveVertical(delta)
 		}
 
-		//jump
-		if(keystates.SpaceIsActive && this.canJump) this.jump()
-
-		//prevent the player from moving past the halfway point of the screen
 		if(level.offsetX === 0){
 			this.xForCamera = this.x
+		}
+		if(level.offsetY === 0){
+			this.yForCamera = this.y
 		}
 
 		//log player stats to debugger
@@ -85,7 +84,7 @@ class Player {
 		if(delta > 0){
 			for (let i = 1; i <= delta; i++) {
 				this.y++
-				if(!this.validatePosition(i)){
+				if(!this.validatePosition()){
 					this.y--
 					break
 				}
@@ -98,7 +97,7 @@ class Player {
 		}else{
 			for (let i = -1; i >= delta; i--) {
 				this.y--
-				if(!this.validatePosition(i)){
+				if(!this.validatePosition()){
 					this.y++
 					break
 				}
@@ -115,7 +114,7 @@ class Player {
 		if(delta > 0){
 			for (let i = 1; i <= delta; i++) {
 				this.x++
-				if(!this.validatePosition(i)){
+				if(!this.validatePosition()){
 					this.x--
 					break
 				}
@@ -128,7 +127,7 @@ class Player {
 		}else{
 			for (let i = -1; i >= delta; i--) {
 				this.x--
-				if(!this.validatePosition(i)){
+				if(!this.validatePosition()){
 					this.x++
 					break
 				}
@@ -140,19 +139,18 @@ class Player {
 		}
 	}
 
-	validatePosition(delta: number){
-		const player = this
+	validatePosition(){
 		let positionIsValid = true
 		//get all tiles player is occupying, check for collisions
 		//col the player's left side is in
-		const playerLeftAlignment = Math.floor(player.x / settings.tileSize);
+		const playerLeftAlignment = Math.floor(this.x / settings.tileSize);
 		//col the player's right side is in
-		const playerRightAlignment = Math.floor((player.x + player.width) / settings.tileSize);
+		const playerRightAlignment = Math.floor((this.x + this.width) / settings.tileSize);
 		//row the player's top is in
-		const playerTopAlignment = Math.floor(player.y / settings.tileSize);
+		const playerTopAlignment = Math.floor(this.y / settings.tileSize);
 		//row the player's bottom is in
 		//-1 prevents floor from stopping movement
-		const playerBottomAlignment = Math.floor((player.y + player.height - 1) / settings.tileSize);
+		const playerBottomAlignment = Math.floor((this.y + this.height - 1) / settings.tileSize);
 
 		//check level data and see if any of the intersected tiles are solid
 		//at most, four tiles to check
