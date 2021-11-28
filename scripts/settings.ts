@@ -1,5 +1,5 @@
 class Settings {
-    public tileSize = 100
+    public tileSize = 200
 
     zoom(event: WheelEvent){
         event.preventDefault()
