@@ -6,6 +6,8 @@ class Keystates {
     public readonly Space = 32;
     public readonly AKey = 65;
     public readonly DKey = 68;
+    public readonly WKey = 87;
+    public readonly SKey = 83;
 
     public LeftArrowIsActive = false;
     public UpArrowIsActive = false;
@@ -22,7 +24,8 @@ class Keystates {
                     this.RightArrowIsActive = false;
                 }
                 break;
-            case this.UpArrow:
+            case this.WKey:
+                case this.UpArrow:
                 this.UpArrowIsActive = state;
                 break;
             case this.RightArrow:
@@ -32,6 +35,7 @@ class Keystates {
                     this.LeftArrowIsActive = false;
                 }
                 break;
+            case this.SKey:
             case this.DownArrow:
                 this.DownArrowIsActive = state;
                 break;
