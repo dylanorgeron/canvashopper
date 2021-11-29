@@ -25,7 +25,7 @@ class Player {
 	public hitPoints: number = 100
 	public knockback: number = 0
 	public knockbackDirection: string = ""
-	public moveSpeed: number = 7
+	public moveSpeed: number = 5
 
 	constructor(
 		public x: number, 
@@ -151,6 +151,13 @@ class Player {
 		//row the player's bottom is in
 		//-1 prevents floor from stopping movement
 		const playerBottomAlignment = Math.floor((this.y + this.height - 1) / settings.tileSize);
+
+		if(
+			playerBottomAlignment < 0 ||
+			playerTopAlignment < 0 ||
+			playerLeftAlignment < 0 ||
+			playerRightAlignment < 0 
+		) return false;
 
 		//check level data and see if any of the intersected tiles are solid
 		//at most, four tiles to check

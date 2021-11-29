@@ -7,6 +7,7 @@ class Tile {
 	public x = this.col * this.w
 	public y = this.row * this.h
   
+	public fillColor = ""
 	constructor(
 		public col: number,
 		public row: number,
@@ -28,7 +29,7 @@ class Tile {
 			var thickness = 1
 			canvas.canvasCTX.fillStyle = '#DDD'
 			canvas.canvasCTX.fillRect(this.x - level.offsetX - (thickness), this.y - level.offsetY - (thickness), this.w + (thickness * 2), this.h + (thickness * 2))
-			canvas.canvasCTX.fillStyle = this.isSolid ? '#aaa' : '#FFF'
+			canvas.canvasCTX.fillStyle = this.fillColor ?  this.fillColor : this.isSolid ? '#aaa' : '#FFF'
 			canvas.canvasCTX.fillRect(this.x - level.offsetX, this.y - level.offsetY, this.w, this.h)
 		}
 	}
