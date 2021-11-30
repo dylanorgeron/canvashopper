@@ -2,7 +2,7 @@ import Canvas from './canvas'
 import Debug from './debug'
 import {EventEmitter} from 'eventemitter3'
 import Keystates from './keystates'
-import Level from './level'
+import Level from './map-generation/level'
 import Player from './player'
 import Settings from './settings'
 

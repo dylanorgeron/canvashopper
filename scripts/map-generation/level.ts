@@ -1,6 +1,10 @@
-import { LanguageVariant, SignatureKind } from 'typescript'
-import {emitter, debug, settings, level} from './index'
+import {emitter, debug, settings} from '../index'
 import Tile from './tile'
+import Room from './room'
+import Direction from './direction'
+import { roomPrefabs } from './room-prefab-config'
+import Coordinate from './coordinate'
+import RoomSize from './room-size'
 
 class Level {
     //offset data is stored in the level so that each level can load the player in at a different point,
@@ -55,12 +59,14 @@ class Level {
 
         while(canMove){
             moves++ 
-            if(moves >= 1){
+            if(moves >= 3){
                 canMove = false
             } 
             let possibleRooms = this.getPossibleRooms(rooms[rooms.length - 1])
-            let chosenRoom = possibleRooms[3]
-            console.log("exiting from " + chosenRoom.previousRoomDirection)
+            let chosenRoom = possibleRooms[Math.floor(Math.random() * possibleRooms.length)]
+            console.log("going " + this.getOppositeDirection(chosenRoom.previousRoomDirection) + " into")
+            console.log(chosenRoom)
+            
             rooms.push(chosenRoom)
             this.carveRoom(chosenRoom)
             this.carveConnection(chosenRoom)
@@ -73,7 +79,27 @@ class Level {
         switch (room.previousRoomDirection) {
             case Direction.up:
                 this.tiles[ingress.x][ingress.y - 1].isSolid = false
+                this.tiles[ingress.x][ingress.y - 1].fillColor = "#aaffaa"
                 this.tiles[ingress.x][ingress.y - 2].isSolid = false
+                this.tiles[ingress.x][ingress.y - 2].fillColor = "#aaffaa"
+                break;
+            case Direction.down:
+                this.tiles[ingress.x][ingress.y + 1].isSolid = false
+                this.tiles[ingress.x][ingress.y + 1].fillColor = "#aaffaa"
+                this.tiles[ingress.x][ingress.y + 2].isSolid = false
+                this.tiles[ingress.x][ingress.y + 2].fillColor = "#aaffaa"
+                break;
+            case Direction.right:
+                this.tiles[ingress.x + 1][ingress.y].isSolid = false
+                this.tiles[ingress.x + 1][ingress.y].fillColor = "#aaffaa"
+                this.tiles[ingress.x + 2][ingress.y].isSolid = false
+                this.tiles[ingress.x + 2][ingress.y].fillColor = "#aaffaa"
+                break;
+            case Direction.left:
+                this.tiles[ingress.x - 1][ingress.y].isSolid = false
+                this.tiles[ingress.x - 1][ingress.y].fillColor = "#aaffaa"
+                this.tiles[ingress.x - 2][ingress.y].isSolid = false
+                this.tiles[ingress.x - 2][ingress.y].fillColor = "#aaffaa"
                 break;
             default:
                 break;
@@ -89,12 +115,12 @@ class Level {
             }
         }
         room.portals.forEach(p => {
-            // this.tiles[p.x][p.y].fillColor = "#ffaaaa"
+            this.tiles[p.x][p.y].fillColor = "#ffaaaa"
         })
         return room
     }
 
-    getPossibleRooms(room: Room){
+     getPossibleRooms(room: Room){
         let possibleRooms: Room[] = []
 
         //check each portal
@@ -102,27 +128,33 @@ class Level {
             //draw new rooms based on ingress
             //keep in mind the ingress is the centerpoint of the room
             //adjust accordingly for new origin
-            RoomPrefabs.forEach(prefab => {
+            roomPrefabs.forEach(prefab => {
                 let proposedOrigin = new Coordinate(0,0)
                 //get origin for ingress and prefab
                 switch (portal.direction) {
                     //portal direction is the direction of travel
-                    //entering new room from bottom
                     case Direction.up:
                         proposedOrigin.x = portal.x - (prefab.w - 1) / 2
-                        proposedOrigin.y = portal.y + 3
+                        proposedOrigin.y = portal.y - 3
                         break;
-                    //entering new room from top
                     case Direction.down:
                         proposedOrigin.x = portal.x - (prefab.w - 1) / 2
                         proposedOrigin.y = portal.y + 3
+                    break;
+                    case Direction.left:
+                        proposedOrigin.x = portal.x - prefab.w - 2
+                        proposedOrigin.y = portal.y + (prefab.h - 1) / 2
+                    break;
+                    case Direction.right:
+                        proposedOrigin.x = portal.x + 3
+                        proposedOrigin.y = portal.y - (prefab.h - 1) / 2
                     break;
                     default:
                         break;
                 }
                 //generate new room from proposed origin
                 let newRoom = new Room(
-                    RoomSize.large,
+                    prefab.size,
                     new Coordinate(proposedOrigin.x, proposedOrigin.y),
                     this.getOppositeDirection(portal.direction))
                 //check room collision against carved tiles
@@ -148,82 +180,5 @@ class Level {
         }
     }
 }
-
-
-
-class RoomPrefabConfig{
-    constructor(
-        public name: RoomSize,
-        public w: number,
-        public h: number
-    ){}
-}
-
-enum RoomSize{
-    small = 0,
-    medium = 1,
-    large = 2
-}
-
-enum Direction{
-    up = "up",
-    down = "down",
-    left = "left",
-    right = "right"
-}
-
-class Room{
-    public portals: Portal[] = []
-    public w: number = 0
-    public h: number = 0
-    
-    constructor(public size: RoomSize, public origin:Coordinate, public previousRoomDirection: Direction){
-        //determine sizes
-        switch (size) {
-            case RoomSize.small:
-                this.w = 3
-                this.h = 3
-                break;
-            case RoomSize.medium:
-                this.w = 5
-                this.h = 5
-                break;
-            case RoomSize.large:
-                this.w = 7
-                this.h = 7
-                break;
-            default:
-                break;
-        }
-        //determine portal coordinates
-        //up
-        this.portals.push(new Portal(origin.x + (this.w - 1) / 2, origin.y, Direction.up))
-        //down
-        this.portals.push(new Portal(origin.x + (this.w - 1) / 2, origin.y + this.h -1, Direction.down))
-        //left
-        this.portals.push(new Portal(origin.x, origin.y + (this.h - 1) / 2, Direction.left))
-        //right
-        this.portals.push(new Portal(origin.x + this.w - 1, origin.y + (this.h - 1) / 2, Direction.right))
-    }
-}
-
-class Coordinate{
-    constructor(public x: number, public y: number){}
-}
-
-class Portal extends Coordinate{
-    public direction: Direction
-    
-    constructor(x: number, y: number, direction: Direction){
-        super(x, y)
-        this.direction = direction
-    }
-}
-
-const RoomPrefabs: RoomPrefabConfig[] = [
-    new RoomPrefabConfig(RoomSize.large, 7, 7),
-    new RoomPrefabConfig(RoomSize.medium, 5, 5),
-    new RoomPrefabConfig(RoomSize.small, 3, 3),
-]
 
 export default Level
