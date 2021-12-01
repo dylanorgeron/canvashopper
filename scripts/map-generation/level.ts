@@ -54,7 +54,7 @@ class Level {
         let rooms: Room[] = []
         
         //hardcode first room
-        rooms.push(new Room(RoomSize.large, new Coordinate(0,0), Direction.left))
+        rooms.push(new Room(RoomSize.large, new Coordinate(10,10), Direction.left))
         this.carveRoom(rooms[0])
 
         while(canMove){
@@ -135,15 +135,15 @@ class Level {
                     //portal direction is the direction of travel
                     case Direction.up:
                         proposedOrigin.x = portal.x - (prefab.w - 1) / 2
-                        proposedOrigin.y = portal.y - 3
+                        proposedOrigin.y = portal.y - 2 - prefab.h
                         break;
                     case Direction.down:
                         proposedOrigin.x = portal.x - (prefab.w - 1) / 2
-                        proposedOrigin.y = portal.y + 3
+                        proposedOrigin.y = portal.y - 2 - prefab.h
                     break;
                     case Direction.left:
                         proposedOrigin.x = portal.x - prefab.w - 2
-                        proposedOrigin.y = portal.y + (prefab.h - 1) / 2
+                        proposedOrigin.y = portal.y - (prefab.h - 1) / 2
                     break;
                     case Direction.right:
                         proposedOrigin.x = portal.x + 3
