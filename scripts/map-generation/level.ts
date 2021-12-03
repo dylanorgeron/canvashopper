@@ -54,12 +54,12 @@ class Level {
         let rooms: Room[] = []
         
         //hardcode first room
-        rooms.push(new Room(RoomSize.large, new Coordinate(10,10), Direction.left))
+        rooms.push(new Room(RoomSize.large, new Coordinate(0,0), Direction.left))
         this.carveRoom(rooms[0])
 
         while(canMove){
             moves++ 
-            if(moves >= 3){
+            if(moves >= 5){
                 canMove = false
             } 
             let possibleRooms = this.getPossibleRooms(rooms[rooms.length - 1])
@@ -139,7 +139,7 @@ class Level {
                         break;
                     case Direction.down:
                         proposedOrigin.x = portal.x - (prefab.w - 1) / 2
-                        proposedOrigin.y = portal.y - 2 - prefab.h
+                        proposedOrigin.y = portal.y + 3
                     break;
                     case Direction.left:
                         proposedOrigin.x = portal.x - prefab.w - 2
@@ -159,7 +159,9 @@ class Level {
                     this.getOppositeDirection(portal.direction))
                 //check room collision against carved tiles
                 if(proposedOrigin.x >= 0 && proposedOrigin.y >= 0){
-                    possibleRooms.push(newRoom)
+                    if(portal.direction == Direction.down || portal.direction == Direction.right){
+                        possibleRooms.push(newRoom)
+                    }
                 }
             })
         })
