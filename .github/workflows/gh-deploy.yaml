@@ -2,6 +2,12 @@ name: Build and Deploy
 on: [push]
 jobs:
   build-and-deploy:
+    - name: Checkout 🛎️
+      uses: actions/checkout@v2.3.1
+
+    - name: Install and Build 🔧
+      run: |
+        yarn build
     runs-on: ubuntu-latest
     steps:
       - name: Deploy 🚀
