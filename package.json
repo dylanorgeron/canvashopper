@@ -23,6 +23,8 @@
     "glob-parent": "5.1.2",
     "nth-check": "^2.0.1",
     "parcel-bundler": "^1.5.1",
+    "postcss": "^7.0.36",
+    "postcss-cssnext": "^3.1.0",
     "typescript": "^2.7.1",
     "yarn": "^1.22.0"
   }
