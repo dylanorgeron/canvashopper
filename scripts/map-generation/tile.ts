@@ -29,17 +29,26 @@ class Tile {
 		//determine where to draw the tile
 		const fallsShort = ((this.col + 1) * this.w) - level.offsetX < 0
 		if(!fallsShort){
-			if(this.isSolid){
+			if(settings.drawTextures){
+				if(this.isSolid){
+					let thickness = 1
+					let origin = new Coordinate(this.x - level.offsetX - (thickness), this.y - level.offsetY - (thickness))
+					canvas.canvasCTX.fillStyle = '#DDD'
+					canvas.canvasCTX.fillRect(origin.x, origin.y, this.w + (thickness * 2), this.h + (thickness * 2))
+					canvas.canvasCTX.fillStyle = this.fillColor ? this.fillColor : '#AAA'
+					canvas.canvasCTX.fillRect(this.x - level.offsetX, this.y - level.offsetY, this.w, this.h)
+				}else{
+					let img = document.getElementById('floor')
+					let origin = new Coordinate(this.x - level.offsetX, this.y - level.offsetY)
+					canvas.canvasCTX.drawImage(img, origin.x, origin.y, this.w, this.h)
+				}
+			}else{
 				let thickness = 1
 				let origin = new Coordinate(this.x - level.offsetX - (thickness), this.y - level.offsetY - (thickness))
 				canvas.canvasCTX.fillStyle = '#DDD'
 				canvas.canvasCTX.fillRect(origin.x, origin.y, this.w + (thickness * 2), this.h + (thickness * 2))
-				canvas.canvasCTX.fillStyle = this.fillColor ? this.fillColor : '#AAA'
+				canvas.canvasCTX.fillStyle = this.fillColor ? this.fillColor : this.isSolid ? '#AAA' : '#FFF'
 				canvas.canvasCTX.fillRect(this.x - level.offsetX, this.y - level.offsetY, this.w, this.h)
-			}else{
-				let img = document.getElementById('floor')
-				let origin = new Coordinate(this.x - level.offsetX, this.y - level.offsetY)
-				canvas.canvasCTX.drawImage(img, origin.x, origin.y, this.w, this.h)
 			}
 		}
 	}

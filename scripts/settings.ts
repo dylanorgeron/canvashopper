@@ -1,5 +1,6 @@
 class Settings {
     public tileSize = 15
+    public drawTextures = false
 
     zoom(event: WheelEvent){
         event.preventDefault()
