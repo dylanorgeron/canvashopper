@@ -4,7 +4,7 @@
   "description": "html5 platformer",
   "main": "index.js",
   "scripts": {
-    "build": "parcel build index.html",
+    "build": "parcel build index.html --public-url ./",
     "start": "parcel index.html"
   },
   "repository": {
