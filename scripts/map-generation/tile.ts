@@ -4,15 +4,17 @@ import Coordinate from './coordinate'
 class Tile {
 	public w = settings.tileSize
 	public h = settings.tileSize
-  
+	
+	//position on map in pixels
 	public x: number
 	public y: number
   
 	public fillColor = ""
+	public img = ""
 	constructor(
 		public col: number,
 		public row: number,
-		public isSolid: boolean
+		public isSolid: boolean,
 	) {  
 		emitter.on('updatePhysics', this.update.bind(this))
 		emitter.on('renderObjects', this.draw.bind(this))

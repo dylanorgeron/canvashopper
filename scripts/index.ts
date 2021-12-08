@@ -30,15 +30,21 @@ function main(){
 		level.renderMap()
 	})
 
-	//calc physics at 60fps
-	setInterval(function(){
-		emitter.emit('updatePhysics')
-	}, 16)
+	emitter.emit('updatePhysics')
+	emitter.emit('renderObjects')
 
-	//draw at 60 fps as well
-	setInterval(function(){
-		emitter.emit('renderObjects')
-	}, 16)
+
+	// const framerate = 32
+
+	// //calc physics at 60fps
+	// setInterval(function(){
+	// 	emitter.emit('updatePhysics')
+	// }, framerate)
+
+	// //draw at 60 fps as well
+	// setInterval(function(){
+	// 	emitter.emit('renderObjects')
+	// }, framerate)
 }
 
 window.onload = function(){
