@@ -4,33 +4,23 @@ import {
 	level,
 	canvas,
 	debug,
-	settings
+	settings,
+	camera
 } from './index'
-import Popup from './popup'
 
 class Player {
 	public id = 1
 	public height = 5
 	public width = 5
-	public fallSpeed0 = 0
-	public jumpSpeed = 0
-	public canJump = true	
-	public xForCamera = 0
-	public yForCamera = 0
 	public direction = 'right'
-	public activeAttackHitboxWidth = 0
-	public activeAttackHitboxHeight = 0
-	public activeAttackDuration = 0
-	public enemiesHit:number[] = []
-	public hitPoints: number = 100
-	public knockback: number = 0
-	public knockbackDirection: string = ""
 	public moveSpeed: number = 5
 
 	constructor(
 		public x: number, 
 		public y: number
 	){
+		camera.originX = x - canvas.width / 2
+		camera.originY = y - canvas.height / 2
 		emitter.on('updatePhysics', this.update.bind(this))
 		emitter.on('renderObjects', this.draw.bind(this))
 	}
@@ -38,7 +28,12 @@ class Player {
 	draw(){
 		//draw player
 		canvas.canvasCTX.fillStyle = '#000000'
-		canvas.canvasCTX.fillRect(this.xForCamera, this.yForCamera, this.width, this.height)
+		canvas.canvasCTX.fillRect(
+			canvas.width / 2 - this.width /2,
+			canvas.height / 2 - this.height /2,
+			this.width, 
+			this.height
+		)
 	}
 
 	update(){
@@ -66,17 +61,9 @@ class Player {
 			this.moveVertical(delta)
 		}
 
-		if(level.offsetX === 0){
-			this.xForCamera = this.x
-		}
-		if(level.offsetY === 0){
-			this.yForCamera = this.y
-		}
-
 		//log player stats to debugger
 		debug.playerXPosition = this.x
 		debug.playerYPosition = this.y
-		debug.direction = this.direction
 	}
 
 	moveVertical(delta: number){
@@ -88,10 +75,7 @@ class Player {
 					this.y--
 					break
 				}
-				//set level offset to keep player centered on canvas
-				if(this.y + (this.width / 2) > canvas.width / 2){
-					level.offsetY++
-				}
+				camera.originY++
 			}
 		//move up
 		}else{
@@ -101,10 +85,7 @@ class Player {
 					this.y++
 					break
 				}
-				//set level offset to keep player centered on canvas
-				if(level.offsetY > 0){
-					level.offsetY--
-				}
+				camera.originY--
 			}
 		}
 	}
@@ -118,10 +99,7 @@ class Player {
 					this.x--
 					break
 				}
-				//set level offset to keep player centered on canvas
-				if(this.x + (this.width / 2) > canvas.width / 2){
-					level.offsetX++
-				}
+				camera.originX++
 			}
 		//move left
 		}else{
@@ -131,10 +109,7 @@ class Player {
 					this.x++
 					break
 				}
-				//set level offset to keep player centered on canvas
-				if(level.offsetX > 0){
-					level.offsetX--
-				}
+				camera.originX--
 			}
 		}
 	}
@@ -152,44 +127,26 @@ class Player {
 		//-1 prevents floor from stopping movement
 		const playerBottomAlignment = Math.floor((this.y + this.height - 1) / settings.tileSize);
 
-		if(
-			playerBottomAlignment < 0 ||
-			playerTopAlignment < 0 ||
-			playerLeftAlignment < 0 ||
-			playerRightAlignment < 0 
-		) return false;
+		// if(
+		// 	playerBottomAlignment < 0 ||
+		// 	playerTopAlignment < 0 ||
+		// 	playerLeftAlignment < 0 ||
+		// 	playerRightAlignment < 0 
+		// ) return false;
 
 		//check level data and see if any of the intersected tiles are solid
 		//at most, four tiles to check
 		//top left
-		if(level.tiles[playerLeftAlignment][playerTopAlignment].isSolid) positionIsValid = false
-		//top right
-		if(level.tiles[playerRightAlignment][playerTopAlignment].isSolid) positionIsValid = false
-		//bottom left
-		if(level.tiles[playerLeftAlignment][playerBottomAlignment].isSolid) positionIsValid = false
-		//bottom right
-		if(level.tiles[playerRightAlignment][playerBottomAlignment].isSolid) positionIsValid = false
+		// if(level.tiles[playerLeftAlignment][playerTopAlignment].isSolid) positionIsValid = false
+		// //top right
+		// if(level.tiles[playerRightAlignment][playerTopAlignment].isSolid) positionIsValid = false
+		// //bottom left
+		// if(level.tiles[playerLeftAlignment][playerBottomAlignment].isSolid) positionIsValid = false
+		// //bottom right
+		// if(level.tiles[playerRightAlignment][playerBottomAlignment].isSolid) positionIsValid = false
 
 		//return validity of position
 		return positionIsValid;
-	}
-
-	applyHit(damage: number, knockback: number, knockbackDirection: string){
-		//logic for decrementing hitpoints
-		this.hitPoints -= damage
-
-		//send him flying
-		this.knockback = knockback
-		this.jumpSpeed = 8
-		this.knockbackDirection = knockbackDirection
-
-		//hit splat
-		new Popup(damage.toString(), this.x, this.y,)
-
-		//death
-		if (this.hitPoints <= 0) {
-			console.log('Oh dear, you are dead!')
-		}
 	}
 }
 

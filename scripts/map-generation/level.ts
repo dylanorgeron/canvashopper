@@ -11,44 +11,16 @@ class Level {
     //rather than starting the player at 0,0 offset
     public offsetX = 0
     public offsetY = 0
-    public playerStartX = 10
-    public playerStartY = 10
-    private tileSize = 0
-
     public rooms: Room[] = []
-    public tiles:Tile[][] = []
-    constructor(
-        //width in number of tiles
-        public readonly width: number, 
-        //height in number of tiles
-        public readonly height: number
-    ){
+    constructor(roomCount: number = 5){
         //listen for updates
         emitter.on('renderObjects', this.update.bind(this))
-        this.tileSize = settings.tileSize
-        this.renderMap()
-        
+        this.generateMap(roomCount)
     }
     update(){
-        debug.levelXOffset = this.offsetX
-        debug.levelYOffset = this.offsetY
-        if(this.tileSize != settings.tileSize){
-            this.tileSize = settings.tileSize
-            this.renderMap()
-        }
     }
 
-    renderMap(){
-        //tabula rasa
-        // this.tiles = []
-        // for(let col = 0; col < this.width; col++){
-        //     var rowTiles: Tile[] = []
-        //     for (let row = 0; row < this.height; row++) {
-        //         rowTiles.push(new Tile(col, row, true))
-        //     }
-        //     this.tiles.push(rowTiles)
-        // }
-
+    generateMap(roomCount: number){
         //generation vars
         let canMove = true
         let moves = 0
@@ -58,11 +30,11 @@ class Level {
         let firstRoom = new Room(RoomSize.large, new Coordinate(0,0), Direction.left)
         firstRoom.generateTiles()
         this.rooms.push(firstRoom)
-        // this.carveRoom(this.rooms[0])
 
+        //generate rooms until we reach the room limit
         while(canMove){
             moves++ 
-            if(moves >= 5){
+            if(moves >= roomCount){
                 canMove = false
             } 
             let possibleRooms = this.getPossibleRooms(this.rooms[this.rooms.length - 1])
@@ -71,8 +43,6 @@ class Level {
             console.log(chosenRoom)
             
             this.rooms.push(chosenRoom)
-            // this.carveRoom(chosenRoom)
-            // this.carveConnection(chosenRoom)
         }
         console.log(this.rooms)
     }
@@ -109,20 +79,6 @@ class Level {
     //     }
     // }
     
-    // carveRoom(room: Room){
-    //     //carve tiles
-    //     for(let row = 0; row < room.h; row++){
-    //         for(let col = 0; col < room.w; col++){
-    //             //carve it
-    //             this.tiles[room.origin.x + row][room.origin.y + col].isSolid = false
-    //         }
-    //     }
-    //     room.portals.forEach(p => {
-    //         this.tiles[p.x][p.y].fillColor = "#ffaaaa"
-    //     })
-    //     return room
-    // }
-
      getPossibleRooms(room: Room){
         let possibleRooms: Room[] = []
 

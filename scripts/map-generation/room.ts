@@ -3,7 +3,6 @@ import Direction from "./direction"
 import Portal from "./portal"
 import Coordinate from "./coordinate"
 import Tile from "./tile"
-import Settings from "../settings"
 
 class Room{
     public portals: Portal[] = []
