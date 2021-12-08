@@ -127,23 +127,17 @@ class Player {
 		//-1 prevents floor from stopping movement
 		const playerBottomAlignment = Math.floor((this.y + this.height - 1) / settings.tileSize);
 
-		// if(
-		// 	playerBottomAlignment < 0 ||
-		// 	playerTopAlignment < 0 ||
-		// 	playerLeftAlignment < 0 ||
-		// 	playerRightAlignment < 0 
-		// ) return false;
 
 		//check level data and see if any of the intersected tiles are solid
 		//at most, four tiles to check
 		//top left
-		// if(level.tiles[playerLeftAlignment][playerTopAlignment].isSolid) positionIsValid = false
-		// //top right
-		// if(level.tiles[playerRightAlignment][playerTopAlignment].isSolid) positionIsValid = false
-		// //bottom left
-		// if(level.tiles[playerLeftAlignment][playerBottomAlignment].isSolid) positionIsValid = false
-		// //bottom right
-		// if(level.tiles[playerRightAlignment][playerBottomAlignment].isSolid) positionIsValid = false
+		if(level.isTileSolid(playerLeftAlignment, playerTopAlignment)) positionIsValid = false
+		//top right
+		if(level.isTileSolid(playerRightAlignment, playerTopAlignment)) positionIsValid = false
+		//bottom left
+		if(level.isTileSolid(playerLeftAlignment, playerBottomAlignment)) positionIsValid = false
+		//bottom right
+		if(level.isTileSolid(playerRightAlignment, playerBottomAlignment)) positionIsValid = false
 
 		//return validity of position
 		return positionIsValid;

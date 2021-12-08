@@ -79,7 +79,7 @@ class Level {
     //     }
     // }
     
-     getPossibleRooms(room: Room){
+     getPossibleRooms(room: Room): Room[]{
         let possibleRooms: Room[] = []
 
         //check each portal
@@ -127,7 +127,7 @@ class Level {
         return possibleRooms
     }
 
-    getOppositeDirection(d: Direction){
+    getOppositeDirection(d: Direction): Direction{
         switch (d) {
             case Direction.up:
                 return Direction.down
@@ -139,6 +139,22 @@ class Level {
                 return Direction.left
 
         }
+    }
+
+    getTileByCoords(x: number, y:number): Tile | null{
+        let tile = null
+        this.rooms.forEach(r => {
+            r.tiles.forEach(t => {
+                if(t.col == x && t.row == y){
+                    tile = t
+                }
+            })
+        })
+        return tile
+    }
+    isTileSolid(x: number, y: number): boolean{
+        const tile = this.getTileByCoords(x, y)
+        return tile == null || tile.isSolid
     }
 }
 
