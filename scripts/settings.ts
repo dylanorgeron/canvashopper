@@ -1,10 +1,10 @@
 import Coordinate from "./map-generation/coordinate"
 
 class Settings {
-    public tileSize = 15
+    public tileSize = 25
     public drawTextures = false
     public playerStart = new Coordinate(10,10)
-    public levelRoomCount = 0
+    public levelRoomCount = 5
 
     zoom(event: WheelEvent){
         event.preventDefault()

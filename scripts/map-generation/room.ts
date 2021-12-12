@@ -39,6 +39,22 @@ class Room{
         //right
         this.portals.push(new Portal(origin.x + this.w - 1, origin.y + (this.h - 1) / 2, Direction.right))
 
+        switch (this.enteredFrom) {
+            case Direction.up:
+                this.portals.filter(p => p.direction === Direction.up)[0].isEntrance = true
+                break;
+            case Direction.down:
+                this.portals.filter(p => p.direction === Direction.down)[0].isEntrance = true
+                break;
+            case Direction.left:
+                this.portals.filter(p => p.direction === Direction.left)[0].isEntrance = true
+                break;
+            case Direction.right:
+                this.portals.filter(p => p.direction === Direction.right)[0].isEntrance = true
+                break;
+            default:
+                break;
+        }
     }
 
     generateTiles(){
@@ -51,8 +67,11 @@ class Room{
         }
     }
 
-    drawRoom(){
-
+    getEntrancePortal() : Portal {
+        return this.portals.filter(p => p.isEntrance)[0]
+    }
+    getExitPortal() : Portal {
+        return this.portals.filter(p => p.isExit)[0]
     }
 }
 

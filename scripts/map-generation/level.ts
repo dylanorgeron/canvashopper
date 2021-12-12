@@ -5,19 +5,15 @@ import Direction from './direction'
 import { roomPrefabs } from './room-prefab-config'
 import Coordinate from './coordinate'
 import RoomSize from './room-size'
+import Hallway from './hallway'
 
 class Level {
     //offset data is stored in the level so that each level can load the player in at a different point,
     //rather than starting the player at 0,0 offset
-    public offsetX = 0
-    public offsetY = 0
     public rooms: Room[] = []
+    public hallways: Hallway[] = []
     constructor(roomCount: number = 5){
-        //listen for updates
-        emitter.on('renderObjects', this.update.bind(this))
         this.generateMap(roomCount)
-    }
-    update(){
     }
 
     generateMap(roomCount: number){
@@ -27,7 +23,7 @@ class Level {
         this.rooms = []
         
         //hardcode first room
-        let firstRoom = new Room(RoomSize.large, new Coordinate(0,0), Direction.left)
+        let firstRoom = new Room(RoomSize.large, new Coordinate(0,0), Direction.up)
         firstRoom.generateTiles()
         this.rooms.push(firstRoom)
 
@@ -37,48 +33,28 @@ class Level {
             if(moves >= roomCount){
                 canMove = false
             } 
-            let possibleRooms = this.getPossibleRooms(this.rooms[this.rooms.length - 1])
+
+            let previousRoom = this.rooms[this.rooms.length - 1]
+            let possibleRooms = this.getPossibleRooms(previousRoom)
             let chosenRoom = possibleRooms[Math.floor(Math.random() * possibleRooms.length)]
-            chosenRoom.generateTiles()
-            console.log(chosenRoom)
             
+            previousRoom.portals.filter(p => 
+                p.direction === this.getOppositeDirection(chosenRoom.enteredFrom)
+            )[0].isExit = true
+
             this.rooms.push(chosenRoom)
+            chosenRoom.generateTiles()
+            
+            this.hallways.push(new Hallway(
+                previousRoom.getExitPortal(),
+                chosenRoom.getEntrancePortal(), 
+                1)
+            )
+
         }
         console.log(this.rooms)
     }
 
-    // carveConnection(room: Room){
-    //     let ingress = room.portals.filter(p => p.direction == room.enteredFrom)[0]
-    //     switch (room.enteredFrom) {
-    //         case Direction.up:
-    //             this.tiles[ingress.x][ingress.y - 1].isSolid = false
-    //             this.tiles[ingress.x][ingress.y - 1].fillColor = "#aaffaa"
-    //             this.tiles[ingress.x][ingress.y - 2].isSolid = false
-    //             this.tiles[ingress.x][ingress.y - 2].fillColor = "#aaffaa"
-    //             break;
-    //         case Direction.down:
-    //             this.tiles[ingress.x][ingress.y + 1].isSolid = false
-    //             this.tiles[ingress.x][ingress.y + 1].fillColor = "#aaffaa"
-    //             this.tiles[ingress.x][ingress.y + 2].isSolid = false
-    //             this.tiles[ingress.x][ingress.y + 2].fillColor = "#aaffaa"
-    //             break;
-    //         case Direction.right:
-    //             this.tiles[ingress.x + 1][ingress.y].isSolid = false
-    //             this.tiles[ingress.x + 1][ingress.y].fillColor = "#aaffaa"
-    //             this.tiles[ingress.x + 2][ingress.y].isSolid = false
-    //             this.tiles[ingress.x + 2][ingress.y].fillColor = "#aaffaa"
-    //             break;
-    //         case Direction.left:
-    //             this.tiles[ingress.x - 1][ingress.y].isSolid = false
-    //             this.tiles[ingress.x - 1][ingress.y].fillColor = "#aaffaa"
-    //             this.tiles[ingress.x - 2][ingress.y].isSolid = false
-    //             this.tiles[ingress.x - 2][ingress.y].fillColor = "#aaffaa"
-    //             break;
-    //         default:
-    //             break;
-    //     }
-    // }
-    
      getPossibleRooms(room: Room): Room[]{
         let possibleRooms: Room[] = []
 
@@ -115,7 +91,8 @@ class Level {
                 let newRoom = new Room(
                     prefab.size,
                     new Coordinate(proposedOrigin.x, proposedOrigin.y),
-                    this.getOppositeDirection(portal.direction))
+                    this.getOppositeDirection(portal.direction)
+                )
                 //check room collision against carved tiles
                 if(proposedOrigin.x >= 0 && proposedOrigin.y >= 0){
                     if(portal.direction == Direction.down || portal.direction == Direction.right){
@@ -150,8 +127,16 @@ class Level {
                 }
             })
         })
+        this.hallways.forEach(h => {
+            h.tiles.forEach(t => {
+                if(t.col == x && t.row == y){
+                    tile = t
+                }
+            })
+        })
         return tile
     }
+
     isTileSolid(x: number, y: number): boolean{
         const tile = this.getTileByCoords(x, y)
         return tile == null || tile.isSolid

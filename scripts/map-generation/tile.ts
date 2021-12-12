@@ -35,10 +35,6 @@ class Tile {
 			this.y - camera.originY - (thickness))
 		const fallsShort = origin.x < 0 || origin.y < 0
 		if (!fallsShort) {
-
-
-
-
 			if (settings.drawTextures) {
 				let img = document.getElementById('floor')
 				let origin = new Coordinate(this.x - camera.originX, this.y - camera.originY)
