@@ -40,7 +40,7 @@ class Tile {
 			origin.y < canvas.height
 		if (!onScreen) {
 			if (settings.drawTextures) {
-				let img = document.getElementById('floor')
+				let img = document.getElementById(this.img ? this.img : 'floor')
 				let origin = new Coordinate(this.x - camera.originX, this.y - camera.originY)
 				canvas.canvasCTX.drawImage(img, origin.x, origin.y, this.w, this.h)
 			} else {

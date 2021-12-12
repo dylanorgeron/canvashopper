@@ -25,6 +25,7 @@ class Level {
         //hardcode first room
         let firstRoom = new Room(RoomSize.large, new Coordinate(0,0), Direction.up)
         firstRoom.generateTiles()
+        firstRoom.getEntrancePortal().isEntrance = false
         this.rooms.push(firstRoom)
 
         //generate rooms until we reach the room limit
@@ -43,7 +44,6 @@ class Level {
             )[0].isExit = true
 
             this.rooms.push(chosenRoom)
-            chosenRoom.generateTiles()
             
             this.hallways.push(new Hallway(
                 previousRoom.getExitPortal(),
@@ -52,6 +52,9 @@ class Level {
             )
 
         }
+        this.rooms.forEach(room => {
+            room.generateTiles()
+        });
         console.log(this.rooms)
     }
 

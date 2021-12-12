@@ -58,13 +58,52 @@ class Room{
     }
 
     generateTiles(){
+        if(!this.getEntrancePortal()) console.warn("No entrance portal set for room at origin (" + this.origin.x + ", " + this.origin.y + ")")
+        if(!this.getExitPortal()) console.warn("No exit portal set for room at origin (" + this.origin.x + ", " + this.origin.y + ")")
         //generate tiles
         //inner walkable area
         for(let col = this.origin.x; col < this.w + this.origin.x; col++){
             for(let row = this.origin.y; row < this.h + this.origin.y; row++){
+                let tile = new Tile(col, row, false)
+                tile.img = 'floor'
                 this.tiles.push(new Tile(col, row, false))
             }
         }
+        //walls
+        //top and bottom
+        for(let col = this.origin.x; col < this.w + this.origin.x; col++){
+            if(this.tileIsNotActivePortal(col, this.origin.y)){
+                let upperTile = new Tile(col, this.origin.y - 1, true)
+                upperTile.img = 'wall_upper'
+                this.tiles.push(upperTile)
+            }
+            if(this.tileIsNotActivePortal(col, this.origin.y + this.h - 1)){
+                let lowerTile = new Tile(col, this.origin.y + this.h, true)
+                lowerTile.img = 'wall_bottom'
+                this.tiles.push(lowerTile)
+            }
+        }
+        //left and right
+        for(let row = this.origin.y; row < this.h + this.origin.y; row++){
+            if(this.tileIsNotActivePortal(this.origin.x, row)){
+                let leftTile = new Tile(this.origin.x - 1, row, true)
+                leftTile.img = 'wall_left'
+                this.tiles.push(leftTile)
+            }
+            if(this.tileIsNotActivePortal(this.origin.x + this.w - 1, row)){
+                let rigthTile = new Tile(this.origin.x + this.w, row, true)
+                rigthTile.img = 'wall_right'
+                this.tiles.push(rigthTile)
+            }
+        }
+    }
+
+    tileIsNotActivePortal(x: number, y: number) : boolean{
+        return this.portals.filter(p => 
+            (p.isEntrance || p.isExit) &&
+            p.x === x && 
+            p.y === y
+        ).length == 0
     }
 
     getEntrancePortal() : Portal {

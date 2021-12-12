@@ -45,7 +45,7 @@ function main(){
 
 	//draw at 60 fps as well
 	setInterval(function(){
-		canvas.canvasCTX.fillStyle = '#DDD'
+		canvas.canvasCTX.fillStyle = '#2c2c5e'
 		canvas.canvasCTX.fillRect(0,0, canvas.width, canvas.height)
 		emitter.emit('renderObjects')
 	}, framerate)

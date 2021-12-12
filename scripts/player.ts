@@ -13,7 +13,7 @@ class Player {
 	public height = 5
 	public width = 5
 	public direction = 'right'
-	public moveSpeed: number = 5
+	public moveSpeed: number = 10
 
 	constructor(
 		public x: number, 
@@ -27,7 +27,7 @@ class Player {
 
 	draw(){
 		//draw player
-		canvas.canvasCTX.fillStyle = '#000000'
+		canvas.canvasCTX.fillStyle = '#ffffff'
 		canvas.canvasCTX.fillRect(
 			canvas.width / 2 - this.width /2,
 			canvas.height / 2 - this.height /2,
