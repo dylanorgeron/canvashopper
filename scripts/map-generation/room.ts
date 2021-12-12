@@ -96,6 +96,15 @@ class Room{
                 this.tiles.push(rigthTile)
             }
         }
+        //corners
+        let topLeft = new Tile(this.origin.x - 1, this.origin.y - 1, true)
+        topLeft.img = "corner_upper_left"
+        let topRight = new Tile(this.origin.x + this.w, this.origin.y - 1, true)
+        topRight.img = "corner_upper_right"
+        let bottomLeft = new Tile(this.origin.x - 1, this.origin.y + this.h , true)
+        bottomLeft.img = "corner_bottom_left"
+        let bottomRight = new Tile(this.origin.x + this.w, this.origin.y + this.h, true)
+        bottomRight.img = "corner_bottom_right"
     }
 
     tileIsNotActivePortal(x: number, y: number) : boolean{
