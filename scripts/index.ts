@@ -28,9 +28,6 @@ function main(){
 	document.getElementById("main-canvas").addEventListener('wheel', function(evt) {
 		settings.zoom(evt)
 	})
-	document.getElementById("generate-button").addEventListener('click', function(evt){
-		level.generateMap()
-	})
 
 	emitter.emit('updatePhysics')
 	emitter.emit('renderObjects')
