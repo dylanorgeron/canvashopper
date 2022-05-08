@@ -6,9 +6,10 @@ import {
 	debug,
 	settings,
 	camera
-} from './index'
+} from '../index'
+import Drawable from './drawable'
 
-class Player {
+class Player extends Drawable {
 	public id = 1
 	public height = 5
 	public width = 5
@@ -19,10 +20,10 @@ class Player {
 		public x: number, 
 		public y: number
 	){
+		super()
+		this.zIndex = 2
 		camera.originX = x - canvas.width / 2
 		camera.originY = y - canvas.height / 2
-		emitter.on('updatePhysics', this.update.bind(this))
-		emitter.on('renderObjects', this.draw.bind(this))
 	}
 
 	draw(){

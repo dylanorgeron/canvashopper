@@ -3,13 +3,15 @@ import Debug from './engine/debug'
 import {EventEmitter} from 'eventemitter3'
 import Keystates from './engine/keystates'
 import Level from './map-generation/level'
-import Player from './player'
+import Player from './engine/player'
 import Settings from './settings'
 import Camera from './engine/camera'
+import DrawQueue from './engine/draw-queue'
 
 //dont reorder these
 export const settings = new Settings()
 export const emitter = new EventEmitter()
+export const drawQueue = new DrawQueue()
 export const canvas = new Canvas()
 export const camera = new Camera()
 export const keystates = new Keystates()

@@ -1,7 +1,8 @@
-import { emitter, canvas, level, settings, camera } from '../index'
+import Drawable from '../engine/drawable'
+import { canvas, settings, camera } from '../index'
 import Coordinate from './coordinate'
 
-class Tile {
+class Tile extends Drawable{
 	public w = settings.tileSize
 	public h = settings.tileSize
 
@@ -16,8 +17,8 @@ class Tile {
 		public row: number,
 		public isSolid: boolean,
 	) {
-		emitter.on('updatePhysics', this.update.bind(this))
-		emitter.on('renderObjects', this.draw.bind(this))
+		super()
+		this.zIndex = 1
 		this.x = this.col * this.w
 		this.y = this.row * this.h
 	}
