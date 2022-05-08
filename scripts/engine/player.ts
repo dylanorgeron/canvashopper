@@ -10,7 +10,6 @@ import {
 import Drawable from './drawable'
 
 class Player extends Drawable {
-	public id = 1
 	public height = 5
 	public width = 5
 	public direction = 'right'
@@ -28,7 +27,7 @@ class Player extends Drawable {
 
 	draw(){
 		//draw player
-		canvas.canvasCTX.fillStyle = '#ffffff'
+		canvas.canvasCTX.fillStyle = '#ff0000'
 		canvas.canvasCTX.fillRect(
 			canvas.width / 2 - this.width /2,
 			canvas.height / 2 - this.height /2,

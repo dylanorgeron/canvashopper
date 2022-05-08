@@ -2,7 +2,7 @@ import Coordinate from "./map-generation/coordinate"
 
 class Settings {
     public tileSize = 50
-    public drawTextures = true
+    public drawTextures = false
     public playerStart = new Coordinate(10,10)
     public levelRoomCount = 5
 

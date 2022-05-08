@@ -7,9 +7,11 @@ import Player from './engine/player'
 import Settings from './settings'
 import Camera from './engine/camera'
 import DrawQueue from './engine/draw-queue'
+import Director from './engine/director'
 
 //dont reorder these
 export const settings = new Settings()
+export const director = new Director()
 export const emitter = new EventEmitter()
 export const drawQueue = new DrawQueue()
 export const canvas = new Canvas()
