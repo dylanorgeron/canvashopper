@@ -7,7 +7,7 @@ export default class DrawQueue{
     }
 
     public processQueue(){
-        this.drawables.sort((d) => d.zIndex).forEach((d) => {
+        this.drawables.sort((a, b) => a.zIndex - b.zIndex).forEach((d) => {
             d.draw()
         })
     }
