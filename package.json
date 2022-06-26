@@ -5,7 +5,9 @@
   "main": "frontend/dist/index.js",
   "scripts": {
     "build-client": "parcel build frontend/index.html --public-url ./ --out-dir ./frontend/dist",
-    "start-client": "parcel frontend/index.html --out-dir ./frontend/dist"
+    "start-client": "parcel frontend/index.html --out-dir ./frontend/dist",
+    "build-api": "tsc --project ./backend/tsconfig.json",
+    "start-api": "tsc --project ./backend/tsconfig.json && node ./backend/dist/main.js"
   },
   "repository": {
     "type": "git",
@@ -18,6 +20,7 @@
   },
   "homepage": "https://github.com/dylanorgeron/canvashopper#readme",
   "dependencies": {
+    "@types/ws": "^8.5.3",
     "color-string": "^1.5.5",
     "eventemitter3": "^3.0.1",
     "glob-parent": "5.1.2",
@@ -26,7 +29,8 @@
     "parcel-bundler": "^1.5.1",
     "postcss": "^7.0.36",
     "postcss-cssnext": "^3.1.0",
-    "typescript": "^2.7.1",
+    "typescript": "^4.0.5",
+    "ws": "^8.8.0",
     "yarn": "^1.22.0"
   }
 }
