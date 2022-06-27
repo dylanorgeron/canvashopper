@@ -11,7 +11,7 @@ export default class Login{
         this.app.innerHTML = `
             <form id="login">
                 <label>Who are you?</label>
-                <input id="login-input" />
+                <input id="login-input" value="Amani" />
                 <button id="login-btn">Login</button>
             </form>
         `

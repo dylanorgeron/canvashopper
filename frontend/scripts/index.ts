@@ -1,32 +1,15 @@
-// import Canvas from './engine/canvas'
-// import Debug from './engine/debug'
-// import {EventEmitter} from 'eventemitter3'
-// import Keystates from './engine/keystates'
-// import Level from './map-generation/level'
-// import Player from './engine/player'
-// import Settings from './settings'
-// import Camera from './engine/camera'
-// import DrawQueue from './engine/draw-queue'
-// import Director from './engine/director'
 
+import GameInstance from "./game-instance";
 import Login from "./login";
 import { WebSocketFactory } from "./websocket-handler"
 
-// //dont reorder these
-// export const settings = new Settings()
-// export const director = new Director()
-// export const emitter = new EventEmitter()
-// export const drawQueue = new DrawQueue()
-// export const canvas = new Canvas()
-// export const camera = new Camera()
-// export const keystates = new Keystates()
-// export const level = new Level(settings.levelRoomCount)
-// export const player = new Player(settings.playerStart.x, settings.playerStart.y)
-// export const debug = new Debug()
+const gameInstance = new GameInstance()
 
 async function main(){
-	const ws = await WebSocketFactory.start()
-	const login = new Login(ws);
+	//open connection on load
+	const ws = await WebSocketFactory.start(gameInstance)
+	//init login
+	new Login(ws)
 
 
 	// //register key listeners
