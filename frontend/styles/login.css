@@ -1,0 +1,30 @@
+#login{
+    background-color: #343649;
+    width: 300px;
+    margin: 200px auto;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 1px 1px 10px #00000070;
+}
+#login label{
+    display: block;
+    text-align: center;
+    color: white;
+    margin-bottom: 15px;
+    font-weight: bold;
+}    
+#login input{
+    margin-bottom: 15px;
+    width: 100%;
+    padding: 5px;
+    font-size: 1.1em;
+    border-radius: 4px;
+}
+#login button{
+    display: block;
+    width: 100%;
+    font-size: 1.1em;
+    padding: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+}

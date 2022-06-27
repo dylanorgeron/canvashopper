@@ -1,5 +1,5 @@
 body{
-    background: #291c1c;  
+    background: #1d1e29;  
     font-family: sans-serif;
 }
 #main-canvas{
@@ -8,16 +8,9 @@ body{
     display: block;
     margin: auto;
 }
-
 #debugger{
     color: white;
     position: absolute;
     top: 50px;
-    left: 10px;
-}
-
-#generate-button{
-    position: absolute;
-    top: 10px;
     left: 10px;
 }

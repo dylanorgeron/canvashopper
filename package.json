@@ -7,7 +7,7 @@
     "build-client": "parcel build frontend/index.html --public-url ./ --out-dir ./frontend/dist",
     "start-client": "parcel frontend/index.html --out-dir ./frontend/dist",
     "build-api": "tsc --project ./backend/tsconfig.json",
-    "start-api": "tsc --project ./backend/tsconfig.json && node ./backend/dist/main.js"
+    "start-api": "tsc --project ./backend/tsconfig.json && node ./backend/dist/backend/main.js"
   },
   "repository": {
     "type": "git",

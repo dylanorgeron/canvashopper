@@ -56,7 +56,7 @@ class Level {
         this.rooms.forEach((room, i) => {
             room.generateTiles()
             //populate mobs
-            director.populateRoom(room, i)
+            //director.populateRoom(room, i)
         })
 
         console.log(this.rooms)
