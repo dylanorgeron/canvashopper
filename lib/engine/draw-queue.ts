@@ -1,8 +1,8 @@
-import { emitter } from ".."
+import EventEmitter from "eventemitter3"
 import Drawable from "./drawable"
 export default class DrawQueue{
     public drawables: Drawable[] = []
-    constructor(){
+    constructor(public emitter: EventEmitter){
 		emitter.on('renderObjects', this.processQueue.bind(this))
     }
 

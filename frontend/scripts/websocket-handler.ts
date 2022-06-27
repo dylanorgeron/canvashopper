@@ -6,9 +6,8 @@ const websocketAddress = 'ws://127.0.0.1:7071/ws'
 export class WebSocketHandler{
 
     public ws: WebSocket | null = null
-    private username: string = ''
-
-    constructor (public gameInstance: GameInstance) {
+    public gameInstance: GameInstance
+    constructor () {
     }
 
     public async init(){
@@ -44,19 +43,13 @@ export class WebSocketHandler{
     private initHandlers(ws: WebSocket): void{
         ws.onmessage = (webSocketMessage) => {
             const message: Message = JSON.parse(webSocketMessage.data)
-
+            const params = message.params as any
             switch (message.command) {
-                case 'setUsername':
-                    if(message.statusCode == 200){
-                        console.log("Logged in!")
-
-                        this.gameInstance.start()
-                    }else{
-                        this.username = ''
-                    }
+                case 'userNameSuccess':
+                        this.gameInstance.start(params.level)
                     break;
                 default:
-                    console.log('unknown command')
+                    console.log('unknown command: ' + message.command)
                     break;
             }
         }
@@ -64,8 +57,8 @@ export class WebSocketHandler{
 }
 
 export class WebSocketFactory{
-    public static async start(gameInstance){
-        const webSocketHandler = new WebSocketHandler(gameInstance);
+    public static async start(){
+        const webSocketHandler = new WebSocketHandler();
         webSocketHandler.init();
         return webSocketHandler;
     }

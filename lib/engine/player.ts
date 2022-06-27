@@ -1,14 +1,12 @@
-import {
-	emitter,
-	keystates,
-	level,
-	canvas,
-	debug,
-	settings,
-	camera
-} from '../index'
 import Drawable from './drawable'
-
+import Camera from './camera'
+import Canvas from './canvas'
+import Keystates from './keystates'
+import Settings from '../settings'
+import Level from '../map-generation/level'
+import DrawQueue from './draw-queue'
+import EventEmitter from 'eventemitter3'
+const settings = new Settings()
 class Player extends Drawable {
 	public height = 5
 	public width = 5
@@ -16,105 +14,107 @@ class Player extends Drawable {
 	public moveSpeed: number = 10
 
 	constructor(
-		public x: number, 
-		public y: number
-	){
-		super()
+		public x: number,
+		public y: number,
+		private camera: Camera,
+		private canvas: Canvas,
+		private keystates: Keystates,
+		private level: Level,
+		public drawQueue: DrawQueue,
+		public emitter: EventEmitter
+	) {
+		super(drawQueue, emitter)
 		this.zIndex = 2
 		camera.originX = x - canvas.width / 2
 		camera.originY = y - canvas.height / 2
 	}
 
-	draw(){
+	draw() {
 		//draw player
-		canvas.canvasCTX.fillStyle = '#ff0000'
-		canvas.canvasCTX.fillRect(
-			canvas.width / 2 - this.width /2,
-			canvas.height / 2 - this.height /2,
-			this.width, 
+		this.canvas.canvasCTX.fillStyle = '#ff0000'
+		this.canvas.canvasCTX.fillRect(
+			this.canvas.width / 2 - this.width / 2,
+			this.canvas.height / 2 - this.height / 2,
+			this.width,
 			this.height
 		)
 	}
 
-	update(){
+	update() {
 		//distance to move
 		let delta = 0
 		//move player based on input
-		if (keystates.RightArrowIsActive) {
+		if (this.keystates.RightArrowIsActive) {
 			this.direction = 'right'
 			delta = this.moveSpeed
 			this.moveHorizontal(delta)
-		} 
-		if (keystates.LeftArrowIsActive) {
+		}
+		if (this.keystates.LeftArrowIsActive) {
 			this.direction = 'left'
 			delta = this.moveSpeed * -1
 			this.moveHorizontal(delta)
 		}
-		if (keystates.UpArrowIsActive) {
+		if (this.keystates.UpArrowIsActive) {
 			this.direction = 'up'
 			delta = this.moveSpeed * -1
 			this.moveVertical(delta)
 		}
-		if (keystates.DownArrowIsActive) {
+		if (this.keystates.DownArrowIsActive) {
 			this.direction = 'down'
 			delta = this.moveSpeed
 			this.moveVertical(delta)
 		}
-
-		//log player stats to debugger
-		debug.playerXPosition = this.x
-		debug.playerYPosition = this.y
 	}
 
-	moveVertical(delta: number){
+	moveVertical(delta: number) {
 		//move down
-		if(delta > 0){
+		if (delta > 0) {
 			for (let i = 1; i <= delta; i++) {
 				this.y++
-				if(!this.validatePosition()){
+				if (!this.validatePosition()) {
 					this.y--
 					break
 				}
-				camera.originY++
+				this.camera.originY++
 			}
-		//move up
-		}else{
+			//move up
+		} else {
 			for (let i = -1; i >= delta; i--) {
 				this.y--
-				if(!this.validatePosition()){
+				if (!this.validatePosition()) {
 					this.y++
 					break
 				}
-				camera.originY--
+				this.camera.originY--
 			}
 		}
 	}
 
-	moveHorizontal(delta: number){
+	moveHorizontal(delta: number) {
 		//move right
-		if(delta > 0){
+		if (delta > 0) {
 			for (let i = 1; i <= delta; i++) {
 				this.x++
-				if(!this.validatePosition()){
+				if (!this.validatePosition()) {
 					this.x--
 					break
 				}
-				camera.originX++
+				this.camera.originX++
 			}
-		//move left
-		}else{
+			//move left
+		} else {
 			for (let i = -1; i >= delta; i--) {
 				this.x--
-				if(!this.validatePosition()){
+				if (!this.validatePosition()) {
 					this.x++
 					break
 				}
-				camera.originX--
+				this.camera.originX--
 			}
 		}
 	}
 
-	validatePosition(){
+	validatePosition() {
 		let positionIsValid = true
 		//get all tiles player is occupying, check for collisions
 		//col the player's left side is in
@@ -131,13 +131,13 @@ class Player extends Drawable {
 		//check level data and see if any of the intersected tiles are solid
 		//at most, four tiles to check
 		//top left
-		if(level.isTileSolid(playerLeftAlignment, playerTopAlignment)) positionIsValid = false
+		if (this.level.isTileSolid(playerLeftAlignment, playerTopAlignment)) positionIsValid = false
 		//top right
-		if(level.isTileSolid(playerRightAlignment, playerTopAlignment)) positionIsValid = false
+		if (this.level.isTileSolid(playerRightAlignment, playerTopAlignment)) positionIsValid = false
 		//bottom left
-		if(level.isTileSolid(playerLeftAlignment, playerBottomAlignment)) positionIsValid = false
+		if (this.level.isTileSolid(playerLeftAlignment, playerBottomAlignment)) positionIsValid = false
 		//bottom right
-		if(level.isTileSolid(playerRightAlignment, playerBottomAlignment)) positionIsValid = false
+		if (this.level.isTileSolid(playerRightAlignment, playerBottomAlignment)) positionIsValid = false
 
 		//return validity of position
 		return positionIsValid;

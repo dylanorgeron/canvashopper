@@ -1,4 +1,3 @@
-import { director } from '../index'
 import Tile from './tile'
 import Room from './room'
 import Direction from './direction'
@@ -6,7 +5,6 @@ import { roomPrefabs } from './room-prefab-config'
 import Coordinate from './coordinate'
 import RoomSize from './room-size'
 import Hallway from './hallway'
-import AIDirector from '../engine/director'
 
 class Level {
     //offset data is stored in the level so that each level can load the player in at a different point,

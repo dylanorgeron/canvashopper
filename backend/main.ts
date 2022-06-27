@@ -1,12 +1,13 @@
 import * as webSocket from 'ws'
 import Message from '../lib/message';
 import PlayerMetadata from './player-metadata';
+import Level from '../lib/map-generation/level'
 
 const wss = new webSocket.Server({ port: 7071 });
 const clients = new Map();
 
 //init level
-
+const level = new Level()
 
 wss.on('connection', (ws) => {
     const id = uuidv4();
@@ -31,8 +32,8 @@ wss.on('connection', (ws) => {
           // set the username server-side and reply to client with their client data to affirm
           client.username = request.params.username
           const response: Message = {
-            command: 'setUsername',
-            statusCode: 200
+            command: 'userNameSuccess',
+            params: {level: JSON.stringify(level)}
           }
           ws.send(JSON.stringify(response))
           console.log("username set to: " + client.username)

@@ -1,45 +1,15 @@
 
 import GameInstance from "./game-instance";
-import Login from "./login";
 import { WebSocketFactory } from "./websocket-handler"
-
-const gameInstance = new GameInstance()
+import Login from "./login";
 
 async function main(){
 	//open connection on load
-	const ws = await WebSocketFactory.start(gameInstance)
+	const ws = await WebSocketFactory.start()
 	//init login
-	new Login(ws)
-
-
-	// //register key listeners
-	// document.addEventListener("keydown", function(evt) {
-	// 	keystates.setKey(evt.keyCode, true)
-	// })
-	// document.addEventListener("keyup", function(evt) {
-	// 	keystates.setKey(evt.keyCode, false)
-	// })
-	// document.getElementById("main-canvas").addEventListener('wheel', function(evt) {
-	// 	settings.zoom(evt)
-	// })
-
-	// emitter.emit('updatePhysics')
-	// emitter.emit('renderObjects')
-
-
-
-	// // calc physics, 32 for 30 fps, 16 for 60
-	// const framerate = 32
-	// setInterval(function(){
-	// 	emitter.emit('updatePhysics')
-	// }, framerate)
-
-	// //draw at 60 fps as well
-	// setInterval(function(){
-	// 	canvas.canvasCTX.fillStyle = '#2c2c5e'
-	// 	canvas.canvasCTX.fillRect(0,0, canvas.width, canvas.height)
-	// 	emitter.emit('renderObjects')
-	// }, framerate)
+	// const login = new Login(ws)
+	const gameInstance = new GameInstance(ws)
+	gameInstance.start('{}')
 }
 
 window.onload = async function(){
