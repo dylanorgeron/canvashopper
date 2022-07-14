@@ -6,6 +6,8 @@ import { WebSocketHandler } from './websocket-handler'
 import Camera from '../../lib/engine/camera'
 import Player from '../../lib/engine/player'
 import DrawQueue from '../../lib/engine/draw-queue'
+import DrawableTile from '../../lib/engine/drawable-tile'
+
 
 export default class GameInstance {
     private keystates = new Keystates()
@@ -29,7 +31,7 @@ export default class GameInstance {
         this.drawQueue = new DrawQueue(this.emitter)
         this.canvas = new Canvas()
         this.camera = new Camera(this.emitter)
-        this.initLevel(levelData)
+        this.initLevel(levelData, this.drawQueue)
         this.clientPlayer = new Player(
             0,0,
             this.camera,
@@ -65,9 +67,6 @@ export default class GameInstance {
         }, framerate)
     }
 
-    private initLevel = (levelDataStr: string) => {
-        const levelData = JSON.parse(levelDataStr)
-        console.log(levelData)
-        this.level = new Level()
+    private initLevel = (levelDataStr: string, drawQueue: DrawQueue) => {
     }
 }

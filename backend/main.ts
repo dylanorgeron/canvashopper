@@ -8,6 +8,7 @@ const clients = new Map();
 
 //init level
 const level = new Level()
+console.log(JSON.stringify(level))
 
 wss.on('connection', (ws) => {
     const id = uuidv4();
@@ -54,7 +55,6 @@ wss.on("close", (ws: any) => {
   console.log("connection closed: " + ws.metadata.id)
   clients.delete(ws);
 });
-
 
 function uuidv4() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {

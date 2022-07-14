@@ -23,7 +23,6 @@ class Level {
         
         //hardcode first room
         let firstRoom = new Room(RoomSize.large, new Coordinate(0,0), Direction.up)
-        firstRoom.generateTiles()
         firstRoom.getEntrancePortal().isEntrance = false
         this.rooms.push(firstRoom)
 
@@ -52,12 +51,9 @@ class Level {
 
         }
         this.rooms.forEach((room, i) => {
-            room.generateTiles()
             //populate mobs
             //director.populateRoom(room, i)
         })
-
-        console.log(this.rooms)
     }
 
      getPossibleRooms(room: Room): Room[]{
@@ -124,7 +120,7 @@ class Level {
     }
 
     getTileByCoords(x: number, y:number): Tile | null{
-        let tile = null
+        let tile: Tile | null = null
         this.rooms.forEach(r => {
             r.tiles.forEach(t => {
                 if(t.col == x && t.row == y){
