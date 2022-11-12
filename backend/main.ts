@@ -1,7 +1,7 @@
 import * as webSocket from 'ws'
 import Message from '../lib/message';
 import PlayerMetadata from './player-metadata';
-import Level from '../lib/map-generation/level'
+import Level from './map-generation/level'
 
 const wss = new webSocket.Server({ port: 7071 });
 const clients = new Map();
