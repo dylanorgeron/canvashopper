@@ -1,12 +1,10 @@
-import EventEmitter from "eventemitter3"
+import GameInstance from "../../frontend/scripts/game-instance"
 
 class Camera {
-    public originX: number = 0
-    public originY: number = 0
-	constructor(private emitter: EventEmitter
-	) {  
-		emitter.on('renderObjects', () => {})
-	}
+  public originX: number = 0
+  public originY: number = 0
+  constructor(public gameInstance: GameInstance) {
+    this.gameInstance.emitter.on('renderObjects', () => { })
+  }
 }
-
 export default Camera

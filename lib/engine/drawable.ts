@@ -1,11 +1,10 @@
-import EventEmitter from "eventemitter3"
-import DrawQueue from "./draw-queue"
+import GameInstance from "../../frontend/scripts/game-instance"
 
 export default class Drawable{
     public zIndex = 0
-    constructor(public drawQueue: DrawQueue, public emitter: EventEmitter){
-        drawQueue.drawables.push(this)
-        emitter.on('updatePhysics', this.update.bind(this))
+    constructor(public gameInstance: GameInstance){
+        this.gameInstance.drawQueue.drawables.push(this)
+        this.gameInstance.emitter.on('updatePhysics', this.update.bind(this))
     }
     public draw(){}
     public update(){}

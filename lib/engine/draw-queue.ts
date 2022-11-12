@@ -1,9 +1,9 @@
-import EventEmitter from "eventemitter3"
+import GameInstance from "../../frontend/scripts/game-instance"
 import Drawable from "./drawable"
 export default class DrawQueue{
     public drawables: Drawable[] = []
-    constructor(public emitter: EventEmitter){
-		emitter.on('renderObjects', this.processQueue.bind(this))
+    constructor(public gameInstance: GameInstance){
+		this.gameInstance.emitter.on('renderObjects', this.processQueue.bind(this))
     }
 
     public processQueue(){

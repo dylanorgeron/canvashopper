@@ -1,40 +1,31 @@
 import Drawable from './drawable'
-import Camera from './camera'
-import Canvas from './canvas'
-import Keystates from './keystates'
 import Settings from '../settings'
-import Level from '../map-generation/level'
-import DrawQueue from './draw-queue'
-import EventEmitter from 'eventemitter3'
+import GameInstance from '../../frontend/scripts/game-instance'
 const settings = new Settings()
+
 class Player extends Drawable {
 	public height = 5
 	public width = 5
 	public direction = 'right'
 	public moveSpeed: number = 10
+	public x: number
+	public y: number
 
-	constructor(
-		public x: number,
-		public y: number,
-		private camera: Camera,
-		private canvas: Canvas,
-		private keystates: Keystates,
-		private level: Level,
-		public drawQueue: DrawQueue,
-		public emitter: EventEmitter
-	) {
-		super(drawQueue, emitter)
+	constructor(public gameInstance: GameInstance) {
+		super(gameInstance)
 		this.zIndex = 2
-		camera.originX = x - canvas.width / 2
-		camera.originY = y - canvas.height / 2
+		this.x = 0
+		this.y = 0
+		this.gameInstance.camera.originX = this.x - this.gameInstance.canvas.width / 2
+		this.gameInstance.camera.originY = this.y - this.gameInstance.canvas.height / 2
 	}
 
 	draw() {
 		//draw player
-		this.canvas.canvasCTX.fillStyle = '#ff0000'
-		this.canvas.canvasCTX.fillRect(
-			this.canvas.width / 2 - this.width / 2,
-			this.canvas.height / 2 - this.height / 2,
+		this.gameInstance.canvas.canvasCTX.fillStyle = '#ff0000'
+		this.gameInstance.canvas.canvasCTX.fillRect(
+			this.gameInstance.canvas.width / 2 - this.width / 2,
+			this.gameInstance.canvas.height / 2 - this.height / 2,
 			this.width,
 			this.height
 		)
@@ -44,22 +35,22 @@ class Player extends Drawable {
 		//distance to move
 		let delta = 0
 		//move player based on input
-		if (this.keystates.RightArrowIsActive) {
+		if (this.gameInstance.keystates.RightArrowIsActive) {
 			this.direction = 'right'
 			delta = this.moveSpeed
 			this.moveHorizontal(delta)
 		}
-		if (this.keystates.LeftArrowIsActive) {
+		if (this.gameInstance.keystates.LeftArrowIsActive) {
 			this.direction = 'left'
 			delta = this.moveSpeed * -1
 			this.moveHorizontal(delta)
 		}
-		if (this.keystates.UpArrowIsActive) {
+		if (this.gameInstance.keystates.UpArrowIsActive) {
 			this.direction = 'up'
 			delta = this.moveSpeed * -1
 			this.moveVertical(delta)
 		}
-		if (this.keystates.DownArrowIsActive) {
+		if (this.gameInstance.keystates.DownArrowIsActive) {
 			this.direction = 'down'
 			delta = this.moveSpeed
 			this.moveVertical(delta)
@@ -75,7 +66,7 @@ class Player extends Drawable {
 					this.y--
 					break
 				}
-				this.camera.originY++
+				this.gameInstance.camera.originY++
 			}
 			//move up
 		} else {
@@ -85,7 +76,7 @@ class Player extends Drawable {
 					this.y++
 					break
 				}
-				this.camera.originY--
+				this.gameInstance.camera.originY--
 			}
 		}
 	}
@@ -99,7 +90,7 @@ class Player extends Drawable {
 					this.x--
 					break
 				}
-				this.camera.originX++
+				this.gameInstance.camera.originX++
 			}
 			//move left
 		} else {
@@ -109,7 +100,7 @@ class Player extends Drawable {
 					this.x++
 					break
 				}
-				this.camera.originX--
+				this.gameInstance.camera.originX--
 			}
 		}
 	}
@@ -127,17 +118,16 @@ class Player extends Drawable {
 		//-1 prevents floor from stopping movement
 		const playerBottomAlignment = Math.floor((this.y + this.height - 1) / settings.tileSize);
 
-
 		//check level data and see if any of the intersected tiles are solid
 		//at most, four tiles to check
 		//top left
-		if (this.level.isTileSolid(playerLeftAlignment, playerTopAlignment)) positionIsValid = false
+		if (this.gameInstance.level.isTileSolid(playerLeftAlignment, playerTopAlignment)) positionIsValid = false
 		//top right
-		if (this.level.isTileSolid(playerRightAlignment, playerTopAlignment)) positionIsValid = false
+		if (this.gameInstance.level.isTileSolid(playerRightAlignment, playerTopAlignment)) positionIsValid = false
 		//bottom left
-		if (this.level.isTileSolid(playerLeftAlignment, playerBottomAlignment)) positionIsValid = false
+		if (this.gameInstance.level.isTileSolid(playerLeftAlignment, playerBottomAlignment)) positionIsValid = false
 		//bottom right
-		if (this.level.isTileSolid(playerRightAlignment, playerBottomAlignment)) positionIsValid = false
+		if (this.gameInstance.level.isTileSolid(playerRightAlignment, playerBottomAlignment)) positionIsValid = false
 
 		//return validity of position
 		return positionIsValid;
