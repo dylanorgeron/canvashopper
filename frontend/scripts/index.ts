@@ -1,5 +1,4 @@
 
-import GameInstance from "./game-instance";
 import { WebSocketFactory } from "./websocket-handler"
 import Login from "./login";
 
@@ -8,7 +7,6 @@ async function main(){
 	const ws = await WebSocketFactory.start()
 	//init login
 	const login = new Login(ws)
-	const gameInstance = new GameInstance(ws)
 }
 
 window.onload = async function(){

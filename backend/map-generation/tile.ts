@@ -1,4 +1,4 @@
-import Settings from '../../lib/settings'
+import Settings from '../settings'
 const settings = new Settings()
 
 class Tile{

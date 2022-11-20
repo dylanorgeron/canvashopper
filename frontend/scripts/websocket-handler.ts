@@ -1,12 +1,10 @@
 import Message from "../../lib/message"
-import GameInstance from "./game-instance"
 
 const websocketAddress = 'ws://127.0.0.1:7071/ws'
 
 export class WebSocketHandler{
 
     public ws: WebSocket | null = null
-    public gameInstance: GameInstance
     constructor () {
     }
 
@@ -45,11 +43,15 @@ export class WebSocketHandler{
             const message: Message = JSON.parse(webSocketMessage.data)
             const params = message.params as any
             switch (message.command) {
-                case 'userNameSuccess':
-                        this.gameInstance.start(params.level)
-                    break;
                 default:
-                    console.log('unknown command: ' + message.command)
+                    const app = document.getElementById('app')
+                    if(app){
+                        app.innerHTML = `
+                        <pre style='color: #fff'>
+                        ${JSON.stringify(message)}
+                        </pre>
+                        `
+                    }
                     break;
             }
         }
