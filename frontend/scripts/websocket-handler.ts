@@ -46,11 +46,7 @@ export class WebSocketHandler{
                 default:
                     const app = document.getElementById('app')
                     if(app){
-                        app.innerHTML = `
-                        <pre style='color: #fff'>
-                        ${JSON.stringify(message)}
-                        </pre>
-                        `
+                        app.innerHTML = `<pre><code style='color: #fff'>${JSON.stringify(message, null, '  ').trim()}</code></pre>`
                     }
                     break;
             }
