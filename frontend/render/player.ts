@@ -1,6 +1,6 @@
 import Drawable from './drawable'
-import Settings from '../settings'
-import GameInstance from '../../frontend/scripts/game-instance'
+import Settings from '../../lib/settings'
+import GameInstance from './game-instance'
 const settings = new Settings()
 
 class Player extends Drawable {

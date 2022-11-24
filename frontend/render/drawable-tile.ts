@@ -1,6 +1,6 @@
 import EventEmitter from 'eventemitter3'
-import Tile from '../map-generation/tile'
-import Settings from '../settings'
+import Tile from './tile'
+import Settings from '../../lib/settings'
 import DrawQueue from './draw-queue'
 import Drawable from './drawable'
 const settings = new Settings()

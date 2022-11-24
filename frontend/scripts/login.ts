@@ -1,19 +1,21 @@
 import Message from "../../lib/message"
 import { WebSocketHandler } from "./websocket-handler"
 import { Commands } from "../../lib/commands"
+import { State } from "../../lib/state"
 
 const styles = require('../styles/login.css')
-export async function handleLogin(wsHandler: WebSocketHandler): Promise<void> {
+export async function handleLogin(wsHandler: WebSocketHandler): Promise<State> {
     return new Promise((async (resolve, reject) => {
         if (!wsHandler.ws) reject('Could not find ws on wsHandler')
         else {
             wsHandler.ws.onmessage = (webSocketMessage) => {
                 const message: Message = JSON.parse(webSocketMessage.data)
-                const params = message.params as any
                 if (message.command == Commands.CompleteLogin) {
+                    const state = message.params as State
                     const app = document.getElementById('app')
                     if (app) {
                         app.innerHTML = `<pre><code style='color: #fff'>${JSON.stringify(message, null, '  ').trim()}</code></pre>`
+                        resolve(state)
                     }
                 } else {
                     reject('Websocket returned unknown command:' + message)
@@ -44,6 +46,5 @@ export async function handleLogin(wsHandler: WebSocketHandler): Promise<void> {
             const username = inputEl.value
             wsHandler.login(username)
         }
-
     }))
 }

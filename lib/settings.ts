@@ -1,4 +1,4 @@
-import Coordinate from "../backend/map-generation/coordinate"
+import Coordinate from "./map-generation/coordinate"
 
 class Settings {
     public tileSize = 50

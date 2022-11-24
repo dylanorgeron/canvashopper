@@ -1,10 +1,10 @@
-import Tile from './tile'
-import Room from './room'
-import Direction from './direction'
-import { roomPrefabs } from './room-prefab-config'
-import Coordinate from './coordinate'
-import RoomSize from './room-size'
-import Hallway from './hallway'
+import Tile from './map-generation/tile'
+import Room from './map-generation/room'
+import Direction from './map-generation/direction'
+import { roomPrefabs } from './map-generation/room-prefab-config'
+import Coordinate from './map-generation/coordinate'
+import RoomSize from './map-generation/room-size'
+import Hallway from './map-generation/hallway'
 
 class Level {
     //offset data is stored in the level so that each level can load the player in at a different point,
@@ -51,6 +51,7 @@ class Level {
 
         }
         this.rooms.forEach((room, i) => {
+            room.generateTiles()
             //populate mobs
             //director.populateRoom(room, i)
         })
@@ -115,7 +116,6 @@ class Level {
                 return Direction.right
             case Direction.right:
                 return Direction.left
-
         }
     }
 

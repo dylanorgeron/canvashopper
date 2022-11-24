@@ -1,9 +1,10 @@
 import * as webSocket from 'ws'
 import Message from '../lib/message';
 import PlayerMetadata from './player-metadata';
-import Level from './map-generation/level'
+import Level from '../lib/level'
 import { v4 } from 'uuid';
 import { Commands } from '../lib/commands';
+import Tile from '../lib/map-generation/tile';
 
 const wss = new webSocket.Server({ port: 7071 });
 const clients = new Map();
@@ -36,7 +37,11 @@ wss.on('connection', (ws) => {
           client.username = request.params.username
           const response: Message = {
             command: Commands.CompleteLogin,
-            params: {level}
+            params: {
+              level: level.rooms.reduce((accum: Tile[], currentRoom) => 
+                 [...accum, ...currentRoom.tiles]
+              , [])
+            }
           }
           ws.send(JSON.stringify(response))
           console.log("username set to: " + client.username)

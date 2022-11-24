@@ -1,4 +1,4 @@
-import GameInstance from "../../frontend/scripts/game-instance"
+import GameInstance from "./game-instance"
 
 class Camera {
   public originX: number = 0
