@@ -3,6 +3,7 @@ import Message from '../lib/message';
 import PlayerMetadata from './player-metadata';
 import Level from './map-generation/level'
 import { v4 } from 'uuid';
+import { Commands } from '../lib/commands';
 
 const wss = new webSocket.Server({ port: 7071 });
 const clients = new Map();
@@ -34,7 +35,7 @@ wss.on('connection', (ws) => {
           // set the username server-side and reply to client with their client data to affirm
           client.username = request.params.username
           const response: Message = {
-            command: 'userNameSuccess',
+            command: Commands.CompleteLogin,
             params: {level}
           }
           ws.send(JSON.stringify(response))

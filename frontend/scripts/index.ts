@@ -1,14 +1,16 @@
 
 import { WebSocketFactory } from "./websocket-handler"
-import Login from "./login";
+import { handleLogin }  from "./login";
 
-async function main(){
-	//open connection on load
-	const ws = await WebSocketFactory.start()
-	//init login
-	const login = new Login(ws)
-}
-
+//wait for page to render, then init
 window.onload = async function(){
-	await main()
+	await init()
 }
+async function init(){
+	//open connection on load
+	const webSocketHandler = await WebSocketFactory.start()
+	//init login
+	await handleLogin(webSocketHandler)
+}
+
+

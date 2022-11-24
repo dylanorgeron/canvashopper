@@ -2,21 +2,24 @@ import Message from "../../lib/message"
 
 const websocketAddress = 'ws://127.0.0.1:7071/ws'
 
-export class WebSocketHandler{
+export class WebSocketHandler {
 
     public ws: WebSocket | null = null
-    constructor () {
+    constructor() {
     }
 
-    public async init(){
-        console.log('Initializing connection...')
-        this.ws = await this.connectToServer()
-        this.initHandlers(this.ws)
-        console.log('Initialization complete!')
+    public async init(): Promise<void> {
+        return new Promise(async (resolve, reject) => {
+            console.log('Initializing connection...')
+            this.ws = await this.connectToServer()
+            this.initHandlers(this.ws)
+            console.log('Initialization complete!')
+            resolve()
+        })
     }
 
-    public login(username: string){
-        const message: Message =  {
+    public login(username: string) {
+        const message: Message = {
             index: 1,
             command: 'login',
             params: JSON.stringify({ username })
@@ -38,14 +41,14 @@ export class WebSocketHandler{
         })
     }
 
-    private initHandlers(ws: WebSocket): void{
+    private initHandlers(ws: WebSocket): void {
         ws.onmessage = (webSocketMessage) => {
             const message: Message = JSON.parse(webSocketMessage.data)
             const params = message.params as any
             switch (message.command) {
                 default:
                     const app = document.getElementById('app')
-                    if(app){
+                    if (app) {
                         app.innerHTML = `<pre><code style='color: #fff'>${JSON.stringify(message, null, '  ').trim()}</code></pre>`
                     }
                     break;
@@ -54,10 +57,12 @@ export class WebSocketHandler{
     }
 }
 
-export class WebSocketFactory{
-    public static async start(){
-        const webSocketHandler = new WebSocketHandler();
-        webSocketHandler.init();
-        return webSocketHandler;
+export class WebSocketFactory {
+    public static async start(): Promise<WebSocketHandler> {
+        return new Promise(async (resolve, reject) => {
+            const webSocketHandler = new WebSocketHandler()
+            await webSocketHandler.init()
+            resolve(webSocketHandler)
+        })
     }
 }
