@@ -1,7 +1,7 @@
 import * as webSocket from 'ws'
 import Message from '../lib/message';
 import PlayerMetadata from './player-metadata';
-import Level from '../lib/level'
+import Level from '../lib/map-generation/level'
 import { v4 } from 'uuid';
 import { Commands } from '../lib/commands';
 import Tile from '../lib/map-generation/tile';
@@ -25,7 +25,7 @@ wss.on('connection', (ws) => {
     clients.set(ws, metadata);
 
     ws.on('message', (data) => {
-      const request: Message = JSON.parse(data.toString());
+    const request: Message = JSON.parse(data.toString());
       request.params = JSON.parse(request.params)
       
       console.log(request)
@@ -38,9 +38,8 @@ wss.on('connection', (ws) => {
           const response: Message = {
             command: Commands.CompleteLogin,
             params: {
-              level: level.rooms.reduce((accum: Tile[], currentRoom) => 
-                 [...accum, ...currentRoom.tiles]
-              , [])
+              levelData: [...level.rooms.reduce((accum: Tile[], currentRoom) => [...accum, ...currentRoom.tiles], []), 
+              ...level.hallways.reduce((accum: Tile[], currentHallway)  => [...accum, ...currentHallway.tiles], [])]
             }
           }
           ws.send(JSON.stringify(response))

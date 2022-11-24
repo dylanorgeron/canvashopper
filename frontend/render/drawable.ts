@@ -1,4 +1,4 @@
-import GameInstance from "../../frontend/scripts/game-instance"
+import GameInstance from "./game-instance"
 
 export default class Drawable{
     public zIndex = 0

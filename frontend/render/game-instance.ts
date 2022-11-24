@@ -1,11 +1,11 @@
 import Keystates from './keystates'
 import { EventEmitter } from 'eventemitter3'
 import Canvas from './canvas'
-import Level from '../../lib/level'
 import Camera from './camera'
 import Player from './player'
 import DrawQueue from './draw-queue'
 import { State } from '../../lib/state'
+import DrawableTile from './drawable-tile'
 
 
 export default class GameInstance {
@@ -13,7 +13,6 @@ export default class GameInstance {
     public emitter = new EventEmitter()
     public camera: Camera
     public canvas: Canvas
-    public level: Level
     public clientPlayer: Player
     public drawQueue: DrawQueue
     private app = document.getElementById('app') as HTMLElement
@@ -26,8 +25,23 @@ export default class GameInstance {
         this.drawQueue = new DrawQueue(this)
         this.canvas = new Canvas()
         this.camera = new Camera(this)
-        // this.level = initialState.level
-        // this.clientPlayer = new Player(this)
+        initialState.levelData.forEach(tile => {
+            new DrawableTile(
+                this,
+                this.emitter,
+                tile.col,
+                tile.row,
+                tile.isSolid
+            )
+        });
+        // 32 for 30 fps, 16 for 60
+        // const framerate = 32
+        // setInterval(function () {
+        //     this.canvas.canvasCTX.fillStyle = '#2c2c5e'
+        //     this.canvas.canvasCTX.fillRect(0, 0, this.canvas.width, this.canvas.height)
+        //     this.emitter.emit('renderObjects')
+        // }, framerate)
+        this.clientPlayer = new Player(this)
     }
     private initKeybindings = () => {
         //register key listeners
