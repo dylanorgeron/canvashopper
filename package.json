@@ -21,8 +21,8 @@
   },
   "homepage": "https://github.com/dylanorgeron/canvashopper#readme",
   "dependencies": {
-    "@types/uuid": "^8.3.4",
-    "@types/ws": "^8.5.3",
+    "@types/uuid": "^9.0.0",
+    "@types/ws": "^8.5.4",
     "color-string": "^1.5.5",
     "eventemitter3": "^3.0.1",
     "glob-parent": "5.1.2",

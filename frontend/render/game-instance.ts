@@ -1,47 +1,44 @@
 import Keystates from './keystates'
 import { EventEmitter } from 'eventemitter3'
 import Canvas from './canvas'
-import Camera from './camera'
 import Player from './player'
 import DrawQueue from './draw-queue'
 import { State } from '../../lib/state'
-import DrawableTile from './drawable-tile'
+import DrawableGeometryObject from './drawable-geometery-object'
 
 
 export default class GameInstance {
     public keystates = new Keystates()
     public emitter = new EventEmitter()
-    public camera: Camera
     public canvas: Canvas
     public clientPlayer: Player
     public drawQueue: DrawQueue
     private app = document.getElementById('app') as HTMLElement
     constructor(initialState: State) {
         console.log("Starting game...")
+        //render canvas
         this.app.innerHTML = `
             <canvas id="main-canvas" width="900" height="800"></canvas>
         `
-        this.initKeybindings()
+        // this.initKeybindings()
+
+        //drawing the game
         this.drawQueue = new DrawQueue(this)
         this.canvas = new Canvas()
-        this.camera = new Camera(this)
-        initialState.levelData.forEach(tile => {
-            new DrawableTile(
+        //generate drawable objects from state level data
+        initialState.level?.geometryObjects.forEach(go => {
+            new DrawableGeometryObject(
                 this,
                 this.emitter,
-                tile.col,
-                tile.row,
-                tile.isSolid
+                go.x,
+                go.y,
+                go.w,
+                go.h,
+                true
             )
         });
-        // 32 for 30 fps, 16 for 60
-        // const framerate = 32
-        // setInterval(function () {
-        //     this.canvas.canvasCTX.fillStyle = '#2c2c5e'
-        //     this.canvas.canvasCTX.fillRect(0, 0, this.canvas.width, this.canvas.height)
-        //     this.emitter.emit('renderObjects')
-        // }, framerate)
         this.clientPlayer = new Player(this)
+        this.initEmitters()
     }
     private initKeybindings = () => {
         //register key listeners
@@ -51,20 +48,20 @@ export default class GameInstance {
         document.addEventListener("keyup", (evt) => {
             this.keystates.setKey(evt.keyCode, false)
         })
+    }
 
-        //first time update and render
-        this.emitter.emit('updatePhysics')
-        this.emitter.emit('renderObjects')
+    private initEmitters() {
+        //first time render
+        this.emitter.emit('draw')
 
         // calc physics, 32 for 30 fps, 16 for 60
         const framerate = 32
         setInterval(() => {
-            this.emitter.emit('updatePhysics')
         }, framerate)
         setInterval(() => {
-            this.canvas.canvasCTX.fillStyle = '#2c2c5e'
+            this.canvas.canvasCTX.fillStyle = '#f7f7f7'
             this.canvas.canvasCTX.fillRect(0, 0, this.canvas.width, this.canvas.height)
-            this.emitter.emit('renderObjects')
+            this.emitter.emit('draw')
         }, framerate)
     }
 }

@@ -4,8 +4,7 @@ export default class Drawable{
     public zIndex = 0
     constructor(public gameInstance: GameInstance){
         this.gameInstance.drawQueue.drawables.push(this)
-        this.gameInstance.emitter.on('updatePhysics', this.update.bind(this))
+        this.gameInstance.emitter.on('draw', this.draw.bind(this))
     }
     public draw(){}
-    public update(){}
 }

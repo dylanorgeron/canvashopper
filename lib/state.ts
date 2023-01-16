@@ -1,5 +1,5 @@
-import Tile from "./map-generation/tile";
+import { Level } from "./level/level";
 
 export class State{
-    public levelData: Tile[] = []
+    public level: Level | null = null
 }

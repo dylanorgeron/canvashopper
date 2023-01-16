@@ -16,8 +16,6 @@ class Player extends Drawable {
 		this.zIndex = 2
 		this.x = 0
 		this.y = 0
-		this.gameInstance.camera.originX = this.x - this.gameInstance.canvas.width / 2
-		this.gameInstance.camera.originY = this.y - this.gameInstance.canvas.height / 2
 	}
 
 	draw() {
@@ -29,6 +27,10 @@ class Player extends Drawable {
 			this.width,
 			this.height
 		)
+        document.getElementById("debug").innerHTML = `
+            <div>Player x: ${this.x}</div>
+            <div>Player y: ${this.y}</div>
+        `
 	}
 
 	update() {
@@ -66,7 +68,6 @@ class Player extends Drawable {
 					this.y--
 					break
 				}
-				this.gameInstance.camera.originY++
 			}
 			//move up
 		} else {
@@ -76,7 +77,6 @@ class Player extends Drawable {
 					this.y++
 					break
 				}
-				this.gameInstance.camera.originY--
 			}
 		}
 	}
@@ -90,7 +90,6 @@ class Player extends Drawable {
 					this.x--
 					break
 				}
-				this.gameInstance.camera.originX++
 			}
 			//move left
 		} else {
@@ -100,37 +99,12 @@ class Player extends Drawable {
 					this.x++
 					break
 				}
-				this.gameInstance.camera.originX--
 			}
 		}
 	}
 
 	validatePosition() {
-		let positionIsValid = true
-		//get all tiles player is occupying, check for collisions
-		//col the player's left side is in
-		const playerLeftAlignment = Math.floor(this.x / settings.tileSize);
-		//col the player's right side is in
-		const playerRightAlignment = Math.floor((this.x + this.width) / settings.tileSize);
-		//row the player's top is in
-		const playerTopAlignment = Math.floor(this.y / settings.tileSize);
-		//row the player's bottom is in
-		//-1 prevents floor from stopping movement
-		const playerBottomAlignment = Math.floor((this.y + this.height - 1) / settings.tileSize);
-
-		//check level data and see if any of the intersected tiles are solid
-		//at most, four tiles to check
-		//top left
-		if (this.gameInstance.level.isTileSolid(playerLeftAlignment, playerTopAlignment)) positionIsValid = false
-		//top right
-		if (this.gameInstance.level.isTileSolid(playerRightAlignment, playerTopAlignment)) positionIsValid = false
-		//bottom left
-		if (this.gameInstance.level.isTileSolid(playerLeftAlignment, playerBottomAlignment)) positionIsValid = false
-		//bottom right
-		if (this.gameInstance.level.isTileSolid(playerRightAlignment, playerBottomAlignment)) positionIsValid = false
-
-		//return validity of position
-		return positionIsValid;
+		return true
 	}
 }
 
