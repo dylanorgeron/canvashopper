@@ -4,6 +4,7 @@
   "description": "html5 platformer",
   "main": "frontend/dist/index.js",
   "scripts": {
+    "build": "parcel build frontend/index.html --public-url ./ --out-dir ./frontend/dist && tsc --project ./backend/tsconfig.json",
     "build-client": "parcel build frontend/index.html --public-url ./ --out-dir ./frontend/dist",
     "start-client": "parcel frontend/index.html --out-dir ./frontend/dist",
     "build-api": "tsc --project ./backend/tsconfig.json",
