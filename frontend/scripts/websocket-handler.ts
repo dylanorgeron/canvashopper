@@ -1,3 +1,4 @@
+import { Commands } from "../../lib/commands"
 import Message from "../../lib/message"
 
 const websocketAddress = 'ws://127.0.0.1:7071/ws'
@@ -12,7 +13,6 @@ export class WebSocketHandler {
         return new Promise(async (resolve, reject) => {
             console.log('Initializing connection...')
             this.ws = await this.connectToServer()
-            this.initHandlers(this.ws)
             console.log('Initialization complete!')
             resolve()
         })
@@ -20,8 +20,8 @@ export class WebSocketHandler {
 
     public login(username: string) {
         const message: Message = {
-            index: 1,
-            command: 'login',
+            id: '1',
+            command: Commands.RequestLogin,
             params: JSON.stringify({ username })
         }
         this.ws?.send(JSON.stringify(message))
@@ -41,19 +41,14 @@ export class WebSocketHandler {
         })
     }
 
-    private initHandlers(ws: WebSocket): void {
-        ws.onmessage = (webSocketMessage) => {
-            const message: Message = JSON.parse(webSocketMessage.data)
-            const params = message.params as any
-            switch (message.command) {
-                default:
-                    const app = document.getElementById('app')
-                    if (app) {
-                        app.innerHTML = `<pre><code style='color: #fff'>${JSON.stringify(message, null, '  ').trim()}</code></pre>`
-                    }
-                    break;
-            }
+    //this is a wrapper for ws.send that appends the appropriate message data for the sending user, as well as structures it correctly
+    public send(id: string, params: any) {
+        const message: Message = {
+            id,
+            command: Commands.Keystroke,
+            params: JSON.stringify(params)
         }
+        this.ws?.send(JSON.stringify(message))
     }
 }
 

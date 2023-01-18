@@ -12,13 +12,7 @@ export async function handleLogin(wsHandler: WebSocketHandler): Promise<State> {
                 const message: Message = JSON.parse(webSocketMessage.data)
                 if (message.command == Commands.CompleteLogin) {
                     const state = message.params as State
-                    const app = document.getElementById('app')
-                    if (app) {
-                        app.innerHTML = `<pre><code style='color: #fff'>${JSON.stringify(message, null, '  ').trim()}</code></pre>`
-                        resolve(state)
-                    }
-                } else {
-                    reject('Websocket returned unknown command:' + message)
+                    resolve(state)
                 }
             }
         }
