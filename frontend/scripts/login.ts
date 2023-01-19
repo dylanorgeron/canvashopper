@@ -1,17 +1,20 @@
-import Message from "../../lib/message"
+import { IMessage } from "../../lib/interfaces/message"
 import { WebSocketHandler } from "./websocket-handler"
-import { Commands } from "../../lib/commands"
-import { State } from "../../lib/state"
+import { Commands } from "../../lib/enums/commands"
+import { IState } from "../../lib/interfaces/state"
 
+//this loads the stylesheet
+//i dont remember why
 const styles = require('../styles/login.css')
-export async function handleLogin(wsHandler: WebSocketHandler): Promise<State> {
+
+export async function handleLogin(wsHandler: WebSocketHandler): Promise<IState> {
     return new Promise((async (resolve, reject) => {
         if (!wsHandler.ws) reject('Could not find ws on wsHandler')
         else {
             wsHandler.ws.onmessage = (webSocketMessage) => {
-                const message: Message = JSON.parse(webSocketMessage.data)
+                const message: IMessage = JSON.parse(webSocketMessage.data)
                 if (message.command == Commands.CompleteLogin) {
-                    const state = message.params as State
+                    const state = message.params as IState
                     resolve(state)
                 }
             }

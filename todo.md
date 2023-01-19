@@ -6,9 +6,6 @@
 - draw from level data
 - draw players
 
+## notes
 
-### level data
-- series of objects (like squares or something)
-- give each a layer to draw on
-- solid || !? 
-- start w rectangles
+- add a game state or something to player on server to indicate if they are signed in/out, lobbied, or playing

@@ -1,4 +1,12 @@
-export default class PlayerMetadata{
-    public Id: string = ''
-    public Username: string = ''
+import { PlayerState } from "../../lib/enums/player-state"
+
+export default class PlayerMetadata {
+
+    constructor(
+        public id: string = '',
+        public username: string = '',
+        public state: PlayerState = PlayerState.SignedOut
+    ) {
+
+    }
 }

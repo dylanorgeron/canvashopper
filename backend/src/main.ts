@@ -1,20 +1,19 @@
 import * as webSocket from 'ws'
-import Message from '../../lib/message';
+import { IMessage } from '../../lib/interfaces/message';
 import PlayerMetadata from './player-metadata';
 import { v4 } from 'uuid';
-import { Commands } from '../../lib/commands';
+import { Commands } from '../../lib/enums/commands';
 import { Level } from '../../lib/level/level';
-import { GeometryObject } from '../../lib/level/geometery-object';
 import Player from './player';
-import IKeystroke from '../../lib/commands/keystroke'
+import IKeystroke from '../../lib/interfaces/keystroke'
 
 const wss = new webSocket.Server({ port: 7071 });
 const clients = new Map();
 
 //init level
 const level = new Level(500, 500)
-level.geometryObjects.push(new GeometryObject(0, 600, 900, 200, "#d7d7d7"))
-level.geometryObjects.push(new GeometryObject(200, 200, 200, 200, "#ffcccc"))
+level.addGeometryObject(0, 600, 900, 200, "#d7d7d7")
+level.addGeometryObject(200, 200, 200, 200, "#ffcccc")
 
 //init players
 const players: Player[] = []
@@ -33,7 +32,7 @@ const tick = setInterval(() => {
     if (JSON.stringify(thisState) == lastState) return
 
     //build message
-    const message: Message = {
+    const message: IMessage = {
       command: Commands.Update,
       params: {
         level,
@@ -43,11 +42,11 @@ const tick = setInterval(() => {
 
     //send it
     if (ws) {
-      console.log(`Updating ${c.Id} with new state...`)
+      console.log(`Updating ${c.id} with new state...`)
       ws.send(JSON.stringify(message))
     }
     console.log('Caching new state...')
-    
+
     //update last sent state with current state
     lastState = JSON.stringify(thisState)
   })
@@ -55,18 +54,15 @@ const tick = setInterval(() => {
 
 wss.on('connection', (ws) => {
   const id = v4();
-  const metadata: PlayerMetadata = {
-    Id: id,
-    Username: ''
-  };
+  const metadata: PlayerMetadata = new PlayerMetadata(id)
 
-  console.log("Connection made: " + metadata.Id)
+  console.log("Connection made: " + metadata.id)
 
   clients.set(ws, metadata);
 
   ws.on('message', (data) => {
     const client = clients.get(ws);
-    const request: Message = JSON.parse(data.toString());
+    const request: IMessage = JSON.parse(data.toString());
     request.params = JSON.parse(request.params)
 
     switch (request.command) {
@@ -74,7 +70,7 @@ wss.on('connection', (ws) => {
         // set the username server-side and reply to client with their client data to affirm
         client.username = request.params.username
         players.push(new Player(id))
-        const response: Message = {
+        const response: IMessage = {
           command: Commands.CompleteLogin,
           params: {
             id,

@@ -1,7 +1,7 @@
 #login{
     background-color: #343649;
     width: 300px;
-    margin: 200px auto;
+    margin: 0 auto 200px auto;
     padding: 20px;
     border-radius: 4px;
     box-shadow: 1px 1px 10px #00000070;

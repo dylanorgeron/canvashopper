@@ -1,5 +1,5 @@
-import { Commands } from "../../lib/commands"
-import Message from "../../lib/message"
+import { Commands } from "../../lib/enums/commands"
+import { IMessage } from "../../lib/interfaces/message"
 
 const websocketAddress = 'ws://127.0.0.1:7071/ws'
 
@@ -19,7 +19,7 @@ export class WebSocketHandler {
     }
 
     public login(username: string) {
-        const message: Message = {
+        const message: IMessage = {
             id: '1',
             command: Commands.RequestLogin,
             params: JSON.stringify({ username })
@@ -43,7 +43,7 @@ export class WebSocketHandler {
 
     //this is a wrapper for ws.send that appends the appropriate message data for the sending user, as well as structures it correctly
     public send(id: string, params: any) {
-        const message: Message = {
+        const message: IMessage = {
             id,
             command: Commands.Keystroke,
             params: JSON.stringify(params)

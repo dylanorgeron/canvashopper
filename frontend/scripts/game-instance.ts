@@ -1,14 +1,14 @@
 import Keystates from './keystates'
 import { EventEmitter } from 'eventemitter3'
-import Canvas from './canvas'
-import DrawQueue from './draw-queue'
-import { State } from '../../../lib/state'
-import DrawableGeometryObject from './drawable-geometery-object'
-import DrawablePlayer from './drawable-player'
-import { WebSocketHandler } from '../websocket-handler'
-import IKeystroke from '../../../lib/commands/keystroke'
-import Message from '../../../lib/message'
-import { Commands } from '../../../lib/commands'
+import Canvas from './render/canvas'
+import DrawQueue from './render/draw-queue'
+import { IState } from '../../lib/interfaces/state'
+import DrawableGeometryObject from './render/drawable-geometery-object'
+import DrawablePlayer from './render/drawable-player'
+import { WebSocketHandler } from './websocket-handler'
+import IKeystroke from '../../lib/interfaces/keystroke'
+import { IMessage } from '../../lib/interfaces/message'
+import { Commands } from '../../lib/enums/commands'
 
 
 export default class GameInstance {
@@ -22,7 +22,7 @@ export default class GameInstance {
     private app = document.getElementById('app') as HTMLElement
     constructor(
         public webSocketHandler: WebSocketHandler,
-        initialState: State
+        initialState: IState
     ) {
         //init handlers
         this.initWebsocketHandlers()
@@ -85,11 +85,11 @@ export default class GameInstance {
     private initWebsocketHandlers() {
         if (!this.webSocketHandler.ws) return
         this.webSocketHandler.ws.onmessage = (webSocketMessage) => {
-            const message: Message = JSON.parse(webSocketMessage.data)
+            const message: IMessage = JSON.parse(webSocketMessage.data)
             const params = message.params as any
             switch (message.command) {
                 case Commands.Update:
-                    if(!this.players) return
+                    if (!this.players) return
                     params.players.forEach(p => {
                         const i = this.players.findIndex(_p => _p.id == p.id)
                         this.players[i].x = p.x

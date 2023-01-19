@@ -1,17 +1,16 @@
-import { GeometryObject } from "./geometery-object";
+import { IGeometryObject } from "./geometery-object";
 
 export class Level {
-    public geometryObjects: GeometryObject[] = []
+    public geometryObjects: IGeometryObject[] = []
     constructor(
         public width: number = 0,
         public height: number = 0
-    ){
-        
+    ) {
+
     }
-    public addGeometryObject(x: number, y: number, w: number, h:number)
-    {
+    public addGeometryObject(x: number, y: number, w: number, h: number, color: string) {
         this.geometryObjects.push(
-            new GeometryObject(x, y, w, h)
-        )       
+            { x, y, w, h, color }
+        )
     }
 }

@@ -1,7 +1,7 @@
 
 import { WebSocketFactory } from "./websocket-handler"
 import { handleLogin }  from "./login";
-import GameInstance from "./render/game-instance";
+import GameInstance from "./game-instance";
 
 //wait for page to render, then init
 window.onload = async function(){
