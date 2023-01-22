@@ -39,11 +39,11 @@ class DrawablePlayer extends Drawable {
                 this.gameInstance.canvas.canvasCTX.fillStyle = "#ccccff"
                 this.gameInstance.canvas.canvasCTX.fillText(
                     this.id.substring(0, 5),
-                    this.x + this.gameInstance.clientPlayer.x + (this.gameInstance.canvas.width / 2) - (this.gameInstance.clientPlayer.w/2),
-                    this.y - this.gameInstance.clientPlayer.y + (this.gameInstance.canvas.height / 2) - 10,
+                    this.x - this.gameInstance.clientPlayer.x + (this.gameInstance.canvas.width / 2) - (this.gameInstance.clientPlayer.w / 2),
+                    this.y - this.gameInstance.clientPlayer.y + (this.gameInstance.canvas.height / 2),
                 )
                 this.gameInstance.canvas.canvasCTX.fillRect(
-                    this.x + this.gameInstance.clientPlayer.x + (this.gameInstance.canvas.width / 2) - (this.gameInstance.clientPlayer.w/2),
+                    this.x - this.gameInstance.clientPlayer.x + (this.gameInstance.canvas.width / 2) - (this.gameInstance.clientPlayer.w / 2),
                     this.y - this.gameInstance.clientPlayer.y + (this.gameInstance.canvas.height / 2),
                     this.w,
                     this.h
