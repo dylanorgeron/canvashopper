@@ -1,6 +1,6 @@
+import { Command } from "../enums/commands"
+
 export interface IMessage{
-    id?: string
-    command: string
-    params?: any
-    statusCode?: any
+    command: Command
+    params: any
 }

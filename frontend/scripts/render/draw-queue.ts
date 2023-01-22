@@ -1,4 +1,4 @@
-import GameInstance from "./game-instance"
+import GameInstance from "../game-instance"
 import Drawable from "./drawable"
 export default class DrawQueue{
     public drawables: Drawable[] = []

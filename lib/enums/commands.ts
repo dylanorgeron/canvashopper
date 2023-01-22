@@ -1,8 +1,8 @@
-export enum Commands {
+export enum Command {
     //Client
-    RequestLogin = 'RequestLogin',  //Sent with username to initiate login handshake
-    Keystroke = 'Keystroke', //Sent on keystroke to initiate action
+    SendLogin = 'SendLogin',  //Sent with username to initiate login handshake
+    SendKeystroke = 'SendKeystroke', //Sent on keystroke to initiate action
     //Sever
-    CompleteLogin = 'CompleteLogin', //Responds with username to complete login handshake
-    Update = 'Update' //General status update of level and player positions
+    ReceiveLoginConfirmation = 'ReceiveLoginConfirmation', //Responds with username to complete login handshake
+    ReceiveUpdate = 'ReceiveUpdate' //General status update of level and player positions
 }

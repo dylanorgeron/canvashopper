@@ -1,4 +1,5 @@
-import { IGeometryObject } from "./geometery-object";
+import { IGeometryObject } from "../interfaces/geometery-object";
+import { v4 } from "uuid";
 
 export class Level {
     public geometryObjects: IGeometryObject[] = []
@@ -10,7 +11,7 @@ export class Level {
     }
     public addGeometryObject(x: number, y: number, w: number, h: number, color: string) {
         this.geometryObjects.push(
-            { x, y, w, h, color }
+            { id: v4(), x, y, w, h, color }
         )
     }
 }

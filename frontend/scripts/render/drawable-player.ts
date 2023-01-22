@@ -1,5 +1,5 @@
+import GameInstance from '../game-instance'
 import Drawable from './drawable'
-import GameInstance from './game-instance'
 
 class DrawablePlayer extends Drawable {
     public fillColor = "#ffaaaa"
@@ -14,15 +14,21 @@ class DrawablePlayer extends Drawable {
         public h: number,
         public isClient: boolean = false
     ) {
-        super(gameInstance)
+        super(gameInstance, id, x, y, w, h)
     }
     draw() {
         const isOnScreen = true
         if (isOnScreen) {
             //draw object in relation to player
             //player is always in the center of the screen
-            this.gameInstance.canvas.canvasCTX.fillStyle = this.fillColor
             if (this.isClient) {
+                this.gameInstance.canvas.canvasCTX.fillStyle = this.fillColor
+                this.gameInstance.canvas.canvasCTX.font = "18px serif"
+                this.gameInstance.canvas.canvasCTX.fillText(
+                    this.id.substring(0, 5),
+                    this.gameInstance.canvas.width/2 - 20,
+                    this.gameInstance.canvas.height/2 - 10
+                )
                 this.gameInstance.canvas.canvasCTX.fillRect(
                     (this.gameInstance.canvas.width / 2) - this.w / 2,
                     (this.gameInstance.canvas.height / 2),
@@ -30,9 +36,15 @@ class DrawablePlayer extends Drawable {
                     this.h
                     )
             } else {
+                this.gameInstance.canvas.canvasCTX.fillStyle = "#ccccff"
+                this.gameInstance.canvas.canvasCTX.fillText(
+                    this.id.substring(0, 5),
+                    this.x + this.gameInstance.clientPlayer.x + (this.gameInstance.canvas.width / 2) - (this.gameInstance.clientPlayer.w/2),
+                    this.y - this.gameInstance.clientPlayer.y + (this.gameInstance.canvas.height / 2) - 10,
+                )
                 this.gameInstance.canvas.canvasCTX.fillRect(
-                    this.x + this.gameInstance.clientPlayer.x + (this.gameInstance.canvas.width / 2),
-                    this.y + this.gameInstance.clientPlayer.y + (this.gameInstance.canvas.height / 2),
+                    this.x + this.gameInstance.clientPlayer.x + (this.gameInstance.canvas.width / 2) - (this.gameInstance.clientPlayer.w/2),
+                    this.y - this.gameInstance.clientPlayer.y + (this.gameInstance.canvas.height / 2),
                     this.w,
                     this.h
                 )

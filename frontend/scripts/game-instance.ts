@@ -2,17 +2,18 @@ import Keystates from './keystates'
 import { EventEmitter } from 'eventemitter3'
 import Canvas from './render/canvas'
 import DrawQueue from './render/draw-queue'
-import { IState } from '../../lib/interfaces/state'
 import DrawableGeometryObject from './render/drawable-geometery-object'
 import DrawablePlayer from './render/drawable-player'
 import { WebSocketHandler } from './websocket-handler'
 import IKeystroke from '../../lib/interfaces/keystroke'
 import { IMessage } from '../../lib/interfaces/message'
-import { Commands } from '../../lib/enums/commands'
+import { Command } from '../../lib/enums/commands'
+import { IReceiveState } from '../../lib/interfaces/commands/receve-state'
+import { IReceiveLogin } from '../../lib/interfaces/commands/receive-login'
 
 
 export default class GameInstance {
-    public id: string = ''
+    public playerId: string
     public keystates = new Keystates()
     public emitter = new EventEmitter()
     public canvas: Canvas
@@ -22,41 +23,37 @@ export default class GameInstance {
     private app = document.getElementById('app') as HTMLElement
     constructor(
         public webSocketHandler: WebSocketHandler,
-        initialState: IState
+        loginResponse: IReceiveLogin
     ) {
-        //init handlers
-        this.initWebsocketHandlers()
-
+        this.playerId = loginResponse.playerId
         //render canvas
         this.app.innerHTML = `
             <canvas id="main-canvas" width="900" height="800"></canvas>
         `
-        this.initKeybindings()
-
-        //drawing the game
+        //drawing frames
         this.drawQueue = new DrawQueue(this)
         this.canvas = new Canvas()
-        //generate drawable objects from state level data
-        this.id = initialState.id
-        console.log(`Starting game with id: ${this.id}`)
-        initialState.level?.geometryObjects.forEach(go => {
+
+        //init geometery
+        loginResponse.initialState.level?.geometryObjects.forEach(geoObj => {
             new DrawableGeometryObject(
                 this,
-                go.x,
-                go.y,
-                go.w,
-                go.h
+                geoObj.id,
+                geoObj.x,
+                geoObj.y,
+                geoObj.w,
+                geoObj.h
             )
         });
-        //pull client player
-        const initialClientPlayer = initialState.players.find(p => p.id == this.id)
+        //pull client player from res and init
+        const initialClientPlayer = loginResponse.initialState.players.find(p => p.id == this.playerId)
         if (!initialClientPlayer) {
             console.error('Failed to initialize player')
             return
         }
         this.clientPlayer = new DrawablePlayer(
             this,
-            initialState.id,
+            loginResponse.playerId,
             initialClientPlayer.x,
             initialClientPlayer.y,
             40,
@@ -65,8 +62,8 @@ export default class GameInstance {
         )
         this.players.push(this.clientPlayer)
         //load players to draw queue
-        initialState.players.forEach(p => {
-            if (p.id != this.id) {
+        loginResponse.initialState.players.forEach(p => {
+            if (p.id != this.playerId) {
                 this.players.push(new DrawablePlayer(
                     this,
                     p.id,
@@ -78,6 +75,11 @@ export default class GameInstance {
             }
         })
 
+        //init keybinds
+        this.initKeybindings()
+        //init handlers for messages FROM server
+        this.initWebsocketHandlers()
+        //init handlers for sending messages TO the server
         this.initEmitters()
     }
 
@@ -86,17 +88,56 @@ export default class GameInstance {
         if (!this.webSocketHandler.ws) return
         this.webSocketHandler.ws.onmessage = (webSocketMessage) => {
             const message: IMessage = JSON.parse(webSocketMessage.data)
-            const params = message.params as any
             switch (message.command) {
-                case Commands.Update:
+                case Command.ReceiveUpdate:
+                    const receiveStateParams: IReceiveState = message.params
+                    console.log(receiveStateParams.state.players.map(p => { return JSON.stringify({id: p.id, x: p.x, y: p.y})}).join(', '))
                     if (!this.players) return
-                    params.players.forEach(p => {
+                    //generate drawable objects from state level data
+                    receiveStateParams.state.level?.geometryObjects.forEach(geoObj => {
+                        const i = this.drawQueue.drawables.findIndex(d => d.id == geoObj.id)
+                        if (i == -1) {
+                            new DrawableGeometryObject(
+                                this,
+                                geoObj.id,
+                                geoObj.x,
+                                geoObj.y,
+                                geoObj.w,
+                                geoObj.h
+                            )
+                        } else {
+                            this.drawQueue.drawables[i].x = geoObj.x
+                            this.drawQueue.drawables[i].y = geoObj.y
+                            this.drawQueue.drawables[i].h = geoObj.h
+                            this.drawQueue.drawables[i].w = geoObj.w
+                        }
+                    });
+
+                    receiveStateParams.state.players.forEach(p => {
                         const i = this.players.findIndex(_p => _p.id == p.id)
-                        this.players[i].x = p.x
-                        this.players[i].y = p.y
+                        if (i == -1) {
+                            this.players.push(new DrawablePlayer(
+                                this,
+                                p.id,
+                                p.x,
+                                p.y,
+                                40,
+                                100
+                            ))
+                        }
+                        else {
+                            this.players[i].x = p.x
+                            this.players[i].y = p.y
+                        }
+                    })
+                    this.players.forEach((p, i) => {
+                        if(!receiveStateParams.state.players.find(_p => p.id == _p.id)){
+                            this.players.splice(i,1)
+                            this.drawQueue.drawables.splice(this.drawQueue.drawables.findIndex(d => d.id == p.id),1)
+                        }
                     })
                     break;
-                case Commands.CompleteLogin:
+                case Command.ReceiveLoginConfirmation:
                     //todo, move the logic from login.ts to this case
                     break;
                 default:
@@ -117,12 +158,11 @@ export default class GameInstance {
     }
 
     private sendKeystroke(keyCode: number, keyState: boolean) {
-        console.log('sending keystroke')
         const keystrokeParams: IKeystroke = {
             keyCode,
             keyState
         }
-        this.webSocketHandler.send(this.id, keystrokeParams)
+        this.webSocketHandler.send(Command.SendKeystroke, keystrokeParams)
     }
 
     private initEmitters() {

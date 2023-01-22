@@ -1,5 +1,5 @@
+import GameInstance from '../game-instance'
 import Drawable from './drawable'
-import GameInstance from './game-instance'
 
 class DrawableGeometryObject extends Drawable {
 
@@ -8,14 +8,9 @@ class DrawableGeometryObject extends Drawable {
     public img = ""
     constructor(
         public gameInstance: GameInstance,
-        //position on map in pixels
-        public x: number,
-        public y: number,
-        //width and height
-        public w: number,
-        public h: number,
+        id, x,y,w,h
     ) {
-        super(gameInstance)
+        super(gameInstance, id, x, y, w, h)
     }
     draw() {
         const isOnScreen = true
@@ -24,8 +19,8 @@ class DrawableGeometryObject extends Drawable {
             //player is always in the center of the screen
             this.gameInstance.canvas.canvasCTX.fillStyle = this.fillColor
             this.gameInstance.canvas.canvasCTX.fillRect(
-                this.x + this.gameInstance.clientPlayer.x + (this.gameInstance.canvas.width / 2),
-                this.y + this.gameInstance.clientPlayer.y + (this.gameInstance.canvas.height / 2),
+                this.x + this.gameInstance.clientPlayer.x + (this.gameInstance.canvas.width / 2) - (this.gameInstance.clientPlayer.w/2),
+                this.y - this.gameInstance.clientPlayer.y + (this.gameInstance.canvas.height / 2),
                 this.w,
                 this.h
             )

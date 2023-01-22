@@ -1,12 +1,15 @@
-import { Commands } from "../../lib/enums/commands"
+import { EventEmitter } from "eventemitter3"
+import { Command } from "../../lib/enums/commands"
 import { IMessage } from "../../lib/interfaces/message"
 
-const websocketAddress = 'ws://127.0.0.1:7071/ws'
+const websocketAddress = 'ws://192.168.1.123:7071/ws'
 
-export class WebSocketHandler {
+export class WebSocketHandler extends EventEmitter {
 
     public ws: WebSocket | null = null
+    public connectionId: string
     constructor() {
+        super()
     }
 
     public async init(): Promise<void> {
@@ -18,18 +21,15 @@ export class WebSocketHandler {
         })
     }
 
-    public login(username: string) {
-        const message: IMessage = {
-            id: '1',
-            command: Commands.RequestLogin,
-            params: JSON.stringify({ username })
-        }
-        this.ws?.send(JSON.stringify(message))
-    }
-
     private async connectToServer(): Promise<WebSocket> {
+        //attempt connection
         console.log(`Attempting to connect to websocket via ${websocketAddress}...`)
         const ws = new WebSocket(websocketAddress)
+        //proxy ws messages as eventemitter events to allow us to catch them anywhere without having to add logic here
+        ws.onmessage = (webSocketMessage) => {
+            const message: IMessage = JSON.parse(webSocketMessage.data)
+            this.emit(message.command, message.params)
+        }
         return new Promise((resolve) => {
             const timer = setInterval(() => {
                 if (ws.readyState === 1) {
@@ -42,10 +42,9 @@ export class WebSocketHandler {
     }
 
     //this is a wrapper for ws.send that appends the appropriate message data for the sending user, as well as structures it correctly
-    public send(id: string, params: any) {
+    public send(command: Command, params: any) {
         const message: IMessage = {
-            id,
-            command: Commands.Keystroke,
+            command,
             params: JSON.stringify(params)
         }
         this.ws?.send(JSON.stringify(message))

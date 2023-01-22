@@ -1,4 +1,5 @@
 export interface IGeometryObject {
+    id: string
     x: number
     y: number
     w: number
