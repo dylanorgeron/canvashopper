@@ -132,8 +132,10 @@ export default class GameInstance {
                     })
                     this.players.forEach((p, i) => {
                         if(!receiveStateParams.state.players.find(_p => p.id == _p.id)){
+                            p.deleted = true
                             this.players.splice(i,1)
                             this.drawQueue.drawables.splice(this.drawQueue.drawables.findIndex(d => d.id == p.id),1)
+
                         }
                     })
                     break;

@@ -4,6 +4,8 @@ import Drawable from './drawable'
 class DrawablePlayer extends Drawable {
     public fillColor = "#ffaaaa"
     public img = ""
+    public deleted = false
+
     constructor(
         public gameInstance: GameInstance,
         public id: string,
@@ -18,7 +20,7 @@ class DrawablePlayer extends Drawable {
     }
     draw() {
         const isOnScreen = true
-        if (isOnScreen) {
+        if (isOnScreen && !this.deleted) {
             //draw object in relation to player
             //player is always in the center of the screen
             if (this.isClient) {
