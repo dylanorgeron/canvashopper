@@ -3,12 +3,14 @@ class Player {
 	public width = 5
 	public direction = 'right'
 	public moveSpeed: number = 10
-	public x: number
-	public y: number
+	public x: number = 0
+	public y: number = 0
+	
 
-	constructor(public id: string) {
-		this.x = 0
-		this.y = 0
+	constructor(
+		public id: string,
+		public username: string
+		) {
 	}
 
 	moveHorizontal(delta: number) {

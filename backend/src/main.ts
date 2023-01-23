@@ -11,11 +11,11 @@ import { IReceiveLogin } from '../../lib/interfaces/commands/receive-login';
 import { IReceiveState } from '../../lib/interfaces/commands/receve-state';
 
 const wss = new webSocket.Server({ port: 7071 });
-const clients = new Map();
+const clients: Map<webSocket.WebSocket, PlayerMetadata> = new Map();
 
 //init level
 const level = new Level(500, 500)
-level.addGeometryObject(0, 0, 100, 100, "#ffcccc")
+level.addGeometryObject(-250, 100, 500, 100, "#ffcccc")
 console.log(level)
 //init players
 const players: Player[] = []
@@ -29,7 +29,7 @@ const tick = setInterval(() => {
     level,
     players
   }
-  clients.forEach((c: PlayerMetadata, ws: WebSocket) => {
+  clients.forEach((c: PlayerMetadata, ws: webSocket.WebSocket) => {
     //if nothing has changed since the last update, don't send an update this time
     if (JSON.stringify(thisState) == lastState) return
     console.log(clients.size)
@@ -70,15 +70,20 @@ wss.on('connection', (ws) => {
 
   ws.on('message', (data) => {
     const client = clients.get(ws);
+    if(!client){
+      console.error(`Failed to find client from websocket: ${ws}`)
+      return
+    }
     const request: IMessage = JSON.parse(data.toString());
     request.params = JSON.parse(request.params)
 
     switch (request.command) {
       case Command.SendLogin:
-        // set the username server-side and reply to client with their client data to affirm
+        // set the username server-side
         const params: ISendLogin = request.params
         client.username = params.Username
-        players.push(new Player(playerId))
+        players.push(new Player(playerId, client.username))
+        //respond with initial state for client to draw first frame
         const response: IMessage = {
           command: Command.ReceiveLoginConfirmation,
           params: {
@@ -87,7 +92,7 @@ wss.on('connection', (ws) => {
           } as IReceiveLogin
         }
         ws.send(JSON.stringify(response))
-        console.log("username set to: " + client.username)
+        console.log(`Username for ${client.playerId} set to ${client.username}`)
         break
       case Command.SendKeystroke:
         const keystrokeParams: IKeystroke = request.params

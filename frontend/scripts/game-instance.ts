@@ -54,6 +54,7 @@ export default class GameInstance {
         this.clientPlayer = new DrawablePlayer(
             this,
             loginResponse.playerId,
+            initialClientPlayer.username,
             initialClientPlayer.x,
             initialClientPlayer.y,
             40,
@@ -66,6 +67,7 @@ export default class GameInstance {
             if (p.id != this.playerId) {
                 this.players.push(new DrawablePlayer(
                     this,
+                    p.username,
                     p.id,
                     p.x,
                     p.y,
@@ -119,6 +121,7 @@ export default class GameInstance {
                             this.players.push(new DrawablePlayer(
                                 this,
                                 p.id,
+                                p.username,
                                 p.x,
                                 p.y,
                                 40,
