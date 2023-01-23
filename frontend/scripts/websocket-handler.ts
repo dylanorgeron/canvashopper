@@ -2,7 +2,7 @@ import { EventEmitter } from "eventemitter3"
 import { Command } from "../../lib/enums/commands"
 import { IMessage } from "../../lib/interfaces/message"
 
-const websocketAddress = 'ws://192.168.1.123:7071/ws'
+const websocketAddress = 'ws://localhost:7071/ws'
 
 export class WebSocketHandler extends EventEmitter {
 
