@@ -67,8 +67,8 @@ export default class GameInstance {
             if (p.id != this.playerId) {
                 this.players.push(new DrawablePlayer(
                     this,
-                    p.username,
                     p.id,
+                    p.username,
                     p.x,
                     p.y,
                     40,
@@ -133,17 +133,12 @@ export default class GameInstance {
                             this.players[i].y = p.y
                         }
                     })
-                    this.players.forEach((p, i) => {
-                        if(!receiveStateParams.state.players.find(_p => p.id == _p.id)){
-                            p.deleted = true
-                            this.players.splice(i,1)
-                            this.drawQueue.drawables.splice(this.drawQueue.drawables.findIndex(d => d.id == p.id),1)
-
-                        }
+                    this.players.filter(
+                        p => receiveStateParams.state.players.findIndex(_p => _p.id == p.id) === -1
+                    ).forEach((p, i) => {
+                        this.players.splice(i,1)
+                        this.drawQueue.drawables.splice(this.drawQueue.drawables.findIndex(d => d.id == p.id),1)
                     })
-                    break;
-                case Command.ReceiveLoginConfirmation:
-                    //todo, move the logic from login.ts to this case
                     break;
                 default:
                     console.log(message)

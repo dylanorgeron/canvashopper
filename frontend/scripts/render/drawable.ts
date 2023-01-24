@@ -12,7 +12,6 @@ export default class Drawable {
         public h = 0
     ) {
         this.gameInstance.drawQueue.drawables.push(this)
-        this.gameInstance.emitter.on('draw', this.draw.bind(this))
     }
     public draw() { }
 }

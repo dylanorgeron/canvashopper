@@ -4,7 +4,6 @@ import Drawable from './drawable'
 class DrawablePlayer extends Drawable {
     public fillColor = "#ffaaaa"
     public img = ""
-    public deleted = false
 
     constructor(
         public gameInstance: GameInstance,
@@ -21,7 +20,7 @@ class DrawablePlayer extends Drawable {
     }
     draw() {
         const isOnScreen = true
-        if (isOnScreen && !this.deleted) {
+        if (isOnScreen) {
             //draw object in relation to player
             //player is always in the center of the screen
             this.gameInstance.canvas.canvasCTX.fillStyle = this.fillColor
