@@ -6,11 +6,21 @@ body{
     background: white;
     border: 1px solid #eee;
     display: block;
-    margin: auto;
+    width: 900;
 }
 #debugger{
     color: white;
     position: absolute;
     top: 50px;
     left: 10px;
+}
+#container{
+    display: flex;
+    flex-direction: row;
+    max-width: 1300px;
+    margin: auto;
+}
+#chat{
+    width: 100%;
+    background: #ffcccc;
 }

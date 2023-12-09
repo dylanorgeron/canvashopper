@@ -28,7 +28,15 @@ export default class GameInstance {
         this.playerId = loginResponse.playerId
         //render canvas
         this.app.innerHTML = `
-            <canvas id="main-canvas" width="900" height="800"></canvas>
+            <div id="container">
+                <canvas id="main-canvas" width="900" height="800"></canvas>
+                <div id="chat">
+                    <div id="players">
+                    </div>
+                    <div id="messages">
+                    </div>
+                </div>
+            </div>
         `
         //drawing frames
         this.drawQueue = new DrawQueue(this)

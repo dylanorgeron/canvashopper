@@ -4,5 +4,5 @@ import { Level } from "../level/level";
 export interface IState{
     id: string
     level: Level
-    players: Player[]
+    players: Player[],
 }
